@@ -1,0 +1,53 @@
+
+.mat-column-idAlumno {
+    flex: 0 0 7%;
+}
+
+.mat-column-nombresApellidos{
+    flex: 0 0 10%;
+}
+
+.mat-column-telefono {
+    flex: 0 0 9%;
+}
+
+.mat-column-celular {
+    flex: 0 0 9%;
+}
+
+.mat-column-dni {
+    flex: 0 0 8%;
+}
+
+.mat-column-correo {
+    flex: 0 0 10%;
+}
+
+.mat-column-tipoSangre {
+    flex: 0 0 6%;
+}
+
+.mat-column-fechaNacimiento {
+    flex: 0 0 10%;
+}
+
+.mat-column-pais {
+    flex: 0 0 8%;
+}
+
+.mat-column-modalidad {
+    flex: 0 0 8%;
+}
+
+.mat-column-estado {
+    flex: 0 0 6%;
+}
+
+.mat-column-acciones {
+    flex: 0 0 13%;
+}
+
+.b{
+    margin: 10px;
+}
+

@@ -1,0 +1,27 @@
+.mat-column-idRevista {
+    flex: 0 0 10%;
+}
+.mat-column-nombre {
+    flex: 0 0 20%;
+}
+.mat-column-frecuencia {
+    flex: 0 0 20%;
+}
+.mat-column-fechaCreacion {
+    flex: 0 0 10%;
+}
+.mat-column-telefono {
+    flex: 0 0 10%;
+}
+.mat-column-pais {
+    flex: 0 0 10%;
+}
+.mat-column-tipo {
+    flex: 0 0 10%;
+}
+.mat-column-estado {
+    flex: 0 0 10%;
+}
+.mat-column-acciones {
+    flex: 0 0 20%;
+}

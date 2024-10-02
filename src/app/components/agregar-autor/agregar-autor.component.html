@@ -1,0 +1,134 @@
+<app-menu></app-menu>
+<div class="container">
+
+<form  id="idFormModalidad" [formGroup]="formsRegistra" >
+        <div class="row"> 
+          <mat-toolbar color="primary">
+            <span>Registra Autor</span>
+          </mat-toolbar>
+        </div>
+        <div class="row">
+          <mat-form-field class="col-md-4">
+            <mat-label>Nombres</mat-label>
+            <input matInput [(ngModel)]="objAutor.nombres" formControlName="validaNombres">
+            <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaNombres.touched">
+              <span *ngIf="formsRegistra.controls.validaNombres.hasError('required')">
+                  El nombre es requerido                        
+              </span>
+              <span *ngIf="formsRegistra.controls.validaNombres.hasError('pattern')">
+                  El nombre es de 3 a 30 caracteres                        
+              </span>
+        </mat-hint>
+          </mat-form-field>
+      
+          <mat-form-field class="col-md-4">
+            <mat-label>Apellidos</mat-label>
+            <input matInput [(ngModel)]="objAutor.apellidos" formControlName="validaApellidos">
+            <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaApellidos.touched">
+              <span *ngIf="formsRegistra.controls.validaApellidos.hasError('required')">
+                  El apellido es requerido                        
+              </span>
+              <span *ngIf="formsRegistra.controls.validaApellidos.hasError('pattern')">
+                  El nombre es de 3 a 30 caracteres                        
+              </span>
+        </mat-hint>
+          </mat-form-field>
+      
+          <mat-form-field class="col-md-4">
+            <mat-label>Fecha de Nacimiento</mat-label>
+           
+            <input matInput [matDatepicker]="picker" [(ngModel)]="objAutor.fechaNacimiento" formControlName="validaFecha">
+            <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaFecha.touched">
+              <span *ngIf="formsRegistra.controls.validaFecha.hasError('required')">
+                  El nombre es requerido                        
+              </span>
+             
+        </mat-hint>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!--L-->
+      
+        <div class="row">
+                <mat-form-field class="col-md-4">
+                  <mat-label>Teléfono</mat-label>
+                  <input matInput [(ngModel)]="objAutor.telefono" formControlName="validaTelefono">
+                  <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaTelefono.touched">
+                    <span *ngIf="formsRegistra.controls.validaTelefono.hasError('required')">
+                        El teléfono es requerido                        
+                    </span>
+                    <span *ngIf="formsRegistra.controls.validaTelefono.hasError('pattern')">
+                        El teléfono es 9 dígitos                       
+                    </span>
+              </mat-hint>
+                </mat-form-field>
+            
+                <mat-form-field class="col-md-4">
+                  <mat-label>Celular</mat-label>
+                  <input matInput [(ngModel)]="objAutor.celular" formControlName="validaCelular">
+                  <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaCelular.touched">
+                    <span *ngIf="formsRegistra.controls.validaCelular.hasError('required')">
+                        El celular es requerido                        
+                    </span>
+                    <span *ngIf="formsRegistra.controls.validaCelular.hasError('pattern')">
+                        El celular es de 9 dígitos                       
+                    </span>
+              </mat-hint>
+                </mat-form-field>
+            
+                <mat-form-field class="col-md-4">
+                        <mat-label>Orcid: Ej. 0000-0000-0000-0000</mat-label>
+                        <input matInput [(ngModel)]="objAutor.orcid" formControlName="validaOrcid">
+                        <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaOrcid.touched">
+                          <span *ngIf="formsRegistra.controls.validaOrcid.hasError('required')">
+                              El orcid es requerido                        
+                          </span>
+                          <span *ngIf="formsRegistra.controls.validaOrcid.hasError('pattern')">
+                              El orcid es de 16 dígitos, recuerde seguir el formato                       
+                          </span>
+                    </mat-hint>
+                      </mat-form-field>
+              </div>
+        <!---->
+        <div class="row">
+          <mat-form-field class="col-md-4">
+            <mat-label>País</mat-label>
+            <mat-select [(ngModel)]="objAutor.pais!.idPais" formControlName="validaPais">
+              <mat-option value="-1"> [Seleccione] </mat-option>
+              <mat-option *ngFor="let x of lstPaises" [value]="x.idPais">
+                {{x.nombre}}
+              </mat-option>
+            </mat-select>
+            <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaPais.touched">
+              <span *ngIf="formsRegistra.controls.validaPais.hasError('min')">
+                  El país es requerido                        
+              </span>
+              
+        </mat-hint>
+            
+          </mat-form-field>
+
+          <mat-form-field class="col-md-4">
+                <mat-label>Grado</mat-label>
+                <mat-select [(ngModel)]="objAutor.grado!.idDataCatalogo" formControlName="validaGrado">
+                  <mat-option value="-1"> [Seleccione] </mat-option>
+                  <mat-option *ngFor="let x of lstDataCatalogo" [value]="x.idDataCatalogo">
+                    {{x.descripcion}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint style="color: red"  *ngIf="formsRegistra.controls.validaGrado.touched">
+                  <span *ngIf="formsRegistra.controls.validaGrado.hasError('min')">
+                      El grado es requerido                        
+                  </span>
+                  
+            </mat-hint>
+              </mat-form-field>
+        </div>
+        <div class="row">
+          <button mat-raised-button type="submit" [disabled]="formsRegistra.invalid" (click)="registra()" color="primary">Registra</button>
+        </div>
+      </form>
+      </div>
+      

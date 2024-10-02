@@ -1,0 +1,41 @@
+.mat-column-idAlumno {
+    flex: 0 0 6%; /* Código */
+}
+.mat-column-nombres {
+    flex: 0 0 9%; /* Nombres */
+}
+.mat-column-apellidos {
+    flex: 0 0 9%; /* Apellidos */
+}
+.mat-column-telefono {
+    flex: 0 0 8%; /* Telefono */
+}
+.mat-column-celular {
+    flex: 0 0 8%; /* Celular */
+}
+.mat-column-dni {
+    flex: 0 0 8%; /* Dni */
+}
+.mat-column-correo {
+    flex: 0 0 12%; /* Correo */
+}
+.mat-column-tipoSangre {
+    flex: 0 0 6%; /* Sangre */
+}
+.mat-column-fechaNacimiento {
+    flex: 0 0 10%; /* Fecha Nacimiento */
+}
+.mat-column-pais {
+    flex: 0 0 7%; /* País */
+}
+.mat-column-modalidad {
+    flex: 0 0 8%; /* Modalidad */
+}
+.mat-column-estado {
+    flex: 0 0 8%; /* Estado */
+}
+
+.listTable{
+    width: 90%;
+    margin: auto;
+}

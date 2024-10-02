@@ -1,0 +1,118 @@
+<app-menu></app-menu>
+<div class="container">
+
+        <div class="row">
+              <mat-toolbar color="primary" >    
+              <span>Consulta Editorial</span>    
+              </mat-toolbar>  
+        </div>
+        <div  class="row"  style="margin-top: 3%">
+                <mat-form-field class="col-md-4">
+                    <mat-label>Razón Social:</mat-label>
+                    <input  matInput  [(ngModel)]="varRazonSocial"  >
+                </mat-form-field>
+                <mat-form-field class="col-md-4">
+                    <mat-label>Dirección:</mat-label>
+                    <input  matInput   [(ngModel)]="varDireccion" >
+                </mat-form-field>
+                <mat-form-field class="col-md-3">
+                    <mat-label>Ruc:</mat-label>
+                    <input  matInput   [(ngModel)]="varRuc" >
+                </mat-form-field>
+        </div>
+        <div  class="row"  style="margin-top: 3%;">
+            <mat-form-field class="col-md-4">
+                <mat-label>Fecha de Creación: (Desde)</mat-label>
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <input  matInput  [matDatepicker]="picker1"  [(ngModel)]="varFechaCreacionDesde">
+                <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="col-md-4">
+                <mat-label>Gerente:</mat-label>
+                <input  matInput   [(ngModel)]="varGerente" >
+            </mat-form-field>
+            <div class="col-md-2" style="display: flex; align-items: center; justify-content: center">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" 
+                            id="idEstado" name="estado"    [(ngModel)]="varEstado"/>         
+                    <label class="custom-control-label" for="idEstado">Estado:</label>
+                </div>   
+            </div>
+        </div>
+        <div  class="row"  style="margin-top: 3%">
+            <mat-form-field class="col-md-4">
+                <mat-label>Fecha de Creación: (Hasta)</mat-label>
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <input  matInput [matDatepicker]="picker2"  [(ngModel)]="varFechaCreacionHasta">
+                <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field class="col-md-4">
+                <mat-label>País</mat-label>
+                <mat-select   [(ngModel)]="varIdPais" >
+                    <mat-option value="-1"> [Todos] </mat-option>
+                    <mat-option *ngFor="let x of lstPais" [value]="x.idPais">
+                        {{x.nombre}}
+                    </mat-option> 
+                </mat-select> 
+            </mat-form-field> 
+        </div>
+        
+        <div  class="row"  style="margin-top: 3%; display: flex; align-items: center; justify-content: center">
+            <div class="col-md-2">   
+                <button mat-raised-button type="button" color="primary" style="width: 100px;" (click)="filtrar()" >Filtrar</button>
+            </div>    
+            <div class="col-md-2">   
+                <button mat-raised-button type="submit" color="warn" style="width: 100px;" (click)="exportarPDF()">PDF</button>
+            </div>    
+            <div class="col-md-21">   
+                <button mat-raised-button type="submit" color="accent" style="width: 100px;" (click)="exportarExcel()">XLS</button>
+            </div> 
+        </div>
+
+        <div  class="row"  style="margin-top: 3%">
+
+           
+            <mat-table  #table  class="mat-cell" [dataSource]="dataSource" >
+                <ng-container matColumnDef="idEditorial">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Código</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.idEditorial  }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="razonSocial">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Razón Social</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.razonSocial }}</mat-cell>
+                  </ng-container>
+                <ng-container matColumnDef="direccion">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Dirección</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.direccion }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ruc">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Ruc</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.ruc }}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="gerente">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Gerente</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.gerente }}</mat-cell>
+                  </ng-container>
+                <ng-container matColumnDef="fechaCreacion">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Fecha Creación</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.fechaCreacion | date:"dd/MM/yyyy"}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="pais">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >País</mat-header-cell>
+                  <mat-cell *matCellDef="let aux">{{ aux.pais.nombre }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                  <mat-header-cell mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                  <mat-cell *matCellDef="let aux">{{ aux.estado == 1 ? "Activo" : "Inactivo" }}</mat-cell>
+                </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
+
+
+     </div>   
+</div>

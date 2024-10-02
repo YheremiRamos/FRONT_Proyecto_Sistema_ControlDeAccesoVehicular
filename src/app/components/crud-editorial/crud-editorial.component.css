@@ -1,0 +1,30 @@
+.mat-column-idEditorial {
+    flex: 0 0 9%;
+}
+.mat-column-razonSocial {
+    flex: 0 0 14%;
+}
+.mat-column-direccion  {
+    flex: 0 0 15%;
+}
+.mat-column-ruc  {
+    flex: 0 0 10%;
+}
+.mat-column-gerente  {
+    flex: 0 0 12%;
+}
+.mat-column-fechaCreacion {
+    flex: 0 0 12%;
+}
+.mat-column-pais {
+    flex: 0 0 10%;
+}
+.mat-column-estado {
+    flex: 0 0 9%;
+}
+.mat-column-acciones {
+    flex: 0 0 15%;
+}
+button {
+    margin: 0 10px; /* Añade 10px de margen horizontal */
+  }

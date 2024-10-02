@@ -1,0 +1,197 @@
+<app-menu></app-menu>
+
+<link rel="stylesheet" href="https://ray.so/8f1rlW8">
+
+<div class="container" style="background-color: rgb(196, 223, 216);">
+
+        <div class="row">
+                <mat-toolbar color="primary">
+                <span>Consulta Alumno</span>
+                </mat-toolbar>
+        </div>
+
+        <div  class="row"  style="margin-top: 3%">
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Nombres</mat-label>
+                        <input   matInput [(ngModel)]="varNombres" >
+                </mat-form-field>
+
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Apellidos</mat-label>
+                        <input  matInput [(ngModel)]="varApellidos">
+                </mat-form-field>
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Telefono</mat-label>
+                        <input  matInput [(ngModel)]="varTelefono">
+                </mat-form-field>
+
+                <div class="col-md-2" style="display: flex; align-items: center; justify-content: center">
+                        <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" 
+                                        id="idEstado" name="estado" [(ngModel)]="varEstado"/>         
+                                <label class="custom-control-label" for="idEstado">Estado</label>
+                        </div>   
+                </div>
+
+        </div>
+
+
+        <div  class="row"   style="margin-top: 3% ">
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Celular</mat-label>
+                        <input  matInput [(ngModel)]="varCelular" >
+                </mat-form-field>
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Dni</mat-label>
+                        <input  matInput [(ngModel)]="varDni" >
+                </mat-form-field>
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Correo</mat-label>
+                        <input  matInput  [(ngModel)]="varCorreo">
+                </mat-form-field>
+
+                <mat-form-field class="col-md-3">
+                        <mat-label>Tipo de Sangre</mat-label>
+                        <input  matInput [(ngModel)]="varTipoSangre" >
+                </mat-form-field>
+
+        </div>
+
+        <div  class="row"  style="margin-top: 3%">
+                <mat-form-field class="col-md-6">
+                        <mat-label>Fecha de Nacimiento (Desde)</mat-label>
+                        <mat-hint>DD/MM/YYYY</mat-hint>
+                        <input  matInput [matDatepicker]="picker1"  [(ngModel)]="varFecNacimientoDesde" >
+                        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="col-md-6">
+                        <mat-label>Fecha de Nacimiento  (Hasta)</mat-label>
+                        <mat-hint>DD/MM/YYYY</mat-hint>
+                        <input  matInput [matDatepicker]="picker2"  [(ngModel)]="varFecNacimientoHasta">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+        </div>
+
+        
+        <div  class="row"  style="margin-top: 3%;">
+                <mat-form-field class="col-md-6">
+                        <mat-label>País</mat-label>
+                        <mat-select   [(ngModel)]="varIdPais" >
+                                <mat-option value="-1"> [Todos] </mat-option>
+                            <mat-option *ngFor="let x of lstPais" [value]="x.idPais">
+                                {{x.nombre}}
+                                </mat-option> 
+                        </mat-select> 
+                </mat-form-field> 
+                
+                <mat-form-field class="col-md-6">
+                        <mat-label>Modalidad</mat-label>
+                        <mat-select   [(ngModel)]="varIdModalidad"   >
+                        <mat-option value="-1"> [Todos] </mat-option>
+                        <mat-option *ngFor="let y of lstModalidad" [value]="y.idDataCatalogo">
+                                {{y.descripcion}}
+                        </mat-option> 
+                        </mat-select> 
+                </mat-form-field>
+                
+        </div>
+
+       <!--BOTONES-->
+       <div  class="row"  style="margin-top: 3%; display: flex; align-items: center; justify-content: center"> 
+        <div class="col-md-2">                
+            <button mat-raised-button type="button" color="primary" style="width: 100px;"  (click)="filtrar()">Filtrar</button>             
+        </div>     
+        <div class="col-md-2">                
+            <button mat-raised-button type="submit" color="warn" style="width: 100px;" (click)="exportarPDF()">PDF</button>           
+        </div>     
+        <div class="col-md-21">                
+            <button mat-raised-button type="submit" color="accent" style="width: 100px;" (click)="exportarExcel()">XLS</button>           
+        </div>  
+    </div>
+
+        </div>
+
+
+        <div  class="row" class="listTable" style="margin-top: 3%">
+
+                <mat-table  #table  class="mat-cell"  [dataSource]="dataSource">
+                        <ng-container matColumnDef="idAlumno">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Código</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.idAlumno  }}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombres">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Nombres</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.nombres}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="apellidos">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Apellidos</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.apellidos}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="telefono">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Telefono</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.telefono}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="celular">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Celular</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.celular}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="dni">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Dni</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.dni}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="correo">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Correo</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.correo}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="tipoSangre">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Sangre</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.tipoSangre}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fechaNacimiento">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Fecha Nacimiento</mat-header-cell>
+                                <mat-cell *matCellDef="let aux" >{{ aux.fechaNacimiento | date:"dd/MM/yyyy"}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pais">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >País</mat-header-cell>
+                                <mat-cell *matCellDef="let aux">{{ aux.pais.nombre }}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="modalidad">
+                                <mat-header-cell  mat-header-cell *matHeaderCellDef >Modalidad</mat-header-cell>
+                                <mat-cell *matCellDef="let aux">{{ aux.modalidad.descripcion}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="estado">
+                                <mat-header-cell mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                                <mat-cell *matCellDef="let aux">{{ aux.estado == 1 ? "Activo" : "Inactivo" }}</mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+                        <mat-row *matRowDef="let aux; columns: displayColumns"></mat-row>
+
+                </mat-table>
+                <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
+
+
+
+
+</div>
+
+

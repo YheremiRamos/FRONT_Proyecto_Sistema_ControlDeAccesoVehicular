@@ -1,0 +1,37 @@
+
+
+.mat-column-idTesis {
+    flex: 0 0 10%;
+}
+
+
+.mat-column-titulo {
+    flex: 0 0 22%;
+
+}
+
+.mat-column-fechaCreacion {
+    flex: 0 0 10%;
+}
+
+
+
+.mat-column-tema {
+    flex: 0 0 15%;
+}
+.mat-column-idioma {
+    flex: 0 0 15%;
+}
+.mat-column-centroEstudios {
+    flex: 0 0 15%;
+}
+
+
+.mat-column-estado {
+    flex: 0 0 13%;
+}
+
+.active-table{
+    background-color: #f7f7f7 ; /* Color de fondo cuando hay registros activos y varEstado es verdadero */
+}
+

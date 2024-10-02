@@ -1,0 +1,39 @@
+.mat-column-idTesis {
+    flex: 0 0 10%;
+}
+
+
+.mat-column-titulo {
+    flex: 0 0 20%;
+}
+
+.mat-column-fechaCreacion {
+    flex: 0 0 10%;
+}
+
+
+
+.mat-column-tema {
+    flex: 0 0 10%;
+}
+.mat-column-idioma {
+    flex: 0 0 10%;
+}
+.mat-column-centroEstudios {
+    flex: 0 0 10%;
+}
+
+
+.mat-column-estado {
+    flex: 0 0 10%;
+}
+.mat-column-acciones {
+    flex: 0 0 20%;
+}
+
+button{
+    width: 150px; 
+    margin-right: 10px;
+
+}
+

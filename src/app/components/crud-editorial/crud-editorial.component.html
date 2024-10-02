@@ -1,0 +1,89 @@
+<app-menu></app-menu>
+<div class="container">
+
+    <div class="row">
+        <mat-toolbar color="primary" >    
+        <span>Crud Editorial</span>    
+        </mat-toolbar>  
+    </div>
+    <div  class="row"  style="margin-top: 3%">
+        <mat-form-field class="col-md-4">
+            <mat-label>Razón Social de la Editorial</mat-label>
+            <input  matInput  [(ngModel)]="filtro">
+        </mat-form-field>
+
+        <button mat-raised-button type="button"  color="primary" style="width: 150px;"(click)="refreshTable()">Filtrar</button>
+        <button mat-raised-button type="button" color="primary" style="width: 150px;" (click)="openAddDialog()" >Registrar</button>
+    </div>
+    <div  class="row"  style="margin-top: 3%">
+
+           
+            <mat-table  #table  class="mat-cell" [dataSource]="dataSource" >
+                <ng-container matColumnDef="idEditorial">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Código</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.idEditorial}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="razonSocial">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Razón Social</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.razonSocial}}</mat-cell>
+                  </ng-container>
+                <ng-container matColumnDef="direccion">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Dirección</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.direccion}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="ruc">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Ruc</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.ruc}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="gerente">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >Gerente</mat-header-cell>
+                    <mat-cell *matCellDef="let aux" >{{ aux.gerente}}</mat-cell>
+                  </ng-container>
+                <ng-container matColumnDef="fechaCreacion">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >Fecha Creación</mat-header-cell>
+                  <mat-cell *matCellDef="let aux" >{{ aux.fechaCreacion | date:"dd/MM/yyyy"}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="pais">
+                  <mat-header-cell  mat-header-cell *matHeaderCellDef >País</mat-header-cell>
+                  <mat-cell *matCellDef="let aux">{{ aux.pais.nombre }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                  <mat-header-cell mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                  <mat-cell *matCellDef="let aux">{{ aux.estado == 1 ? "Activo" : "Inactivo" }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <mat-header-cell  mat-header-cell *matHeaderCellDef >&nbsp;</mat-header-cell>
+
+                    <mat-cell *matCellDef="let aux; let i=index;">
+                        
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" 
+                                    id="idEstado_{{ aux.idEditorial }}" name="estado" 
+                                    [checked]="aux.estado==1?true:false" 
+                                    (change)="actualizaEstado(aux)"  />         
+                            <label class="custom-control-label" for="idEstado_{{ aux.idEditorial}}"></label>
+                        </div>   
+
+                       <button mat-icon-button color="accent"  (click)="openUpdateDialog(aux)">
+                                <mat-icon aria-label="Edit">edit</mat-icon>
+                       </button>
+
+                       <button mat-icon-button color="accent"  (click)="elimina(aux)">
+                                <mat-icon aria-label="Delete">delete</mat-icon>
+                       </button>
+
+                    </mat-cell>
+               </ng-container>
+
+     
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
+          </mat-table>
+          <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
+
+
+     </div>   
+
+</div>

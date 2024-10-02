@@ -1,0 +1,145 @@
+<div class="container">
+    <form  id="idForm" [formGroup]="formsActualiza" >
+    <div class="mat-dialog-content" >
+
+    <div class="row">
+        <mat-toolbar color="primary">    
+            <span>Actualizar Tesis</span>    
+        </mat-toolbar>  
+    </div>
+    <br>
+
+    <div class="row" style="margin-top: 3%">
+        <mat-form-field class="col-md-6">
+            <mat-label>Título</mat-label>
+            <input matInput [(ngModel)]="objTesis.titulo" formControlName="validaTitulo">
+
+            <mat-hint style="color: red"  *ngIf="formsActualiza.controls.validaTitulo.touched">
+                <span *ngIf="formsActualiza.controls.validaTitulo.hasError('required')">
+                    El Título es requerido
+                </span>
+                <span *ngIf="formsActualiza.controls.validaTitulo.hasError('pattern')">
+                    El Título es de 5 a 45 caracteres                        
+
+                </span>
+             
+          </mat-hint>
+
+
+
+        </mat-form-field>
+        
+        <mat-form-field class="col-md-6">
+            <mat-label>Fecha de Creación</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="objTesis.fechaCreacion" [min]="minFechaCreacion" formControlName="validafechaCreacion" readonly >
+            <mat-datepicker-toggle matIconSuffix [for]="picker" ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-hint style="color: red" *ngIf="formsActualiza.controls.validafechaCreacion.touched">
+                <span *ngIf="formsActualiza.controls.validafechaCreacion.hasError('required')">
+                    La fecha de creación es requerida
+                </span>
+                <span *ngIf="formsActualiza.controls.validafechaCreacion.hasError('fechaInvalida')">
+                    La Fecha de Creación debe ser posterior a 01/01/1975.
+                </span>
+             
+            </mat-hint>
+        </mat-form-field>
+    </div>
+
+    <br>
+
+  
+        
+
+    <!-- Listado tema -->
+    <div class="row">
+        <mat-form-field class="col-md-4">
+            <mat-label>Tema</mat-label>
+            <mat-select [(ngModel)]="objTesis.tema!.idDataCatalogo" formControlName="validaTema">
+                <mat-option value="-1">[Seleccione]</mat-option>
+                <mat-option *ngFor="let x of lstTema" [value]="x.idDataCatalogo">
+                    {{x.descripcion}}
+                </mat-option>
+            </mat-select> 
+            <mat-hint style="color: red"  *ngIf="formsActualiza.controls.validaTema.touched">
+                <span *ngIf="formsActualiza.controls.validaTema.hasError('min')">
+                    El Tema es requerido                        
+                </span>
+            </mat-hint>
+
+        </mat-form-field>
+    
+
+
+        <!-- Listado Idioma -->
+        <mat-form-field class="col-md-4">
+            <mat-label>Idioma</mat-label>
+            <mat-select [(ngModel)]="objTesis.idioma!.idDataCatalogo" formControlName="validaIdioma">
+                <mat-option value="-1">[Seleccione]</mat-option>
+                <mat-option *ngFor="let y of lstIdioma" [value]="y.idDataCatalogo">
+                    {{y.descripcion}}
+                </mat-option>
+            </mat-select> 
+
+
+            <mat-hint style="color: red"  *ngIf="formsActualiza.controls.validaIdioma.touched">
+                <span *ngIf="formsActualiza.controls.validaIdioma.hasError('min')">
+                    El Idioma es requerido                        
+                </span>
+            </mat-hint>
+
+
+        </mat-form-field>
+        
+
+
+
+<!-- -----s -->
+        <!-- Listado Centro de estudios -->
+        <mat-form-field class="col-md-4">
+            <mat-label>Centro de estudios</mat-label>
+            <mat-select [(ngModel)]="objTesis.centroEstudios!.idDataCatalogo" formControlName="validaCentroEstudios">
+                <mat-option value="-1">[Seleccione]</mat-option>
+                <mat-option *ngFor="let p of lstCentroEstudios" [value]="p.idDataCatalogo">
+                    {{p.descripcion}}
+                </mat-option>
+            </mat-select> 
+
+
+            <mat-hint style="color: red"  *ngIf="formsActualiza.controls.validaCentroEstudios.touched">
+                <span *ngIf="formsActualiza.controls.validaCentroEstudios.hasError('min')">
+                    El Centro de estudios es requerido                        
+                </span>
+            </mat-hint>
+        </mat-form-field>
+
+        <br>
+        <br>
+
+        
+    </div>
+
+    <br>
+
+
+    <div  mat-dialog-actions align="center">
+        <button mat-raised-button type="submit" 
+        color="primary" [mat-dialog-close]="1" [disabled]="!hasChanges()"
+        [mat-dialog-close]="1" (click)="actualizar()" >
+        Actualizar
+    </button>
+
+        <button mat-button 
+        color="primary" (click)="cerrarDialogo()">
+            Salir
+          </button>
+    </div>
+
+
+
+    
+</div>
+</form>
+<br>
+</div>
+

@@ -1,0 +1,36 @@
+<div class="contenedor">
+
+    <!-- Círculos de fondo -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <div class="card">
+        <form #f="ngForm" (ngSubmit)="onLogin()" novalidate>
+            
+            <div class="card-1">
+                <h1>Log In to Bibliotec</h1>
+                <span>Sistema desarrollado para una biblioteca</span>
+            </div>
+
+            <div class="card-2">
+                <label for="login">USER</label>
+                <input placeholder="johndoe" type="text" name="login" id="login" class="control" [(ngModel)]="loginUsuario.login" required>
+            </div>
+
+            <div class="card-2">
+                <label for="password">PASSWORD</label>
+                <input placeholder="*********" type="password" name="password" id="password" class="control" [(ngModel)]="loginUsuario.password" required>
+            </div>
+
+            <div class="card-4">
+                <button [disabled]="!f.valid">
+                    INGRESAR AL SISTEMA
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+    <div class="back-fondo"></div>
+
+</div>
