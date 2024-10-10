@@ -1,0 +1,40 @@
+.inputContent{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin: 0 0 0 2ch;
+}
+
+.inputContent:nth-child(1){
+    margin-right: 10ch;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh; 
+}
+
+app-menu {
+    width: 250px; 
+    flex-shrink: 0; 
+}
+
+.content {
+    flex-grow: 1; 
+    overflow-y: auto; 
+    background-color: #f4f4f4; 
+}
+
+.container {
+    max-width: 100%; 
+    margin: 0 auto;
+}
+
+.btnEnd{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 22%;
+    margin: auto;
+}

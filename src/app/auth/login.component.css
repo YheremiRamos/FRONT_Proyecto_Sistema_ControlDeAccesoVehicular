@@ -22,19 +22,28 @@ body {
 
 .circle-1 {
     width: 100ch;
-    height: 100ch;
-    background-color: rgba(21, 57, 90, 0.5); 
+    height: 85%;
+    background: linear-gradient(560deg, #305d87, #2BA555);
     top: 15%;
-    left: 15%; 
+    left: 25%;
+    position: absolute;
+    border-radius: 0px 80% 0px 0px;
+    z-index: -1;
+    opacity: 0.7;
 }
 
 .circle-2 {
-    width: 300px;
-    height: 300px;
-    background-color: rgba(21, 57, 90, 0.3); 
-    bottom: 10%;
-    right: 10%;
+    width: 60ch;
+    height: 50%;
+    background: linear-gradient(135deg, #15395A, #2BA555);
+    border-radius: 0px 0% 0px 85%;
+    bottom: 75%;
+    right: -10%;
+    position: absolute;
+    z-index: -1;
+    opacity: 0.7;
 }
+
 
 .contenedor{
     display: flex;
@@ -76,13 +85,31 @@ body {
     align-items: center;
     height: 100vh;
     position: relative;
-    background-image: url(../imgs/banner-independencia.jpg);
-    background-size: cover; /* Asegura que la imagen mantenga su tamaño en proporcion a la pantalla */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    background-image: url(imgs/banner_independencia.jpg);
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
     width: 55%;
     border-radius: 0px 900ch 0px 0px;
+    overflow: hidden; 
 }
+
+.back-fondo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(21, 57, 90, 0.793); 
+    z-index: 1; 
+}
+
+.back-fondo > * {
+    position: relative;
+    z-index: 2;
+}
+
 
 
 .card {
@@ -200,4 +227,14 @@ body {
 
 .social-buttons img:hover {
     transform: scale(1.1);
+}
+
+.fondoLogo {
+    background-image: url('imgs/logo-white.png'); 
+    background-size: 50ch;
+    background-repeat: no-repeat;
+    background-position: center; 
+    width: 100%;
+    height: 20ch; 
+    margin: 75ch 40ch 0ch 0ch;
 }
