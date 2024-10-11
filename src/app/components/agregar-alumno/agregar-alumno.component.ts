@@ -45,44 +45,50 @@ export class AgregarAlumnoComponent implements OnInit{
     console.log("constructor >> constructor >>> " + this.tokenService.getToken());
   }
 
-  buscarPorDni(){
-    console.log(">>> Filtrar EXCEL [ini]");
-    console.log(">>> varDni: "+ this.varDni);
+  buscarPorDni() {
+    console.log('>>> Filtrar EXCEL [ini]');
+    console.log('>>> varDni: ' + this.varDni);
 
-    this.usuarioService.buscarUsuarioDni(
-      this.varDni
-      ).subscribe(
-        (x) => {
-          this.dataSource = x;
-    
-          // Asegurarse de que los datos existan antes de usarlos
-          if (this.dataSource && this.dataSource.length > 0) {
-            const usuario = this.dataSource[0]; // Si es una lista, accede al primer usuario
-            
-            // Llenar los campos del formulario con los datos traídos
-            this.formRegistra.patchValue({
-              nombres: usuario.nombres,
-              apellidos: usuario.apellidos
-            });
-            this.habilitarRegistrar = false;
-            console.log(">>> data: " + usuario.nombres);
-          } else {
-            console.log(">>> Usuario no encontrado");
-            // Limpiar los campos si no hay resultados
-            this.formRegistra.patchValue({
-              nombres: '',
-              apellidos: ''
-            });
-          }
-        },
-        (error) => {
-          console.log(">>> Error al buscar por DNI: ", error);
-          this.limpiarFormulario();
+    this.usuarioService.buscarUsuarioDni(this.varDni).subscribe(
+      (x) => {
+        this.dataSource = x;
+
+        if (this.dataSource && this.dataSource.length > 0) {
+          const usuario = this.dataSource[0];
+          this.formRegistra.patchValue({
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+          });
+          this.habilitarRegistrar = false;
+        } else {
+          // Mostrar alerta si no encuentra al usuario
+          Swal.fire('Por favor registrar los nuevos datos del propietario.');
           this.habilitarRegistrar = true;
+          this.formRegistra.get('nombres')?.enable();
+          this.formRegistra.get('apellidos')?.enable();
+          this.formRegistra.patchValue({
+            nombres: '',
+            apellidos: '',
+          });
         }
-      );
-    
-      console.log(">>> Filtrar [fin]");
+      },
+      (error) => {
+        console.log('>>> Error al buscar por DNI: ', error);
+        this.limpiarFormulario();
+        this.habilitarRegistrar = true;
+      }
+    );
+
+    console.log('>>> Filtrar [fin]');
+}
+
+    registrarDatos() {
+      const datos = this.formRegistra.value;
+      Swal.fire({
+        title: 'Confirmación de Registro',
+        text: `DNI: ${this.varDni}, Nombres: ${datos.nombres}, Apellidos: ${datos.apellidos}, Placa: ${datos.validaPlaca}, Tipo: ${datos.validaTipoVehiculo}`,
+        icon: 'info',
+      });
     }
 
     limpiarFormulario() {
