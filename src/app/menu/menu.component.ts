@@ -21,6 +21,8 @@ export class MenuComponent implements OnInit {
   opcCRUD : Opcion[] = [];
   opcTransacciones : Opcion[] = [];
 
+  nombreUsuario = "";
+
   constructor(private tokenService: TokenService) {
     console.log("MenuComponent >>> constructor >>> " + this.tokenService.getToken());
   }
@@ -32,11 +34,13 @@ export class MenuComponent implements OnInit {
     this.opcConsulta = this.tokenService.getOpciones().filter( x => x.tipo === 2);
     this.opcCRUD = this.tokenService.getOpciones().filter( x => x.tipo === 3);
     this.opcTransacciones = this.tokenService.getOpciones().filter( x => x.tipo === 4);
+    
 
     console.log("MenuComponent >>> ngOnInit >>> " + this.tokenService.getToken());
     if (this.tokenService.getToken()) {
       console.log("MenuComponent >>> this.isLogged = true >>> ");
       this.isLogged = true;
+      this.nombreUsuario = this.tokenService.getUserNameComplete()|| '{}';
     } else {
       console.log("MenuComponent >>> this.isLogged = false >>> ");
       this.isLogged = false;
