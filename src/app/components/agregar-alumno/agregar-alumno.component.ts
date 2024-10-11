@@ -3,14 +3,11 @@ import { AppMaterialModule } from '../../app.material.module';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
-import { Pais } from '../../models/pais.model';
-import { Alumno } from '../../models/alumno.model';
-import { Usuario } from '../../models/usuario.model';
-import { AlumnoService } from '../../services/alumno.service';
 import { UtilService } from '../../services/util.service';
-import { DataCatalogo } from '../../models/dataCatalogo.model';
 import Swal from 'sweetalert2';
 import { TokenService } from '../../security/token.service';
+import { UsuarioService } from '../../services/usuario.service';
+import { Usuario } from '../../models/usuario.model';
 
 @Component({
   selector: 'app-agregar-alumno',
@@ -20,93 +17,85 @@ import { TokenService } from '../../security/token.service';
   styleUrls: ['./agregar-alumno.component.css']
 })
 export class AgregarAlumnoComponent implements OnInit{
+ 
+    dataSource:any; 
 
-  lstPais: Pais[] = [];
-  lstModalidad: DataCatalogo[] = [];
+    filtro: string = "";
+    varDni : string = "";
+    objUsuario: Usuario  = {};
 
-  alumno: Alumno ={
-      nombres: "",
-      apellidos: "",
-      telefono: undefined,
-      celular: undefined,
-      dni: undefined,
-      correo: "",
-      tipoSangre: "",
-      fechaNacimiento: undefined,
-      pais:{
-        idPais:-1
-      },
-      modalidad:{
-        idDataCatalogo: -1
-      }
-}
-  objUsuario: Usuario = {} ;
+    nombres = "";
+    apellidos = "";
+    habilitarRegistrar: boolean = false;
 
-  formsRegistra = this.formBuilder.group({ 
-    validaNombres: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')]] , 
-    validaApellidos: ['', [Validators.required, Validators.pattern('[a-zA-Zá-úÁ-ÚñÑ ]{3,30}')]] , 
-    validaTelefono: ['', [Validators.required, Validators.pattern('[0-9]{9}')] ] , 
-    validaCelular: ['', [Validators.required, Validators.pattern('[0-9]{9}')] ] , 
-    validaDni: ['', [Validators.required, Validators.pattern('[0-8]{8}')] ] , 
-    validaCorreo: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)]],
-    validaTipoSangre: ['', [Validators.required, Validators.pattern(/^[A-Z][\+\-]$/)]],
-    validaFechaNacimiento: ['', [Validators.required] ] , 
-    validaPais: ['', Validators.min(1)] , 
-    validaModalidad: ['', Validators.min(1)] ,
+  formRegistra = this.formBuilder.group({ 
+    validaDni: ['', [Validators.required, Validators.min(8), Validators.pattern('^[0-9]+$')] ] , 
+    validaTipoVehiculo: ['', Validators.min(1)] , 
+    validaPlaca:  ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$') ]] ,  // Formato: AA-1234 o AA-12345
+    nombres: [{value: '', disabled: true}] ,  // Agregar campo de nombre
+    apellidos: [{value: '', disabled: true}] ,  // Agregar campo de apellidos
   });
 
   constructor(
-    private alumnoService:AlumnoService, 
-    private utilService:UtilService, 
-    private tokensito:TokenService, 
+    private tokenService: TokenService,
+    private usuarioService:UsuarioService,
     private formBuilder: FormBuilder) 
-  { 
-    utilService.listaPais().subscribe(
-      x   =>   this.lstPais=x
-    )
-
-    utilService.listaModalidadAlumno().subscribe(
-      x   =>   this.lstModalidad=x
-    )
-
-    this.objUsuario.idUsuario = tokensito.getUserId();
-
+  {
+    this.objUsuario.idUsuario = this.tokenService.getUserId();
+    console.log("constructor >> constructor >>> " + this.tokenService.getToken());
   }
 
+  buscarPorDni(){
+    console.log(">>> Filtrar EXCEL [ini]");
+    console.log(">>> varDni: "+ this.varDni);
+
+    this.usuarioService.buscarUsuarioDni(
+      this.varDni
+      ).subscribe(
+        (x) => {
+          this.dataSource = x;
+    
+          // Asegurarse de que los datos existan antes de usarlos
+          if (this.dataSource && this.dataSource.length > 0) {
+            const usuario = this.dataSource[0]; // Si es una lista, accede al primer usuario
+            
+            // Llenar los campos del formulario con los datos traídos
+            this.formRegistra.patchValue({
+              nombres: usuario.nombres,
+              apellidos: usuario.apellidos
+            });
+            this.habilitarRegistrar = false;
+            console.log(">>> data: " + usuario.nombres);
+          } else {
+            console.log(">>> Usuario no encontrado");
+            // Limpiar los campos si no hay resultados
+            this.formRegistra.patchValue({
+              nombres: '',
+              apellidos: ''
+            });
+          }
+        },
+        (error) => {
+          console.log(">>> Error al buscar por DNI: ", error);
+          this.limpiarFormulario();
+          this.habilitarRegistrar = true;
+        }
+      );
+    
+      console.log(">>> Filtrar [fin]");
+    }
+
+    limpiarFormulario() {
+      this.formRegistra.patchValue({
+        nombres: '',
+        apellidos: ''
+      });
+    }
   registra(){
 
-    this.alumno.usuarioActualiza = this.objUsuario;
-    this.alumno.usuarioRegistro = this.objUsuario;
-    this.alumnoService.registrar(this.alumno).subscribe(
-      x=> Swal.fire({
-          icon: 'info',
-          title: 'Alumno registrado exitosamente: ',
-
-          text: x.mensaje,
-        })
-    );
-
-    this.alumno={
-      nombres: "",
-      apellidos: "",
-      telefono: undefined,
-      celular: undefined,
-      dni: undefined,
-      correo: "",
-      tipoSangre: "",
-      fechaNacimiento: undefined,
-      pais:{
-        idPais:-1
-      },
-      modalidad:{
-        idDataCatalogo: -1
-      }
-    },
-      this.formsRegistra.reset();
-
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void{
     
   }
 
