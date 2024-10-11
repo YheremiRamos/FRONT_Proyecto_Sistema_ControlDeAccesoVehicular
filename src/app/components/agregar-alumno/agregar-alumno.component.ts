@@ -22,7 +22,7 @@ export class AgregarAlumnoComponent implements OnInit {
   filtro: string = '';
   varDni: string = '';
   objUsuario: Usuario = {};
-
+  dni = '';
   nombres = '';
   apellidos = '';
   habilitarRegistrar: boolean = false;
@@ -90,18 +90,21 @@ registrarDatos() {
     });
 
     console.log('>>> Filtrar [fin]');
+    this.limpiarFormulario();
   }
 
   limpiarFormulario() {
     this.formRegistra.patchValue({
       nombres: '',
       apellidos: '',
+      
     });
   }
 
   registra() {
     // Lógica para registrar al usuario/vehículo
     console.log('Registro exitoso.');
+    this.limpiarFormulario();
   }
 
   ngOnInit(): void {
