@@ -1,11 +1,11 @@
-app-menu {
-    width: 250px; 
-    flex-shrink: 0; 
-}
-
 .main-container {
     display: flex;
     height: 100vh; 
+}
+
+app-menu {
+    width: 250px; 
+    flex-shrink: 0; 
 }
 
 .content {
@@ -18,9 +18,6 @@ app-menu {
 }
 
 .container {
-    max-width: 80%; 
+    max-width: 100%; 
     margin: 0 auto;
 }
-  
-
-  

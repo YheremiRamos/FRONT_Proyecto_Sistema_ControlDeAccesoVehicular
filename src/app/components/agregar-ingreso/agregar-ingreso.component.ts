@@ -3,19 +3,19 @@ import { AppMaterialModule } from '../../app.material.module';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
-import { UtilService } from '../../services/util.service';
 import Swal from 'sweetalert2';
 import { TokenService } from '../../security/token.service';
 import { UsuarioService } from '../../services/usuario.service';
 import { Usuario } from '../../models/usuario.model';
 
 @Component({
-  selector: 'app-agregar-alumno',
+  selector: 'app-agregar-ingreso',
   standalone: true,
   imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
-  templateUrl: './agregar-alumno.component.html',
+  templateUrl: './agregar-ingreso.component.html',
+  styleUrls: ['./agregar-ingreso.component.css']
 })
-export class AgregarAlumnoComponent implements OnInit {
+export class AgregarIngresoComponent implements OnInit {
   
   dataSource: any;
   filtro: string = '';
