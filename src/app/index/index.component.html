@@ -1,5 +1,13 @@
-<app-menu></app-menu>
-<div class="container text-center">
-    <div *ngIf="isLogged; else loggedOut"><h5>Bienvenido {{nombreUsuario}}</h5></div>
-    <ng-template #loggedOut><h5>Para ingresar debe Inicia Sesión</h5></ng-template>
+<div class="main-container text-center">
+    <app-menu></app-menu>
+    <div class="content">
+        <div class="container">
+            <div *ngIf="isLogged; else loggedOut">
+                <div><h1>Aquí la VENTANA PRINCIPAL</h1></div>
+            </div>
+            <ng-template #loggedOut>
+                <div><h1>AQUÍ VA INFORMACIÓN O UNA PRESENTACIÓN DEL SISTEMA</h1></div>
+            </ng-template>
+        </div>
+    </div>
 </div>
