@@ -12,7 +12,7 @@ body {
 .sidebar {
   width: 250px; 
   height: calc(100vh - 20px); 
-  background: linear-gradient(180deg, #15395A, #2BA555); 
+  background: linear-gradient(180deg, #15395A, #2BA574); 
   position: fixed; 
   top: 10px; 
 
@@ -124,4 +124,8 @@ border-radius: 0px 30px 30px 0px;
 border-radius: 0px 30px 30px 0px;
   background: #f0f0f0; 
    background: linear-gradient(270deg, #2D7AC0, #2ba55600);
+}
+
+.bot{
+  margin: 5ch;
 }

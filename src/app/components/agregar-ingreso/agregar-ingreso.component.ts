@@ -5,17 +5,22 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import Swal from 'sweetalert2';
 import { TokenService } from '../../security/token.service';
-import { UsuarioService } from '../../services/usuario.service';
 import { Usuario } from '../../models/usuario.model';
+import { MatStepperModule } from '@angular/material/stepper'; // Importar MatStepperModule
+import { UsuarioService } from '../../services/usuario.service';
+
 
 @Component({
   selector: 'app-agregar-ingreso',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], // Añadir MatStepperModule aquí
   templateUrl: './agregar-ingreso.component.html',
   styleUrls: ['./agregar-ingreso.component.css']
 })
 export class AgregarIngresoComponent implements OnInit {
+  espacioForm = this.formBuilder.group({
+    espacio: ['', Validators.required],
+  });
   
   dataSource: any;
   filtro: string = '';
@@ -26,6 +31,7 @@ export class AgregarIngresoComponent implements OnInit {
   apellidos = '';
   habilitarRegistrar: boolean = false;
 
+
   formRegistra = this.formBuilder.group({
     validaDni: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^[0-9]+$')]],
     validaTipoVehiculo: ['', Validators.min(1)],
@@ -33,6 +39,7 @@ export class AgregarIngresoComponent implements OnInit {
     nombres: [{ value: '', disabled: true }],
     apellidos: [{ value: '', disabled: true }],
   });
+
 
   constructor(
     private tokenService: TokenService,
@@ -42,6 +49,19 @@ export class AgregarIngresoComponent implements OnInit {
     this.objUsuario.idUsuario = this.tokenService.getUserId();
     console.log('constructor >> constructor >>> ' + this.tokenService.getToken());
   }
+
+  
+  ngOnInit(): void {
+
+    this.loadWatsonAssistant();
+
+  }
+
+  guardarDatos() {
+    // Lógica para guardar los datos
+    console.log('Datos guardados', this.formRegistra.value);
+  }
+
   buscarPorDni() {
     console.log('>>> Filtrar EXCEL [ini]');
     console.log('>>> varDni: ' + this.varDni);
@@ -77,7 +97,7 @@ export class AgregarIngresoComponent implements OnInit {
     );
 
     console.log('>>> Filtrar [fin]');
-}
+  }
 
   limpiarFormulario() {
     this.formRegistra.patchValue({
@@ -86,21 +106,24 @@ export class AgregarIngresoComponent implements OnInit {
       
     });
   }
-  registrarDatos() {
-    const datos = this.formRegistra.value;
-    Swal.fire({
-      title: 'Confirmación de Registro',
-      text: `DNI: ${this.varDni}, Nombres: ${datos.nombres}, Apellidos: ${datos.apellidos}, Placa: ${datos.validaPlaca}, Tipo: ${datos.validaTipoVehiculo}`,
-      icon: 'info',
-    });
-}
-  registra() {
-    // Lógica para registrar al usuario/vehículo
-    console.log('Registro exitoso.');
-    this.limpiarFormulario();
+
+  loadWatsonAssistant(): void {
+    (window as any).watsonAssistantChatOptions = {
+      integrationID: "1d7eb15e-bcf5-4ddb-8486-f8c82f1d58de",
+      region: "au-syd",
+      serviceInstanceID: "138e5014-a8e7-4f39-a7eb-31c2ebd87e46",
+      onLoad: (instance: any) => {
+        instance.render();
+      }
+    };
+    
+
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/latest/WatsonAssistantChatEntry.js";
+      document.head.appendChild(script);
+    }, 0);
   }
 
-  ngOnInit(): void {
-    // Implementación si es necesaria durante la inicialización del componente
-  }
 }
+

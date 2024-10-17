@@ -41,3 +41,9 @@ app-menu {
     width: 22%;
     margin: auto;
 }
+
+.inputContent{
+    margin-top: 1.5ch;
+    margin-bottom: 1.5ch;
+}
+
