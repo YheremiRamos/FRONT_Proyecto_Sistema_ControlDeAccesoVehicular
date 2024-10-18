@@ -39,7 +39,8 @@ app-menu {
     align-items: center;
     justify-content: space-between;
     width: 22%;
-    margin: auto;
+    margin: 2.5ch auto auto auto;
+
 }
 
 .inputContent{
@@ -47,3 +48,52 @@ app-menu {
     margin-bottom: 1.5ch;
 }
 
+.parking-layout {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3ch;
+    margin: auto;
+  }
+  
+  .parking-section {
+    width: 40%;
+    height: 30ch;
+    margin: 0 2ch 0 2ch;
+    padding: 10px;
+    background-color: #D9DBDC;
+    border-radius: 10%;
+    }
+  
+    .parking-section  h5{
+        background-color: #fff;
+        color: black;
+        font-size: 18px;
+        padding: 2%;
+        border-radius: 1ch 1ch 1ch 1ch;
+    }
+
+  .parking-spaces {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 8 columnas para los espacios */
+    grid-gap: 10px;
+  }
+  
+  .parking-spaces button {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  .parking-spaces button.selected {
+    background-color: red; /* Indica espacio seleccionado */
+  }
+  
+  .parking-spaces button.disabled {
+    background-color: gray; /* Espacio ocupado */
+    cursor: not-allowed;
+  }
+  

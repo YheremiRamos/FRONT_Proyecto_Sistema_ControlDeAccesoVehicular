@@ -26,6 +26,7 @@ export class AgregarAlumnoComponent implements OnInit {
   apellidos = '';
   habilitarRegistrar: boolean = false;
 
+
   formRegistra = this.formBuilder.group({
     validaDni: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^[0-9]+$')]],
     validaTipoVehiculo: ['', Validators.min(1)],
