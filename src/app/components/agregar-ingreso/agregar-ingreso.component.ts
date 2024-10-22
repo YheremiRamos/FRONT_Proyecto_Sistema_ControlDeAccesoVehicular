@@ -35,7 +35,7 @@ export class AgregarIngresoComponent implements OnInit {
   });
 
   // Datos relacionados con el estacionamiento
-  espaciosSS: string[] = ['1', '2', '3', '4', '5', '6'];
+  espaciosSS: string[] = ['1', '2♿', '3', '4♿', '5♿', '6'];
   espaciosS1: string[] = ['7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25'];
   espaciosEP: string[] = ['26', '27', '28', '29', '30', '31', '32', '33', '34', '35'];
 
@@ -86,10 +86,12 @@ export class AgregarIngresoComponent implements OnInit {
   }
 
   
+
   buscarPorDni() {
-    console.log('>>> Filtrar EXCEL [ini]');
+    console.log('>>> Filtrar DATOS [ini]');
     console.log('>>> varDni: ' + this.varDni);
-  
+
+
     this.usuarioService.buscarUsuarioDni(this.varDni).subscribe(
       (x) => {
         this.dataSource = x;
@@ -108,6 +110,10 @@ export class AgregarIngresoComponent implements OnInit {
           this.apellidos = usuario.apellidos;
   
           this.habilitarRegistrar = false;
+
+          console.log('>>> Nombres1: ' + this.nombres);
+          console.log('>>> Apellidos1: ' + this.apellidos);
+
         } else {
           // Mostrar alerta si no encuentra al usuario
           Swal.fire('Por favor registrar los nuevos datos del propietario.');
@@ -130,7 +136,8 @@ export class AgregarIngresoComponent implements OnInit {
         this.habilitarRegistrar = true;
       }
     );
-  
+    console.log('>>> Nombres2: ' + this.nombres);
+    console.log('>>> Apellidos2: ' + this.apellidos);
     console.log('>>> Filtrar [fin]');
   }
   
@@ -165,9 +172,30 @@ export class AgregarIngresoComponent implements OnInit {
     }, 0);
   }
 
-  // Método para seleccionar el espacio de estacionamiento
   seleccionarEspacio(espacio: string) {
     this.espacioSeleccionado = espacio;  // Almacena el espacio seleccionado
     console.log('Espacio seleccionado:', espacio);
   }
+
+  //Datos en consola
+  consoleDates(){
+    console.log(this.formRegistra.value.nombres);  
+    console.log(this.formRegistra.value.apellidos);
+  }
+
+
+  guardarNombresApe() {
+
+    const nombres = this.formRegistra.get('nombres')?.value ?? ''; 
+    const apellidos = this.formRegistra.get('apellidos')?.value ?? ''; 
+  
+    this.nombres= nombres;
+    this.apellidos = apellidos;
+  
+    console.log('Nombres guardados:', this.nombres);
+    console.log('Apellidos guardados:', this.apellidos);
+  }
+  
+
+
 }

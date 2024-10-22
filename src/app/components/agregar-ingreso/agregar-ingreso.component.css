@@ -58,7 +58,7 @@ app-menu {
   .parking-section {
     width: 40%;
     height: 30ch;
-    margin: 0 2ch 0 2ch;
+    margin: 0 5px 0 5px;
     padding: 10px;
     background-color: #D9DBDC;
     border-radius: 10%;
@@ -75,7 +75,7 @@ app-menu {
   .parking-spaces {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* 8 columnas para los espacios */
-    grid-gap: 10px;
+    grid-gap: 15px;
   }
   
   .parking-spaces button {
@@ -89,7 +89,7 @@ app-menu {
   }
   
   .parking-spaces button.selected {
-    background-color: red; /* Indica espacio seleccionado */
+    background-color: #2BA574; /* Indica espacio seleccionado */
   }
   
   .parking-spaces button.disabled {

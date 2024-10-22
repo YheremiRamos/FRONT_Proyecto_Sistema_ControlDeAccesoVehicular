@@ -1,5 +1,3 @@
-import { DataCatalogo } from "./dataCatalogo.model";
-import { Pais } from "./pais.model";
 
 export class Usuario {
 
@@ -13,6 +11,5 @@ export class Usuario {
     correo?: string;
     fechaRegistro?: Date;
     fechaNacimiento?: Date;
-    direccion?: string;
-   
+    direccion?: string;   
 }

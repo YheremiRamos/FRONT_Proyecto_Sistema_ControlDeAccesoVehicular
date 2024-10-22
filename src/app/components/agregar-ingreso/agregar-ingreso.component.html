@@ -2,13 +2,13 @@
     <app-menu></app-menu>
     <div class="content">
         <div class="container">
-            <mat-horizontal-stepper [linear]="true" #stepper>
+            <mat-horizontal-stepper [linear]="true" #stepper >
                 
                 <!-- Paso 1: Datos del propietario -->
-                <mat-step [stepControl]="formRegistra" optional="true">
+                <mat-step [stepControl]="formRegistra" label="Propietario" optional="true" >
                     <form [formGroup]="formRegistra">
-                        <div class="row">
-                            <mat-toolbar>
+                        <div class="row" >
+                            <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
                                 <h2>Datos del propietario</h2>
                             </mat-toolbar>
                         </div>
@@ -78,18 +78,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row btnEnd">
-                            <button mat-raised-button color="primary" (click)="stepper.next()">Siguiente <mat-icon>arrow_forward</mat-icon></button>
-                        </div>
+                        <button mat-raised-button color="primary"   class="row btnEnd" style="justify-content: center;"
+                        (click)="guardarNombresApe(); stepper.next()">
+                                    Siguiente <mat-icon>arrow_forward</mat-icon>
+                        </button>
+                
+
+
                     </form>
                 </mat-step>
 
 
                 <!-- Paso 2: Datos del vehículo (incluye Espacio asignado) -->
-                        <mat-step [stepControl]="formRegistra" optional="true">
+                        <mat-step [stepControl]="formRegistra"  label="Vehículo"  optional="true">
                             <form [formGroup]="formRegistra">
                             <div class="row">
-                                <mat-toolbar>
+                                <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
                                 <h2>Datos del vehículo</h2>
                                 </mat-toolbar>
                             </div>
@@ -137,7 +141,6 @@
                                                 <input matInput  type="number" value="0" [min]="0" [max]="50">
                                             </mat-form-field>
                                     
-                                
                                         <!-- Campo deshabilitado para Espacio asignado -->
                                         <h5>7. Parkeo: </h5>
                                             <mat-form-field class="col-md-5 ">
@@ -199,9 +202,9 @@
                         </mat-step>
   
 
-                        <mat-step [stepControl]="formRegistra" optional="true">
+                        <mat-step [stepControl]="formRegistra"  label="Registro"  optional="true">
                         <div class="row">
-                            <mat-toolbar>
+                            <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
                             <h2>Datos del Registro</h2>
                             </mat-toolbar>
                         </div>
@@ -231,12 +234,12 @@
                                 </div> -->
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p><strong>3. Nombres:</strong> {{ formRegistra.value.nombres }}</p>
+                                        <p><strong>3. Nombres:</strong> {{nombres }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p><strong>4. Apellidos:</strong> {{ formRegistra.value.apellidos }}</p>
+                                        <p><strong>4. Apellidos:</strong> {{ apellidos }}</p>
                                     </div>
                                 </div>
                             </div>
