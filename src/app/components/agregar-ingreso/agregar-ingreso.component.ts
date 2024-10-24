@@ -9,6 +9,9 @@ import { Usuario } from '../../models/usuario.model';
 import { MatStepperModule } from '@angular/material/stepper'; 
 import { UsuarioService } from '../../services/usuario.service';
 import { TipoUsuario } from '../../models/tipoUsuario.model';
+import { EspacioParqueo } from '../../models/espacioParqueo';
+import { EspacioParqueoService } from '../../services/espacioParqueo.service';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -23,21 +26,44 @@ export class AgregarIngresoComponent implements OnInit {
     espacio: ['', Validators.required],
   });
 
-  formRegistra = this.formBuilder.group({
-    validaDni: ['', [Validators.required, Validators.minLength(8), Validators.pattern('^[0-9]+$')]],
-    validaTipoVehiculo: ['', Validators.min(1)],
-    validaPlaca: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]], // Formato: AA-1234 o AA-12345
-    nombres: [{ value: '', disabled: true }],
-    apellidos: [{ value: '', disabled: true }],
-    telefono: [{ value: '', disabled: true }],
-    validaTipoUsuario: ['', Validators.min(1)]
-
+  formRegistraUsuario = this.formBuilder.group({
+    validaDni: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[0-9]{8,12}$')]],
+    nombres: [{ value: '', disabled: true, }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
+    apellidos: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
+    validaTipoUsuario: ['', Validators.min(1)],
+    validaTelefono: ['', [Validators.required, Validators.minLength(7), Validators.pattern('^[0-9]{7,9}$')]],
   });
 
+  formRegistra = this.formBuilder.group({
+    validaTipoVehiculo: ['', Validators.min(1)],
+    validaPlaca: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]], // Formato: AA-1234 o AA-12345
+    validaCantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]], 
+    validaEspacio: [{ value: '--', disabled: true }, []], 
+  });
+
+ 
+  objetosEspaciosPP: EspacioParqueo[] = [];
+  objetosEspaciosPS: EspacioParqueo[] = []
+  objetosEspaciosPSS: EspacioParqueo[] = []
+
   // Datos relacionados con el estacionamiento
-  espaciosSS: string[] = ['1', '2♿', '3', '4♿', '5♿', '6'];
-  espaciosS1: string[] = ['7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25'];
-  espaciosEP: string[] = ['26', '27', '28', '29', '30', '31', '32', '33', '34', '35'];
+     espaciosDiscapacitadoPP: string[] = []
+     espacioGerentePP: string[] = []
+     espaciosGeneralPP: string[] = []
+
+     espaciosDiscapacitadoPS: string[] = []
+     espacioGerentePS: string[] = []
+     espaciosGeneralPS: string[] = []
+
+     espaciosDiscapacitadoPSS: string[] = []
+     espacioGerentePSS: string[] = []
+     espaciosGeneralPSS: string[] = []
+
+  //espaciosPP: string[] = []
+  //espaciosPS: string[] = []
+  //espaciosPSS: string[] =  []
+
+  
 
   espacioSeleccionado: string = '--';  // Almacenar el espacio seleccionado
   dataSource: any;
@@ -47,7 +73,6 @@ export class AgregarIngresoComponent implements OnInit {
   dni = '';
   nombres = '';
   apellidos = '';
-  habilitarRegistrar: boolean = false;
   telefono : number = 0;
 
   varIdTipoUsuario : number = -1;
@@ -65,7 +90,8 @@ export class AgregarIngresoComponent implements OnInit {
   constructor(
     private tokenService: TokenService,
     private usuarioService: UsuarioService,
-    private formBuilder: FormBuilder  
+    private formBuilder: FormBuilder,
+    private espaciService: EspacioParqueoService
   ) {
     this.objUsuario.idUsuario = this.tokenService.getUserId();
     console.log('constructor >> constructor >>> ' + this.tokenService.getToken());
@@ -73,6 +99,7 @@ export class AgregarIngresoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadWatsonAssistant();
+    this.cargarEspacios();
 
     this.usuarioService.listaTipoUsuario().subscribe(
       x => this.lstTipoUsuario = x
@@ -100,7 +127,7 @@ export class AgregarIngresoComponent implements OnInit {
           const usuario = this.dataSource[0];
   
           // Actualiza tanto el formulario como las variables locales
-          this.formRegistra.patchValue({
+          this.formRegistraUsuario.patchValue({
             nombres: usuario.nombres,
             apellidos: usuario.apellidos,
           });
@@ -108,8 +135,6 @@ export class AgregarIngresoComponent implements OnInit {
           // Asigna los valores a las variables locales
           this.nombres = usuario.nombres;
           this.apellidos = usuario.apellidos;
-  
-          this.habilitarRegistrar = false;
 
           console.log('>>> Nombres1: ' + this.nombres);
           console.log('>>> Apellidos1: ' + this.apellidos);
@@ -117,10 +142,9 @@ export class AgregarIngresoComponent implements OnInit {
         } else {
           // Mostrar alerta si no encuentra al usuario
           Swal.fire('Por favor registrar los nuevos datos del propietario.');
-          this.habilitarRegistrar = true;
-          this.formRegistra.get('nombres')?.enable();
-          this.formRegistra.get('apellidos')?.enable();
-          this.formRegistra.patchValue({
+          this.formRegistraUsuario.get('nombres')?.enable();
+          this.formRegistraUsuario.get('apellidos')?.enable();
+          this.formRegistraUsuario.patchValue({
             nombres: '',
             apellidos: '',
           });
@@ -133,7 +157,6 @@ export class AgregarIngresoComponent implements OnInit {
       (error) => {
         console.log('>>> Error al buscar por DNI: ', error);
         this.limpiarFormulario();
-        this.habilitarRegistrar = true;
       }
     );
     console.log('>>> Nombres2: ' + this.nombres);
@@ -144,7 +167,7 @@ export class AgregarIngresoComponent implements OnInit {
 
 
   limpiarFormulario() {
-    this.formRegistra.patchValue({
+    this.formRegistraUsuario.patchValue({
       nombres: '',
       apellidos: '',
     });
@@ -179,23 +202,119 @@ export class AgregarIngresoComponent implements OnInit {
 
   //Datos en consola
   consoleDates(){
-    console.log(this.formRegistra.value.nombres);  
-    console.log(this.formRegistra.value.apellidos);
+    console.log(this.formRegistraUsuario.value.nombres);  
+    console.log(this.formRegistraUsuario.value.apellidos);
   }
+
+
 
 
   guardarNombresApe() {
+    const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? ''; 
+    const apellidosBuscado = this.formRegistraUsuario.get('apellidos')?.value ?? '';
 
-    const nombres = this.formRegistra.get('nombres')?.value ?? ''; 
-    const apellidos = this.formRegistra.get('apellidos')?.value ?? ''; 
-  
-    this.nombres= nombres;
-    this.apellidos = apellidos;
+    this.nombres= nombresBuscado;
+    this.apellidos = apellidosBuscado;
   
     console.log('Nombres guardados:', this.nombres);
-    console.log('Apellidos guardados:', this.apellidos);
+    console.log('Apellidos guardados:', this.apellidos);   
   }
   
+     
+    //____________________ Mostrar espacios registrados según Parqueo ____________________
+    traerEspaciosParqueoPrincipal(){
+      var tipoEsp:String;
+      this.espaciService.listarEspaciosPorIdParqueo(1).subscribe(
+        esp => {this.objetosEspaciosPP = esp
+                //Mostrar en consola apenas se traigan datos
+                console.log('Objeto espacios parqueo 1', this.objetosEspaciosPP)
+                // Acceder a cada objeto y a cada valor
+                this.objetosEspaciosPP.forEach((espacio) => {
+                      //Llenar el Arreglo
+                      if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
+                        //console.log('Espacios Parqueo Principal: ', this.espaciosPP)
+                        if(espacio.tipoEspacio === "general") {
+                          this.espaciosGeneralPP.push(espacio.numeroEspacio.toString())
+                          tipoEsp = espacio.numeroEspacio.toString();
+                          console.log(tipoEsp)
+                        } else if(espacio.tipoEspacio === "discapacitado") {
+                          tipoEsp = espacio.numeroEspacio.toString() + "♿";
+                          this.espaciosDiscapacitadoPP.push(espacio.numeroEspacio.toString())
+                        } else {
+                          this.espacioGerentePP.push(espacio.numeroEspacio.toString())
+                        }
+                        //this.espaciosPP.push(tipoEsp.toString());
+                      } else {
+                          console.warn('numeroEspacio es undefined para este espacio:', espacio);
+                      }
+                });
+              });
+    }
+    traerEspaciosParqueoSotano(){
+      this.espaciService.listarEspaciosPorIdParqueo(2).subscribe(
+        esp => {this.objetosEspaciosPS = esp
+                this.objetosEspaciosPS.forEach((espacio) => {
+                      if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
+                        if(espacio.tipoEspacio === "general") {
+                          this.espaciosGeneralPS.push(espacio.numeroEspacio.toString())
+                        } else if(espacio.tipoEspacio === "discapacitado") {
+                          this.espaciosDiscapacitadoPS.push(espacio.numeroEspacio.toString())
+                        } else {
+                          this.espacioGerentePS.push(espacio.numeroEspacio.toString())
+                        }
+                      } else {
+                          console.warn('numeroEspacio es undefined para este espacio:', espacio);
+                      }
+                });
+              });
+    }
+    traerEspaciosParqueoSemiSotano(){
+      this.espaciService.listarEspaciosPorIdParqueo(3).subscribe(
+        esp => {this.objetosEspaciosPSS = esp
+                this.objetosEspaciosPSS.forEach((espacio) => {
+                  //Llenar el Arreglo
+                      if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
+                        if(espacio.tipoEspacio === "general") {
+                          this.espaciosGeneralPSS.push(espacio.numeroEspacio.toString())
+                        } else if(espacio.tipoEspacio === "discapacitado") {
+                          this.espaciosDiscapacitadoPSS.push(espacio.numeroEspacio.toString())
+                        } else {
+                          this.espacioGerentePSS.push(espacio.numeroEspacio.toString())
+                        }
+                      } else {
+                          console.warn('numeroEspacio es undefined para este espacio:', espacio);
+                      }
+                      console.log("______________________________________")
+                      console.log('Tipo Espacio:', espacio.tipoEspacio);
+                      console.log('Número Espacio:', espacio.numeroEspacio);
+                      console.log("______________________________________")
+                });
+              });
+    }
+    cargarEspacios(){
+      this.traerEspaciosParqueoPrincipal();
+      this.traerEspaciosParqueoSotano();
+      this.traerEspaciosParqueoSemiSotano();
+    }
 
+    habilitarBtnSiguienteRegistroUsuario() {
+      if (this.formRegistraUsuario.controls.nombres.value?.trim() === "" || this.formRegistraUsuario.controls.apellidos.value?.trim() === "" || this.formRegistraUsuario.invalid === true) {
+        //console.log("hay campos vacíos en cliente");
+        return true; 
+      } else {
+        return false; 
+      }
+    }
 
+    habilitarBtnSiguienteRegistroVehiculo(){
+      if (this.formRegistra.invalid === true || this.espacioSeleccionado === "--") {
+        //console.log("hay campos vacíos en vehículo");
+        return true; 
+      } else {
+        return false; 
+      }
+    }
+    
+
+    
 }

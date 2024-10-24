@@ -5,10 +5,10 @@
             <mat-horizontal-stepper [linear]="true" #stepper >
                 
                 <!-- Paso 1: Datos del propietario -->
-                <mat-step [stepControl]="formRegistra" label="Propietario" optional="true" >
-                    <form [formGroup]="formRegistra">
+                <mat-step [stepControl]="formRegistraUsuario" label="Propietario" optional="true" >
+                    <form [formGroup]="formRegistraUsuario">
                         <div class="row" >
-                            <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
+                            <mat-toolbar style="background: #4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;">
                                 <h2>Datos del propietario</h2>
                             </mat-toolbar>
                         </div>
@@ -22,15 +22,18 @@
                                         <mat-label>Tipo de  Usuario:</mat-label>
                                         <mat-select formControlName="validaTipoUsuario"   [(ngModel)]="varIdTipoUsuario" >
                                             <mat-option value="-1"> [Todos] </mat-option>
-                                        <mat-option *ngFor="let x of lstTipoUsuario" [value]="x.nombre">
-                                            {{x.nombre}}
+                                            <mat-option value="Gerente"> Gerente </mat-option>
+                                            <!--
+                                            <mat-option *ngFor="let x of lstTipoUsuario" [value]="x.nombre">
+                                                {{x.nombre}}
                                             </mat-option> 
+                                            -->
                                         </mat-select> 
 
 
                                     <!--VALIDACION - CAPTURA DE DATOS-->
-                                    <mat-hint style="color: red" *ngIf="formRegistra.controls.validaTipoUsuario.touched">
-                                        <span *ngIf="formRegistra.controls.validaTipoUsuario.hasError('min')">
+                                    <mat-hint style="color: red" *ngIf="formRegistraUsuario.controls.validaTipoUsuario.touched">
+                                        <span *ngIf="formRegistraUsuario.controls.validaTipoUsuario.hasError('min')">
                                             El tipo de Usuario es requerido
                                         </span>
                                     </mat-hint>
@@ -44,28 +47,36 @@
                                     <h5>2. DNI/Documento:</h5>
                                     <mat-form-field class="col-md-6">
                                         <mat-label>Ingrese el número de documento</mat-label>
-                                        <input matInput [(ngModel)]="varDni" formControlName="validaDni">
-                                        <mat-hint style="color: red" *ngIf="formRegistra.controls.validaDni.touched">
-                                            <!-- Validaciones -->
+                                        <input matInput [(ngModel)]="varDni" formControlName="validaDni" maxlength="12">
+                                        <mat-hint style="color: red" *ngIf="formRegistraUsuario.controls.validaDni.touched">
+                                            <span *ngIf="formRegistraUsuario.controls.validaDni.hasError('required')">
+                                                La identificación es requerida
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.validaDni.hasError('pattern')">
+                                                Ingrese una identificación válida
+                                            </span>
                                         </mat-hint>
                                     </mat-form-field>
                                     <button mat-raised-button type="button" color="primary" (click)="buscarPorDni()">Buscar</button>
                                 </div>
                             </div>
-                            <!-- Otros campos del propietario -->
-                            <!-- <div class="row">
-                                <div class="inputContent">
-                                    <h5>3. Telefono: </h5>
-                                    <mat-form-field class="col-md-9">
-                                        <input matInput formControlName="telefono" [disabled]="!habilitarRegistrar">
-                                    </mat-form-field>
-                                </div>
-                            </div> -->
                             <div class="row">
                                 <div class="inputContent">
                                     <h5>3. Nombres: </h5>
                                     <mat-form-field class="col-md-9">
-                                        <input matInput formControlName="nombres" [disabled]="!habilitarRegistrar">
+                                        <mat-label>Ingrese los nombres</mat-label>
+                                        <input matInput formControlName="nombres" maxlength="30">
+                                        <mat-hint style="color: red" *ngIf="formRegistraUsuario.controls.nombres.touched">
+                                            <span *ngIf="formRegistraUsuario.controls.nombres.hasError('required')">
+                                                Los nombres son requeridos
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.nombres.hasError('pattern')">
+                                                Ingrese sólo letras
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.nombres.hasError('minLength')">
+                                                Ingrese mínimo 3 caracteres
+                                            </span>
+                                        </mat-hint>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -73,16 +84,46 @@
                                 <div class="inputContent">
                                     <h5>4. Apellidos: </h5>
                                     <mat-form-field class="col-md-9">
-                                        <input matInput formControlName="apellidos" [disabled]="!habilitarRegistrar">
+                                        <mat-label>Ingrese los apellidos</mat-label>
+                                        <input matInput formControlName="apellidos" maxlength="40">
+                                        <mat-hint style="color: red" *ngIf="formRegistraUsuario.controls.apellidos.touched">
+                                            <span *ngIf="formRegistraUsuario.controls.apellidos.hasError('required')">
+                                                Los apellidos son requeridos
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.apellidos.hasError('pattern')">
+                                                Ingrese sólo letras
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.apellidos.hasError('minLength')">
+                                                Ingrese mínimo 3 caracteres
+                                            </span>
+                                        </mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="inputContent">
+                                    <h5>5. Teléfono: </h5>
+                                    <mat-form-field class="col-md-9">
+                                        <mat-label>Ingrese el número de teléfono</mat-label>
+                                        <input matInput formControlName="validaTelefono" maxlength="9">
+                                        <mat-hint style="color: red" *ngIf="formRegistraUsuario.controls.validaTelefono.touched">
+                                            <span *ngIf="formRegistraUsuario.controls.validaTelefono.hasError('required')">
+                                                El teléfono es requerido
+                                            </span>
+                                            <span *ngIf="formRegistraUsuario.controls.validaTelefono.hasError('pattern')">
+                                                Ingrese un teléfono válido (fijo o personal)
+                                            </span>
+                                        </mat-hint>
                                     </mat-form-field>
                                 </div>
                             </div>
                         </div>
-                        <button mat-raised-button color="primary"   class="row btnEnd" style="justify-content: center;"
-                        (click)="guardarNombresApe(); stepper.next()">
-                                    Siguiente <mat-icon>arrow_forward</mat-icon>
-                        </button>
-                
+                        <div class="row btnEnd">
+                            <button mat-raised-button
+                            (click)="guardarNombresApe(); stepper.next()" [disabled]="habilitarBtnSiguienteRegistroUsuario()"> 
+                                        Siguiente <mat-icon>arrow_forward</mat-icon>
+                            </button>
+                        </div>
 
 
                     </form>
@@ -93,31 +134,23 @@
                         <mat-step [stepControl]="formRegistra"  label="Vehículo"  optional="true">
                             <form [formGroup]="formRegistra">
                             <div class="row">
-                                <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
-                                <h2>Datos del vehículo</h2>
+                                <mat-toolbar style="background: #4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;">
+                                <h1>Datos del vehículo</h1>
                                 </mat-toolbar>
                             </div>
                         
                             <div class="col-md-20" style="margin: 0 5%;">
 
                                     <!-- Campos del vehículo -->
-                                <div class="row" style="margin: auto; font-size: 16px;">
-                                    <div class="inputContent col-md-10" style="display: flex; align-items: center; justify-content: center;">
-                                    <div class="form-check col-md-10" style="margin-left: 100%;">
-                                        <input type="checkbox" class="form-check-input" id="idEstado" name="estado" formControlName="requiereEstacionamientoDiscapacitado">
-                                        <label class="form-check-label" for="idEstado">¿Requiere estacionamiento para discapacitado?</label>
-                                    </div>
-                                    </div>
-                                </div>
 
                                 <div class="row">
                                     <div class="inputContent">
-                                        <h5>5. Vehículo: </h5>
-                                        <mat-form-field class="col-md-5 center" style="margin: auto;">
+                                        <h5>6. Vehículo: </h5>
+                                        <mat-form-field class="col-md-6" style="margin: auto;">
                                             <mat-label>Tipo vehículo</mat-label>
                                             <mat-select formControlName="validaTipoVehiculo">
                                                 <mat-option value="-1">[Seleccione el tipo de vehículo]</mat-option>
-                                                <mat-option value="4 ruedas">Auto, camioneta, (4 ruedas)</mat-option>
+                                                <mat-option value="4 ruedas">Auto, camioneta (4 ruedas)</mat-option>
                                                 <mat-option value="Motocicleta">Motocicleta </mat-option>
                                             </mat-select>
                                             <mat-hint style="color: red" *ngIf="formRegistra.controls.validaTipoVehiculo.touched">
@@ -127,158 +160,238 @@
                                             </mat-hint>
                                         </mat-form-field>
                                 
-                                        <mat-form-field class="col-md-5">
+                                        <h5 >7. Placa: </h5>
+                                        <mat-form-field class="col-md-6">
                                             <mat-label>Ingrese la placa del vehículo</mat-label>
-                                            <input matInput formControlName="validaPlaca">
+                                            <input matInput formControlName="validaPlaca" maxlength="8">
+                                            <mat-hint style="color: red" *ngIf="formRegistra.controls.validaPlaca.touched">
+                                                <span *ngIf="formRegistra.controls.validaPlaca.hasError('pattern')">
+                                                    El formato requerido es AA-1234 o AA-12345
+                                                </span>
+                                                <span *ngIf="formRegistra.controls.validaPlaca.hasError('required')">
+                                                    La placa es requerida
+                                                </span>
+                                            </mat-hint>
                                         </mat-form-field>
                                     </div>
-                                
+                                </div>
+                                <div>
                                     <!-- Cantidad de personas y espacio asignado lado a lado -->
                                     <div class="row" >
                                         <div class="inputContent">
-                                            <h5>6. Cant. de Personas: </h5>
-                                            <mat-form-field class="col-md-6" style="margin-left: 7%;">
-                                                <input matInput  type="number" value="0" [min]="0" [max]="50">
+                                            <h5 class="col-md-2">8. Cantidad de personas: </h5>
+                                            <mat-form-field class="col-md-4">
+                                                <mat-label>Ingrese la cantidad de personas</mat-label>
+                                                <input matInput  type="number"  [min]="0" [max]="9" formControlName="validaCantPersonas">
+                                                <mat-hint style="color: red" *ngIf="formRegistra.controls.validaCantPersonas">
+                                                    <span *ngIf="formRegistra.controls.validaCantPersonas.hasError('pattern')">
+                                                        La cantidad de personas debe ser entre 1 a 9
+                                                    </span>
+                                                </mat-hint>
                                             </mat-form-field>
                                     
                                         <!-- Campo deshabilitado para Espacio asignado -->
-                                        <h5>7. Parkeo: </h5>
-                                            <mat-form-field class="col-md-5 ">
-                                                <input matInput [value]="espacioSeleccionado" formControlName="espacioAsignado"   [disabled]="!habilitarRegistrar">
+                                        <h5 class="col-md-2">9. Espacio de parqueo: </h5>
+                                            <mat-form-field class="col-md-4 ">
+                                                <input matInput [value]="espacioSeleccionado"  formControlName="validaEspacio" >
                                             </mat-form-field>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                
-    
                                 <!-- Espacios de estacionamiento gráfico -->
+                                 <hr/>
+                                 <h4 style="text-align: center;">Espacios de parqueo disponibles</h4>
+                                 <div class="row leyenda">
+                                    <div class="col-md-4">
+                                        <div class="leyenda-item generales">
+                                            <span class="color-general"></span>
+                                            <h6>Generales</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="leyenda-item discapacitados">
+                                            <span class="color-discapacitado"></span>
+                                            <h6>Discapacitados</h6>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="leyenda-item gerencia">
+                                            <span class="color-gerencia"></span>
+                                            <h6>Gerencia</h6>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
-
-                                <div class="parking-layout">
-                                    <div class="parking-section">
-                                    <h5>PISO 1</h5>
-                                    <div class="parking-spaces">
-                                        <button *ngFor="let espacio of espaciosSS"
-                                                (click)="seleccionarEspacio(espacio)"
-                                                [ngClass]="{'selected': espacio === espacioSeleccionado}">
-                                        {{ espacio }}
-                                        </button>
-                                    </div>
-                                    </div>
-                        
-                                    <div class="parking-section">
-                                    <h5>SOTANO</h5>
-                                    <div class="parking-spaces">
-                                        <button *ngFor="let espacio of espaciosS1"
-                                                (click)="seleccionarEspacio(espacio)"
-                                                [ngClass]="{'selected': espacio === espacioSeleccionado}">
-                                        {{ espacio }}
-                                        </button>
-                                    </div>
-                                    </div>
-
-                                    
-                                    <div class="parking-section">
-                                        <h5>ENTRADA PRINCIPAL</h5>
+                                    <div class="parking-layout">
+                                        <div class="parking-section">
+                                        <h5>Primer nivel (Principal)</h5>
                                         <div class="parking-spaces">
-                                            <button *ngFor="let espacio of espaciosEP"
+                                            <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPP"
                                                     (click)="seleccionarEspacio(espacio)"
-                                                    [ngClass]="{'selected': espacio === espacioSeleccionado}">
+                                                    [ngClass]="{
+                                                        'selected': espacio === espacioSeleccionado
+                                                        }" >
+                                            {{ espacio }} 
+                                            </button>
+                                            <button class="gt" *ngFor="let espacio of espacioGerentePP"
+                                                    (click)="seleccionarEspacio(espacio)"
+                                                    [ngClass]="{
+                                                        'selected': espacio === espacioSeleccionado
+                                                        }">
+                                            {{ espacio }}
+                                            </button>
+                                            <button *ngFor="let espacio of espaciosGeneralPP"
+                                                    (click)="seleccionarEspacio(espacio)"
+                                                    [ngClass]="{
+                                                        'selected': espacio === espacioSeleccionado
+                                                        }">
                                             {{ espacio }}
                                             </button>
                                         </div>
                                         </div>
+                                        
+                                        <div class="parking-section">
+                                            <h5>Semi-Sótano</h5>
+                                            <div class="parking-spaces">
+                                                <button class="gt" *ngFor="let espacio of espacioGerentePS"
+                                                        (click)="seleccionarEspacio(espacio)"
+                                                        [ngClass]="{
+                                                            'selected': espacio === espacioSeleccionado
+                                                            }">
+                                                {{ espacio }}
+                                                </button>
+                                                <button *ngFor="let espacio of espaciosGeneralPS"
+                                                        (click)="seleccionarEspacio(espacio)"
+                                                        [ngClass]="{
+                                                            'selected': espacio === espacioSeleccionado
+                                                            }">
+                                                {{ espacio }}
+                                                </button>
+                                                <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPS"
+                                                    (click)="seleccionarEspacio(espacio)"
+                                                    [ngClass]="{
+                                                        'selected': espacio === espacioSeleccionado
+                                                        }" >
+                                                {{ espacio }} 
+                                                </button>
+                                            </div>
+                                        </div>
 
-                                </div>
+                                        <div class="parking-section">
+                                            <h5>Sótano</h5>
+                                            <div class="parking-spaces">
+                                                <button class="gt" *ngFor="let espacio of espacioGerentePSS"
+                                                        (click)="seleccionarEspacio(espacio)"
+                                                        [ngClass]="{
+                                                            'selected': espacio === espacioSeleccionado
+                                                            }">
+                                                {{ espacio }}
+                                                </button>
+                                                <button *ngFor="let espacio of espaciosGeneralPSS"
+                                                        (click)="seleccionarEspacio(espacio)"
+                                                        [ngClass]="{
+                                                            'selected': espacio === espacioSeleccionado
+                                                            }">
+                                                {{ espacio }}
+                                                </button>
+                                                <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPSS"
+                                                    (click)="seleccionarEspacio(espacio)"
+                                                    [ngClass]="{
+                                                        'selected': espacio === espacioSeleccionado
+                                                        }" >
+                                                {{ espacio }} 
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         
                             <div class="row btnEnd">
                                 <button mat-raised-button color="primary" (click)="stepper.previous()">Atrás</button>
-                                <button mat-raised-button color="primary" (click)="stepper.next()">Siguiente <mat-icon>arrow_forward</mat-icon></button>
+                                <button mat-raised-button (click)="stepper.next()" [disabled]="habilitarBtnSiguienteRegistroVehiculo()">Siguiente <mat-icon>arrow_forward</mat-icon></button>
                             </div>
                             </form>
                         </mat-step>
   
-
-                        <mat-step [stepControl]="formRegistra"  label="Registro"  optional="true">
+                    <!--DATOS DEDEL REGISTRO-->
+                    <mat-step [stepControl]="formRegistra" label="Registro" optional="true">
                         <div class="row">
-                            <mat-toolbar style="background-color: #499CA5; border-radius: 20px 20px 20px 20px;">
+                          <mat-toolbar style="background:#4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;"> 
                             <h2>Datos del Registro</h2>
-                            </mat-toolbar>
+                          </mat-toolbar>
                         </div>
-
+                      
                         <br>
-
+                      
                         <div class="row">
-                            <!-- Columna de Propietario -->
-                            <div class="col-md-6">
-                                <div class="section-header">
-                                    <h4>PROPIETARIO:</h4>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>1. Tipo de usuario:</strong> {{ formRegistra.value.validaTipoUsuario}}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>2. DNI/Documento:</strong> {{ formRegistra.value.validaDni }}</p>
-                                    </div>
-                                </div>
-                                <!-- <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>3. Teléfono:</strong> {{ formRegistra.value.nombres }}</p>
-                                    </div>
-                                </div> -->
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>3. Nombres:</strong> {{nombres }}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>4. Apellidos:</strong> {{ apellidos }}</p>
-                                    </div>
-                                </div>
+                          <!-- Columna de Propietario -->
+                          <div class="col-md-6 section-propietario">
+                            <div class="section-header">
+                              <h6>Datos del propietario:</h6>
                             </div>
-                        
-                            <!-- Columna de Vehículo -->
-                            <div class="col-md-6">
-                                <div class="section-header">
-                                    <h4>VEHÍCULO:</h4>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>1. Tipo de vehículo:</strong> {{ formRegistra.value.validaTipoVehiculo }}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>2. Placa:</strong> {{ formRegistra.value.validaPlaca }}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>3. Espacio asignado:</strong> {{ espacioSeleccionado }}</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><strong>4. Ingreso:</strong> {{ formattedDate }}</p>
-                                    </div>
-                                </div>
-                            
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Tipo de usuario:</strong> {{ formRegistraUsuario.value.validaTipoUsuario }}</p>
+                              </div>
                             </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>DNI/Documento:</strong> {{ formRegistraUsuario.value.validaDni }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Nombres:</strong> {{ nombres }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Apellidos:</strong> {{ apellidos }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Teléfono:</strong> {{ formRegistraUsuario.value.validaTelefono }}</p>
+                              </div>
+                            </div>
+                          </div>
+                      
+                          <!-- Columna de Vehículo -->
+                          <div class="col-md-6 section-vehiculo">
+                            <div class="section-header">
+                              <h6>Datos del vehículo</h6>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Tipo de vehículo:</strong> {{ formRegistra.value.validaTipoVehiculo }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Placa:</strong> {{ formRegistra.value.validaPlaca }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Espacio asignado:</strong> {{ espacioSeleccionado }}</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <p><strong>Ingreso:</strong> {{ formattedDate }}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        
-                        <div class="row btnEnd" style="justify-content: center;">
-                            <button mat-raised-button color="primary" (click)="stepper.previous()">Atrás</button>
-                            <button mat-raised-button color="primary" (click)="guardarDatos()" style="margin-left: 10px;">Guardar</button>
+                      
+                        <div class="row btnEnd">
+                          <button mat-raised-button color="primary" (click)="stepper.previous()">Atrás</button>
+                          <button mat-raised-button (click)="guardarDatos()">Guardar</button>
                         </div>
-                        
-                    </mat-step>
+                      </mat-step>
             </mat-horizontal-stepper>
         </div>
     </div>
