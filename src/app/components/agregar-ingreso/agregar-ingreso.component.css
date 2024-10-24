@@ -37,11 +37,17 @@ app-menu {
 .btnEnd{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 22%;
-    margin: 2.5ch auto auto auto;
-
+    justify-content: center;
 }
+
+.btnEnd button{
+    background: linear-gradient(45deg, #305d87, #2BA555); 
+    color: #fff;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+    margin: 2.5ch 1ch;
+}
+
 
 .inputContent{
     margin-top: 1.5ch;
@@ -70,6 +76,7 @@ app-menu {
         font-size: 18px;
         padding: 2%;
         border-radius: 1ch 1ch 1ch 1ch;
+        text-align: center;
     }
 
   .parking-spaces {
@@ -91,9 +98,88 @@ app-menu {
   .parking-spaces button.selected {
     background-color: #2BA574; /* Indica espacio seleccionado */
   }
+  .parking-spaces button:hover {
+    background-color: #2BA555; /* Indica espacio seleccionado */
+  }
+  .parking-spaces button.d {
+    background-color: #fbff04;
+  }
+
+  .parking-spaces button.gt {
+    background-color: #4d01fd;
+  }
   
   .parking-spaces button.disabled {
     background-color: gray; /* Espacio ocupado */
     cursor: not-allowed;
   }
   
+
+
+.leyenda {
+  margin: 2% 10%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.leyenda-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+
+.color-general {
+  width: 20px;
+  height: 20px;
+  background-color: #ffffff; 
+  border-radius: 50%; 
+  margin-right: 10px;
+  border: 1px solid #333; 
+}
+
+.color-discapacitado {
+  width: 20px;
+  height: 20px;
+  background-color: #fbff04; 
+  border-radius: 50%; 
+  margin-right: 10px;
+}
+
+.color-gerencia {
+  width: 20px;
+  height: 20px;
+  background-color:  #4d01fd; 
+  border-radius: 50%; 
+  margin-right: 10px;
+}
+
+
+h6 {
+  margin: 0;
+  font-size: 1.1em;
+  color: #333; 
+}
+
+.section-header {
+  background:  #f6f7f6; 
+  padding: 2.5% 10%;
+  border-radius: 20px;
+  margin-bottom: 3%;
+  text-align: center;
+}
+
+.section-vehiculo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.section-propietario {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
