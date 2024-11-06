@@ -4,8 +4,8 @@ export class Cliente {
     nombres?: string;
     apellidos?: string;
     identificador?: string;
-    telefono?: number;
-    
+    telefono?: string;
+    numIncidencias?: number;
 
 
 }
