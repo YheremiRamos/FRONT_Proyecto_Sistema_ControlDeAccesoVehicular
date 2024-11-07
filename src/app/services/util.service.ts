@@ -9,6 +9,9 @@ import { Editorial } from '../models/editorial.model';
 
 const baseUrlUtil = AppSettings.API_ENDPOINT+ '/util';
 
+const baseUrl = AppSettings.API_ENDPOINT+ '/accesoVehicular';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -75,6 +78,25 @@ export class UtilService {
   listaEditorial():Observable<Editorial[]>{
     return this.http.get<Editorial[]>(baseUrlUtil+"/listaEditorial");
   }
+
+
+
+  // Método para obtener el ID de un Cliente por DNI
+  obtenerIdCliente(dni: string): Observable<number> {
+    return this.http.get<number>(`${baseUrl}/cliente/id/${dni}`);
+  }
+
+  // Método para obtener el ID de un Parqueo por nombre
+  obtenerIdParqueo(nombre: string): Observable<number> {
+    return this.http.get<number>(`${baseUrl}/parqueo/id/${nombre}`);
+  }
+
+  // Método para obtener el ID de un Espacio de Parqueo por número
+  obtenerIdEspacio(numeroEspacio: number): Observable<number> {
+    return this.http.get<number>(`${baseUrl}/espacio/id/${numeroEspacio}`);
+
+  }
+
 }
 
 
