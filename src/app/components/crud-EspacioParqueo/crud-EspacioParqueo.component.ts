@@ -1,52 +1,34 @@
-// app.material.module.ts
-import { NgModule } from '@angular/core';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-
-@NgModule({
-  exports: [
-    MatSlideToggleModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatToolbarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
-  ]
-})
-export class AppMaterialModule {}
-
-
-
-
-
-
 // crud-EspacioParqueo.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EspacioParqueoService } from '../../services/espacioParqueo.service'; 
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
 import { EspacioParqueo } from '../../models/espacioParqueo';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatStepperModule } from '@angular/material/stepper';
+import { AppMaterialModule } from '../../app.material.module';
+import { MenuComponent } from '../../menu/menu.component';
 
 @Component({
   selector: 'app-crud-espacio-parqueo',
+  standalone: true,
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], 
   templateUrl: './crud-EspacioParqueo.component.html',
   styleUrls: ['./crud-EspacioParqueo.component.css']
 })
+
 export class CrudEspacioParqueoComponent implements OnInit {
+  
   espacioParqueoForm!: FormGroup;
+
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
   filtro: string = ''; // Para el filtro de búsqueda
   displayedColumns: string[] = ['idEspacio', 'nombre', 'descripcion', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<any>([]);
+
+
+
 
   constructor(
     private fb: FormBuilder,

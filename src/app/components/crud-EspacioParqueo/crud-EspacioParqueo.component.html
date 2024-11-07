@@ -7,8 +7,7 @@
           <span>CRUD Espacios de Parqueo</span>
         </mat-toolbar>
       </div>
-    
-      <!-- Formulario de filtro y botones 
+
       <div class="inputContent" style="margin-top: 3%; display: flex; align-items: center;">
         <mat-form-field class="col-md-4" appearance="fill">
           <mat-label>Nombre del Espacio</mat-label>
@@ -42,16 +41,16 @@
             <ng-container matColumnDef="estado">
               <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
               <mat-cell *matCellDef="let aux">
-                <mat-slide-toggle [checked]="aux.estado == 1" color="primary">
+                <!-- <mat-slide-toggle [checked]="aux.estado == 1" color="primary">
                   {{ aux.estado == 1 ? 'Activo' : 'Inactivo' }}
-                </mat-slide-toggle>
+                </mat-slide-toggle> -->
               </mat-cell>
             </ng-container>
   
             <ng-container matColumnDef="acciones">
               <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
               <mat-cell *matCellDef="let aux">
-                <button mat-icon-button color="accent" (click)="openUpdateDialog(aux)">
+                <button mat-icon-button color="accent" >
                   <mat-icon>edit</mat-icon>
                 </button>
                 <button mat-icon-button color="warn" (click)="eliminarEspacioParqueo(aux.idEspacio)">
@@ -64,10 +63,8 @@
             <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
           </mat-table>
   
-          <mat-paginator [pageSizeOptions]="[6, 8, 10]" showFirstLastButtons></mat-paginator>-->
+          <mat-paginator [pageSizeOptions]="[6, 8, 10]" showFirstLastButtons></mat-paginator>
         </mat-card>
       </div>
     </div>
-</div>
-
 </div>
