@@ -20,51 +20,47 @@
         </div>
       </div>
   
-      <div class="row" style="margin-top: 3%;">
-        <mat-card class="col-12">
-          <mat-table #table class="mat-elevation-z8" [dataSource]="dataSource">
-            <ng-container matColumnDef="idEspacio">
-              <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-              <mat-cell *matCellDef="let aux">{{ aux.idEspacio }}</mat-cell>
-            </ng-container>
+      <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Columnas -->
+        <ng-container matColumnDef="idEspacio">
+          <mat-header-cell *matHeaderCellDef>Código de espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.idEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="idParqueo">
+          <mat-header-cell *matHeaderCellDef>Código de parqueo</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.idParqueo }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="tipoEspacio">
+          <mat-header-cell *matHeaderCellDef>Tipo espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="numeroEspacio">
+          <mat-header-cell *matHeaderCellDef>Número de espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.numeroEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="estado">
+          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.estado }}</mat-cell>
+        </ng-container>
+      
+
   
-            <ng-container matColumnDef="nombre">
-              <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
-              <mat-cell *matCellDef="let aux">{{ aux.nombre }}</mat-cell>
-            </ng-container>
-  
-            <ng-container matColumnDef="descripcion">
-              <mat-header-cell *matHeaderCellDef>Descripción</mat-header-cell>
-              <mat-cell *matCellDef="let aux">{{ aux.descripcion }}</mat-cell>
-            </ng-container>
-  
-            <ng-container matColumnDef="estado">
-              <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-              <mat-cell *matCellDef="let aux">
-                <!-- <mat-slide-toggle [checked]="aux.estado == 1" color="primary">
-                  {{ aux.estado == 1 ? 'Activo' : 'Inactivo' }}
-                </mat-slide-toggle> -->
-              </mat-cell>
-            </ng-container>
-  
-            <ng-container matColumnDef="acciones">
-              <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
-              <mat-cell *matCellDef="let aux">
-                <button mat-icon-button color="accent" >
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="eliminarEspacioParqueo(aux.idEspacio)">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-cell>
-            </ng-container>
-  
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
-          </mat-table>
-  
-          <mat-paginator [pageSizeOptions]="[6, 8, 10]" showFirstLastButtons></mat-paginator>
-        </mat-card>
-      </div>
-    </div>
-</div>
+        <ng-container matColumnDef="acciones">
+          <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+          <mat-cell *matCellDef="let aux">
+            <button mat-icon-button color="accent" >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarEspacioParqueo(aux.idEspacio)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>

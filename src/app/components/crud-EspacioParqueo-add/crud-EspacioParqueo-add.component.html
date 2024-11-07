@@ -1,0 +1,62 @@
+<form [formGroup]="formsRegistra" (ngSubmit)="registra()">
+  <div class="mat-dialog-content">
+    <div class="row">
+      <mat-toolbar color="primary">
+        <span>Registrar Espacio de parqueo</span>
+      </mat-toolbar>
+    </div>
+    <br>
+    <div class="row" style="margin-top: 3%">
+      <!-- Ubicación de parqueo -->
+      <div class="row">
+        <mat-form-field class="col-md-4">
+          <mat-label>Ubicación parqueo</mat-label>
+          <mat-select formControlName="validaParqueo">
+            <mat-option value="-1">[Seleccione]</mat-option>
+            <mat-option *ngFor="let x of lstParqueo" [value]="x.idParqueo">
+              {{ x.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-hint style="color: red" *ngIf="formsRegistra.get('validaParqueo')?.touched && formsRegistra.get('validaParqueo')?.hasError('required')">
+            El Parqueo es requerido
+          </mat-hint>
+        </mat-form-field>
+
+        <!-- Tipo espacio -->
+        <mat-form-field class="col-md-4">
+          <mat-label>Tipo espacio</mat-label>
+          <mat-select formControlName="tipoEspacio">
+            <mat-option value="-1">[Seleccione]</mat-option>
+            <mat-option *ngFor="let tipoEspacio of lstTiposEspacio" [value]="tipoEspacio.id">
+              {{ tipoEspacio.tipoEspacio }} <!-- Mostrar el tipo de espacio -->
+            </mat-option>
+          </mat-select>
+          <mat-hint style="color: red" *ngIf="formsRegistra.get('tipoEspacio')?.touched && formsRegistra.get('tipoEspacio')?.hasError('required')">
+            El Tipo de espacio es requerido
+          </mat-hint>
+        </mat-form-field>
+
+        <!-- Número de espacio -->
+        <mat-form-field class="col-md-4">
+          <mat-label>Número de espacio</mat-label>
+          <input matInput type="number" formControlName="numeroEspacio">
+          <mat-hint style="color: red" *ngIf="formsRegistra.get('numeroEspacio')?.touched">
+            <span *ngIf="formsRegistra.get('numeroEspacio')?.hasError('required')">
+              El Número de espacio es requerido
+            </span>
+            <span *ngIf="formsRegistra.get('numeroEspacio')?.hasError('min')">
+              El número de espacio debe ser mayor a 0
+            </span>
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <br>
+      <div mat-dialog-actions align="center">
+        <button mat-raised-button type="submit" color="primary" [disabled]="formsRegistra.invalid">
+          Registrar
+        </button>
+        <button mat-button color="primary" (click)="cerrarDialogo()">Salir</button>
+      </div>
+    </div>
+  </div>
+</form>

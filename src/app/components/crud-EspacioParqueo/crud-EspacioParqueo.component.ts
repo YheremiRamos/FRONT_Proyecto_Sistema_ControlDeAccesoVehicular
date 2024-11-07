@@ -10,8 +10,11 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { AppMaterialModule } from '../../app.material.module';
 import { MenuComponent } from '../../menu/menu.component';
 
+import { MatDialog } from '@angular/material/dialog';
+import { CrudEspacioParqueoAddComponent } from '../crud-EspacioParqueo-add/crud-EspacioParqueo-add.component';
+
 @Component({
-  selector: 'app-crud-espacio-parqueo',
+  selector: 'app-crudEspacio-parqueo',
   standalone: true,
   imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], 
   templateUrl: './crud-EspacioParqueo.component.html',
@@ -24,15 +27,18 @@ export class CrudEspacioParqueoComponent implements OnInit {
 
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
   filtro: string = ''; // Para el filtro de búsqueda
-  displayedColumns: string[] = ['idEspacio', 'nombre', 'descripcion', 'estado', 'acciones'];
+  displayedColumns: string[] = ['idEspacio', 'idParqueo', 'tipoEspacio', 'numeroEspacio', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<any>([]);
 
 
 
+    
 
   constructor(
     private fb: FormBuilder,
-    private espacioParqueoService: EspacioParqueoService
+    private dialogService: MatDialog,
+    private espacioParqueoService: EspacioParqueoService,
+    private espacioService: EspacioParqueoService,
   ) {}
 
   ngOnInit(): void {
@@ -50,10 +56,20 @@ export class CrudEspacioParqueoComponent implements OnInit {
   }
 
   // Función para abrir el formulario de registro
-  openAddDialog(): void {
-    this.showForm = true; // Muestra el formulario
-  }
+  openAddDialog(){
+    console.log(">>> openAddDialog [ini]");
+    const dialogo = this.dialogService.open(CrudEspacioParqueoAddComponent);
+    dialogo.afterClosed().subscribe(
 
+          x => {
+               console.log(">>> x >> "  +  x); 
+               if (x === 1){
+                  this.refreshTable();
+               }
+          }
+    );
+    console.log(">>> openAddDialog [fin]");
+}
   // Función para cerrar el formulario
   closeForm(): void {
     this.showForm = false; // Oculta el formulario
@@ -70,7 +86,7 @@ export class CrudEspacioParqueoComponent implements OnInit {
 
   // Función para cargar los espacios de parqueo
   cargarEspaciosParqueo(): void {
-    this.espacioParqueoService.obtenerEspaciosParqueo(1).subscribe({
+    this.espacioParqueoService.obtenerEspaciosParqueo().subscribe({
       next: (data) => {
         this.dataSource.data = data;
       },
