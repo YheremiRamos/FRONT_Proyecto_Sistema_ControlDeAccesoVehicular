@@ -16,4 +16,21 @@ export class EspacioParqueoService {
    listarEspaciosPorIdParqueo(idParqueo: number): Observable<EspacioParqueo[]>{
         return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/listarEspaciosIdParqueo/${idParqueo}`);
     }
+
+
+
+ // Método para eliminar un espacio de parqueo
+ eliminarEspacioParqueo(id: number): Observable<any> {
+    return this.http.delete(`/api/espacios-parqueo/${id}`);
+  }
+
+  // Método para obtener los espacios de parqueo
+  obtenerEspaciosParqueo(idParqueo: number): Observable<EspacioParqueo[]>{
+    return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/listarEspaciosIdParqueo/${idParqueo}`);
+  }
+
+  // Otros métodos relacionados con los espacios de parqueo
+
+
+
 }
