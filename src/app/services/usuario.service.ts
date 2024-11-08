@@ -31,7 +31,7 @@ export class UsuarioService {
         .set("identificador", identificador)
   
       return this.http.get(baseUrlConsultaUsuario + "/buscarClientePorDni", { params });
-    }
+    } 
 
   listaTipoUsuario():Observable<TipoUsuario[]>{
     return this.http.get<TipoUsuario[]>(baseUrlConsultaUsuario+"/listarTipoUsuario");

@@ -28,6 +28,8 @@ import { forkJoin } from 'rxjs';
 export class AgregarIngresoComponent implements OnInit {
   espacioForm = this.formBuilder.group({
     espacio: ['', Validators.required],
+
+
   });
 
   objAccesoVehicular: AccesoVehicular = {
@@ -48,6 +50,20 @@ export class AgregarIngresoComponent implements OnInit {
     }
   };
   
+  objAcceso: AccesoVehicular = {
+    cliente: {
+
+      idCliente: 5 // Añadir idCliente para evitar el error en el acceso
+    },
+    placaVehiculo: "EE-000",
+    parqueo: {
+      idParqueo: 1 // Añadir idParqueo para evitar el error en el acceso
+    },
+    espacio: {
+      numeroEspacio: 0,
+      idEspacio: 5 // Añadir idEspacio para evitar el error en el acceso
+    }
+  }
 
   formRegistraUsuario = this.formBuilder.group({
     idCliente: [0], // Campo oculto que contiene el ID del cliente
@@ -65,9 +81,10 @@ export class AgregarIngresoComponent implements OnInit {
   formRegistraVehiculo = this.formBuilder.group({
     tipoVehiculo: ['', Validators.min(1)],
     placa: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]],
-    cantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]], 
-    espacio: [{ value: '--', disabled: true }, []], 
+    cantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]],
+    espacio: [0, []], 
   });
+  
 
   objetosEspaciosPP: EspacioParqueo[] = [];
   objetosEspaciosPS: EspacioParqueo[] = [];
@@ -163,13 +180,20 @@ export class AgregarIngresoComponent implements OnInit {
     );
   }
   
+
+
+
+
   guardarDatos() {
+    console.log("Iniciando guardarDatos...");
+
     // Asignar IDs directamente a los objetos de acceso vehicular
     this.objAccesoVehicular = {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
-      parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value || 0 },
-      espacio: { idEspacio: this.formRegistraUsuario.get('idEspacio')?.value || 0 },
+      parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value ||  0},
+      espacio: { idEspacio: Number(this.formRegistraVehiculo.get('espacio')?.value) || 0 },
+
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
   
@@ -179,34 +203,34 @@ export class AgregarIngresoComponent implements OnInit {
     const espacio = this.formRegistraVehiculo.get('espacio')?.value;
   
     // Verificar si es necesario hacer las solicitudes
-    const requests = [];
+    const requests = [0];
    // Llama a los métodos para obtener y asignar IDs solo si no se han asignado aún
-     if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
-       const dni = this.formRegistraUsuario.get('dni')?.value;
-       if (dni) {
-         this.obtenerClienteId(dni);
+      if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
+        const dni = this.formRegistraUsuario.get('dni')?.value;
+        if (dni) {
+          this.obtenerClienteId(dni);
+        }
       }
-     }
 
-     if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
-      const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
-       if (tipoVehiculo) {
-         this.obtenerParqueoId(tipoVehiculo);
-     }
-     }
+      if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
+        const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
+        if (tipoVehiculo) {
+          this.obtenerParqueoId(tipoVehiculo);
+      }
+      }
 
-    if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
-     const espacio = this.formRegistraVehiculo.get('espacio')?.value;
-      if (espacio) {
-        this.obtenerEspacioId(Number(espacio));
-}
+      if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
+      const espacio = this.formRegistraVehiculo.get('espacio')?.value;
+        if (espacio) {
+          this.obtenerEspacioId(Number(espacio));
+  }
   
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
         (responses: any[]) => {
           // Asignar las respuestas de las peticiones a los IDs correspondientes
           if (responses[0]) {
-            this.formRegistraUsuario.patchValue({ idCliente: responses[0] ?? 0 });
+            this.formRegistraUsuario.patchValue({ idCliente: responses[0] ??  0});
           }
           if (responses[1]) {
             this.formRegistraUsuario.patchValue({ idParqueo: responses[1] ?? 0 });
@@ -216,7 +240,7 @@ export class AgregarIngresoComponent implements OnInit {
           }
   
           // Ahora que tenemos todos los IDs, procedemos a realizar el registro
-          this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
+          this.ingresoVehicularService.registrarAccesoVehicular(this.objAcceso).subscribe({
             next: (response) => {
               Swal.fire({
                 icon: 'info',
@@ -228,11 +252,15 @@ export class AgregarIngresoComponent implements OnInit {
             error: (error) => {
               Swal.fire({
                 icon: 'error',
-                title: 'Error',
-                text: 'Ocurrió un error al registrar el acceso vehicular.',
+                title: 'error en el registro',
+                text: 'Registro no completado.',
               });
               console.error('Error en el registro:', error);
               console.log('Registro DATOS MAL:', this.objAccesoVehicular);
+              console.log('Registro DATOS MALassdsad:', this.objAcceso);
+              console.log('Registro DATOS MALasdasdsad:', this.formRegistraUsuario);
+
+
             },
             complete: () => {
               console.log('Proceso de registro completado.');
@@ -241,7 +269,18 @@ export class AgregarIngresoComponent implements OnInit {
         },
         (error) => {
           console.error('Error en las solicitudes:', error);
-          Swal.fire('Error', 'Ocurrió un error al obtener los datos necesarios.', 'error');
+          console.log('Registro DATOS MAL:', this.objAccesoVehicular);
+
+          // Swal.fire('Error', 'Ocurrió un error al obtener los datos necesarios.', 'error');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Tienes un error hermanito ',
+          });
+          console.error('Error en el registro:', error);
+          console.log('Registro DATOS MAL:', this.objAccesoVehicular);
+          console.log('Registro DATOS MALassdsad:', this.objAcceso);
+          console.log('Registro DATOS MALasdasdsad:', this.formRegistraUsuario);
         }
       );
     } else {
@@ -270,139 +309,18 @@ export class AgregarIngresoComponent implements OnInit {
       });
     }
   }
-
-
-
-
-//   guardarDatos() {
-    
-//     // Asignar solo IDs en lugar de objetos completos
-//     this.objAccesoVehicular = {
-//       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
-//       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
-//       parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value || 0 },
-//       espacio: { idEspacio: this.formRegistraUsuario.get('idEspacio')?.value || 0 },
-//       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
-//     };
-
-
-//     // Llama a los métodos para obtener y asignar IDs solo si no se han asignado aún
-//     if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
-//       const dni = this.formRegistraUsuario.get('dni')?.value;
-//       if (dni) {
-//         this.obtenerClienteId(dni);
-//       }
-//     }
-
-//     if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
-//       const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
-//       if (tipoVehiculo) {
-//         this.obtenerParqueoId(tipoVehiculo);
-//       }
-//     }
-
-//     if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
-//       const espacio = this.formRegistraVehiculo.get('espacio')?.value;
-//       if (espacio) {
-//         this.obtenerEspacioId(Number(espacio));
-//       }
-// }
-
-//     this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
-//         next: (response) => {
-//             Swal.fire({
-//                 icon: 'info',
-//                 title: 'Resultado del Registro',
-//                 text: response.mensaje,
-//             });
-//             console.log('Registro completado:', this.objAccesoVehicular);
-//         },
-//         error: (error) => {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Error',
-//                 text: 'Ocurrió un error al registrar el acceso vehicular.',
-//             });
-//             console.error('Error en el registro:', error);
-//             console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-//         },
-//         complete: () => {
-//             console.log('Proceso de registro completado.');
-//         }
-//     });
-// }
-
-
-
-//   guardarDatos() {
-//     // Formatear las fechas antes de asignarlas
-//     const currentDate = new Date();
-//     this.objAccesoVehicular.fechaRegistro = this.formatDate(currentDate);
-//     this.objAccesoVehicular.fechaActualizacion = this.formatDate(currentDate);
-
-//     //CLIENTE
-//     if (this.objAccesoVehicular.cliente ) {
-//       this.objAccesoVehicular.cliente.identificador = this.formRegistraUsuario.get('dni')?.value || '';
-//       this.objAccesoVehicular.cliente.nombres = this.formRegistraUsuario.get('nombres')?.value || '';
-//       this.objAccesoVehicular.cliente.apellidos = this.formRegistraUsuario.get('apellidos')?.value || '';
-//       this.objAccesoVehicular.cliente.telefono = this.formRegistraUsuario.get('telefono')?.value || '';
-//   } else {
-//       // Si cliente no existe, inicializarlo
-//       this.objAccesoVehicular.cliente = {
-//           identificador: this.formRegistraUsuario.get('dni')?.value || '',
-//           nombres: this.formRegistraUsuario.get('nombres')?.value || '',
-//           apellidos: this.formRegistraUsuario.get('apellidos')?.value || '',
-//           telefono: this.formRegistraUsuario.get('telefono')?.value || '',
-//       };
-//   }
-
-//     //VEHICULO
-//     if (this.objAccesoVehicular.espacio) {
-//       this.objAccesoVehicular.espacio.tipoEspacio = this.formRegistraUsuario.get('tipoUsuario')?.value || '';
-//       this.objAccesoVehicular.espacio.numeroEspacio = Number(this.formRegistraUsuario.get('espacio')?.value || '')
-//     }
-
-//     this.objAccesoVehicular.placaVehiculo = this.formRegistraVehiculo.get('placa')?.value || '';
-
-
-//     // Realizar el registro
-//     this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
-//       next: (response) => {
-//           Swal.fire({
-//               icon: 'info',
-//               title: 'Resultado del Registro',
-//               text: response.mensaje,
-//           });
-//           console.log('Registro completado:', this.objAccesoVehicular);
-//       },
-//       error: (error) => {
-//           Swal.fire({
-//               icon: 'error',
-//               title: 'Error',
-//               text: 'Ocurrió un error al registrar el acceso vehicular.',
-//           });
-//           console.error('Error en el registro:', error);
-//           console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-//       },
-//       complete: () => {
-//           console.log('Proceso de registro completado.');
-//       }
-//   });
-  
-// }
+}
 
 // Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
 private formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
-  
 
   buscarPorDni() {
     this.usuarioService.buscarCliente(this.varDni).subscribe(
@@ -434,7 +352,9 @@ private formatDate(date: Date): string {
     this.formRegistraUsuario.patchValue({ nombres: '', apellidos: '' });
     this.varNombres = '';
     this.varApellidos = '';
-  }
+  }// Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
+
+
 
   // loadWatsonAssistant(): void {
   //   (window as any).watsonAssistantChatOptions = {
