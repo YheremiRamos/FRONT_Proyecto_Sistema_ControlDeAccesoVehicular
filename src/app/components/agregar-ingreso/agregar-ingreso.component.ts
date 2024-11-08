@@ -179,7 +179,7 @@ export class AgregarIngresoComponent implements OnInit {
     const espacio = this.formRegistraVehiculo.get('espacio')?.value;
   
     // Verificar si es necesario hacer las solicitudes
-    const requests = [];
+    const requests = [0];
    // Llama a los métodos para obtener y asignar IDs solo si no se han asignado aún
      if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
        const dni = this.formRegistraUsuario.get('dni')?.value;
@@ -271,7 +271,7 @@ export class AgregarIngresoComponent implements OnInit {
     }
   }
 
-
+}
 
 
 //   guardarDatos() {
@@ -405,7 +405,7 @@ private formatDate(date: Date): string {
   
 
   buscarPorDni() {
-    this.usuarioService.buscarCliente(this.varDni).subscribe(
+    this.usuarioService.buscarUsuarioDni(this.varDni).subscribe(
       x => {
         this.dataSource = x;
 
