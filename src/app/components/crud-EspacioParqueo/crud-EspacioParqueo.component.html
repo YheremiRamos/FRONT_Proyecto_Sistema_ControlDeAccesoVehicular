@@ -1,0 +1,66 @@
+<!-- crud-EspacioParqueo.component.html -->
+<div class="main-container">
+    <app-menu></app-menu>
+    <div class="content">
+      <div class="row">
+        <mat-toolbar color="primary">
+          <span>CRUD Espacios de Parqueo</span>
+        </mat-toolbar>
+      </div>
+
+      <div class="inputContent" style="margin-top: 3%; display: flex; align-items: center;">
+        <mat-form-field class="col-md-4" appearance="fill">
+          <mat-label>Nombre del Espacio</mat-label>
+          <input matInput [(ngModel)]="filtro" placeholder="Filtrar por nombre" />
+        </mat-form-field>
+  
+        <div class="col-md-8" style="display: flex; justify-content: space-between; gap: 10px;">
+          <button mat-raised-button color="primary" style="width: 150px;" (click)="refreshTable()">Filtrar</button>
+          <button mat-raised-button color="accent" style="width: 150px;" (click)="openAddDialog()">Registrar</button>
+        </div>
+      </div>
+  
+      <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Columnas -->
+        <ng-container matColumnDef="idEspacio">
+          <mat-header-cell *matHeaderCellDef>Código de espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.idEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="idParqueo">
+          <mat-header-cell *matHeaderCellDef>Código de parqueo</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.idParqueo }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="tipoEspacio">
+          <mat-header-cell *matHeaderCellDef>Tipo espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="numeroEspacio">
+          <mat-header-cell *matHeaderCellDef>Número de espacio</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.numeroEspacio }}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="estado">
+          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.estado }}</mat-cell>
+        </ng-container>
+      
+
+  
+        <ng-container matColumnDef="acciones">
+          <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+          <mat-cell *matCellDef="let aux">
+            <button mat-icon-button color="accent" >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarEspacioParqueo(aux.idEspacio)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
