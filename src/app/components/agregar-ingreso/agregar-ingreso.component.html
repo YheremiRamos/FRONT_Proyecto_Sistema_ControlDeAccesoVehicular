@@ -5,7 +5,7 @@
             <mat-horizontal-stepper [linear]="true" #stepper >
                 
                 <!-- Paso 1: Datos del propietario -->
-                <mat-step [stepControl]="formRegistraUsuario" label="Propietario" optional="true" >
+                <mat-step [stepControl]="formRegistraUsuario" label="Propietario"  >
                     <form [formGroup]="formRegistraUsuario">
                         <div class="row" >
                             <mat-toolbar style="background: #4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;">
@@ -134,7 +134,7 @@
 
 
                 <!-- Paso 2: Datos del vehículo (incluye Espacio asignado) -->
-                        <mat-step [stepControl]="formRegistraVehiculo"  label="Vehículo"  optional="true">
+                        <mat-step [stepControl]="formRegistraVehiculo"  label="Vehículo"  >
                             <form [formGroup]="formRegistraVehiculo">
                             <div class="row">
                                 <mat-toolbar style="background: #4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;">
@@ -331,7 +331,7 @@
                         </mat-step>
 
                     <!--DATOS DEDEL REGISTRO-->
-                <mat-step [stepControl]="formRegistraVehiculo" label="Registro" optional="true">
+                <mat-step [stepControl]="formRegistraVehiculo" label="Registro">
                     <div class="row">
                         <mat-toolbar style="background:#4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;"> 
                         <h2>Datos del Registro</h2>

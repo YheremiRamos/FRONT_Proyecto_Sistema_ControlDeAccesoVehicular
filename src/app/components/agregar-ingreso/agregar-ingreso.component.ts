@@ -136,55 +136,7 @@ export class AgregarIngresoComponent implements OnInit {
       });
 
 
-guardarDatos() {
-  const currentDate = new Date();
-  this.objAccesoVehicular.fechaRegistro = this.formatDate(currentDate);
-  this.objAccesoVehicular.fechaActualizacion = this.formatDate(currentDate);
 
-  // CLIENTE
-  this.objAccesoVehicular.cliente = {
-      identificador: this.formRegistraUsuario.get('dni')?.value || '',
-      nombres: this.formRegistraUsuario.get('nombres')?.value || '',
-      apellidos: this.formRegistraUsuario.get('apellidos')?.value || '',
-      telefono: this.formRegistraUsuario.get('telefono')?.value || ''
-  };
-  
-
-  // ESPACIO
-  this.objAccesoVehicular.espacio = {
-      tipoEspacio: this.formRegistraVehiculo.get('tipoVehiculo')?.value || '',
-      numeroEspacio: Number(this.formRegistraUsuario.get('espacio')?.value || '')
-  };
-
-  // USUARIO
-  this.objAccesoVehicular.usuario = {
-      idUsuario: this.tokenService.getUserId(),
-      // Añade más campos si es necesario
-  };
-
-  // PARQUEO y demás propiedades
-  this.objAccesoVehicular.parqueo = {
-      idParqueo: this.objParqueo.idParqueo,
-      // Añade las propiedades de parqueo necesarias
-  };
-
-  // Vehículo
-  this.objAccesoVehicular.placaVehiculo = this.formRegistraVehiculo.get('placa')?.value || '';
-
-    this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe(
-  {
-          next: (response) => {
-              Swal.fire({ icon: 'info', title: 'Resultado del Registro', text: response.mensaje });
-              console.log('Registro completado:', this.objAccesoVehicular);
-          },
-          error: (error) => {
-              Swal.fire({ icon: 'error', title: 'Error', text: 'Ocurrió un error al registrar el acceso vehicular.' });
-              console.error('Error en el registro:', error);
-              console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-          },
-          complete: () => console.log('Proceso de registro completado.')
-      });
-}
 
 
   }
@@ -217,7 +169,9 @@ guardarDatos() {
     );
   }
     
-  
+
+
+
   guardarDatos() {
     console.log("Iniciando guardarDatos...");
   
@@ -226,39 +180,23 @@ guardarDatos() {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
       parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value || 0 },
-      espacio: { idEspacio: this.espacioSeleccionado},
+      espacio: { idEspacio: this.espacioSeleccionado },
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
   
-
     console.log("PRIMERA DEPURACION");
     console.log("Cliente ID inicial:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Cliente:", this.objAccesoVehicular.cliente);
     console.log("Usuario:", this.objAccesoVehicular.usuario);
     console.log("Parqueo:", this.objAccesoVehicular.parqueo);
     console.log("Espacio:", this.objAccesoVehicular.espacio);
-    console.log("Valor de espacio antes de la solicitud:", this.formRegistraVehiculo.get('espacio')?.value);
-
+  
     const requests = [];
   
     if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
       const dni = this.formRegistraUsuario.get('dni')?.value;
       if (dni) {
         requests.push(this.utilService.obtenerIdCliente(dni));
-
-    // Llamadas en paralelo usando forkJoin
-    const dni = this.formRegistraUsuario.get('dni')?.value;
-    const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
-    const espacio = this.formRegistraVehiculo.get('espacio')?.value;
-  
-    // Verificar si es necesario hacer las solicitudes
-    const requests = [0];
-   // Llama a los métodos para obtener y asignar IDs solo si no se han asignado aún
-     if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
-       const dni = this.formRegistraUsuario.get('dni')?.value;
-       if (dni) {
-         this.obtenerClienteId(dni);
-
       }
     }
   
@@ -286,33 +224,25 @@ guardarDatos() {
         (resultados) => {
           console.log("Resultados de forkJoin:", resultados);
   
-        // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
-          if (resultados[0]) {
-            this.objAccesoVehicular.cliente = this.objAccesoVehicular.cliente || {}; // Inicializar si es undefined
-            this.objAccesoVehicular.cliente.idCliente = resultados[0];
-            console.log("ID Cliente asignado:", resultados[0]);
-          }
+          // Asignar los resultados a los campos correspondientes
+              // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
+              if (resultados[0]) {
+                this.objAccesoVehicular.cliente = this.objAccesoVehicular.cliente || {}; // Inicializar si es undefined
+                this.objAccesoVehicular.cliente.idCliente = resultados[0];
+                console.log("ID Cliente asignado:", resultados[0]);
+              }
 
-          if (resultados[1]) {
-            this.objAccesoVehicular.parqueo = this.objAccesoVehicular.parqueo || {}; // Inicializar si es undefined
-            this.objAccesoVehicular.parqueo.idParqueo = resultados[1];
-            console.log("ID Parqueo asignado:", resultados[1]);
-          }
-          
-          if (resultados[2]) {
-            this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
-            this.objAccesoVehicular.espacio.idEspacio = resultados[2];
-            console.log("ID Espacio asignado:", resultados[2]);
-          } else {
-            console.log("No se recibió ID para el espacio.");
-          }
-          
+              if (resultados[1]) {
+                this.objAccesoVehicular.parqueo = this.objAccesoVehicular.parqueo || {}; // Inicializar si es undefined
+                this.objAccesoVehicular.parqueo.idParqueo = resultados[1];
+                console.log("ID Parqueo asignado:", resultados[1]);
+              }
 
-          // if (resultados[2]) {
-          //   this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
-          //   this.objAccesoVehicular.espacio.idEspacio = resultados[2];
-          //   console.log("ID Espacio asignado:", resultados[2]);
-          // }
+              if (resultados[2]) {
+                this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
+                this.objAccesoVehicular.espacio.idEspacio = resultados[2];
+                console.log("ID Espacio asignado:", resultados[2]);
+              }
 
   
           // Registrar el acceso vehicular con los IDs asignados
@@ -378,6 +308,7 @@ guardarDatos() {
       });
     }
   }
+  
 
 // Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
 private formatDate(date: Date): string {

@@ -14,7 +14,7 @@ export class EspacioParqueoService {
     constructor(private http: HttpClient){}
 
    listarEspaciosPorIdParqueo(idParqueo: number): Observable<EspacioParqueo[]>{
-        return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/listarEspaciosIdParqueo/{idParqueo}`);
+        return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/listarEspaciosIdParqueo/`+idParqueo);
     }
 
 
