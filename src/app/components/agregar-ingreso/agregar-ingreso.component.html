@@ -60,7 +60,7 @@
                                             </span>
                                         </mat-hint>
                                     </mat-form-field>
-                                    <button mat-raised-button type="button" color="primary" (click)="buscarPorDni()">Buscar</button>
+                                    <button mat-raised-button type="button" color="primary" (click)="buscarClientePorDni()">Buscar</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -241,23 +241,23 @@
                                         <h5>Primer nivel (Principal)</h5>
                                         <div class="parking-spaces">
                                             <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPP"
-                                                    (click)="seleccionarEspacio(espacio)"
+                                                    (click)="seleccionarEspacio(+espacio)"
                                                     [ngClass]="{
-                                                        'selected': espacio === espacioSeleccionado
+                                                        'selected': +espacio === espacioSeleccionado
                                                         }" >
                                             {{ espacio }} 
                                             </button>
                                             <button class="gt" *ngFor="let espacio of espacioGerentePP"
-                                                    (click)="seleccionarEspacio(espacio)"
+                                                    (click)="seleccionarEspacio(+espacio)"
                                                     [ngClass]="{
-                                                        'selected': espacio === espacioSeleccionado
+                                                        'selected': +espacio === espacioSeleccionado
                                                         }">
                                             {{ espacio }}
                                             </button>
                                             <button *ngFor="let espacio of espaciosGeneralPP"
-                                                    (click)="seleccionarEspacio(espacio)"
+                                                    (click)="seleccionarEspacio(+espacio)"
                                                     [ngClass]="{
-                                                        'selected': espacio === espacioSeleccionado
+                                                        'selected': +espacio === espacioSeleccionado
                                                         }">
                                             {{ espacio }}
                                             </button>
@@ -268,23 +268,23 @@
                                             <h5>Semi-Sótano</h5>
                                             <div class="parking-spaces">
                                                 <button class="gt" *ngFor="let espacio of espacioGerentePS"
-                                                        (click)="seleccionarEspacio(espacio)"
+                                                        (click)="seleccionarEspacio(+espacio)"
                                                         [ngClass]="{
-                                                            'selected': espacio === espacioSeleccionado
+                                                            'selected': +espacio === espacioSeleccionado
                                                             }">
                                                 {{ espacio }}
                                                 </button>
                                                 <button *ngFor="let espacio of espaciosGeneralPS"
-                                                        (click)="seleccionarEspacio(espacio)"
+                                                        (click)="seleccionarEspacio(+espacio)"
                                                         [ngClass]="{
-                                                            'selected': espacio === espacioSeleccionado
+                                                            'selected': +espacio === espacioSeleccionado
                                                             }">
                                                 {{ espacio }}
                                                 </button>
                                                 <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPS"
-                                                    (click)="seleccionarEspacio(espacio)"
+                                                    (click)="seleccionarEspacio(+espacio)"
                                                     [ngClass]="{
-                                                        'selected': espacio === espacioSeleccionado
+                                                        'selected': +espacio === espacioSeleccionado
                                                         }" >
                                                 {{ espacio }} 
                                                 </button>
@@ -295,23 +295,23 @@
                                             <h5>Sótano</h5>
                                             <div class="parking-spaces">
                                                 <button class="gt" *ngFor="let espacio of espacioGerentePSS"
-                                                        (click)="seleccionarEspacio(espacio)"
+                                                        (click)="seleccionarEspacio(+espacio)"
                                                         [ngClass]="{
-                                                            'selected': espacio === espacioSeleccionado
+                                                            'selected': +espacio === espacioSeleccionado
                                                             }">
                                                 {{ espacio }}
                                                 </button>
                                                 <button *ngFor="let espacio of espaciosGeneralPSS"
-                                                        (click)="seleccionarEspacio(espacio)"
+                                                        (click)="seleccionarEspacio(+espacio)"
                                                         [ngClass]="{
-                                                            'selected': espacio === espacioSeleccionado
+                                                            'selected': +espacio === espacioSeleccionado
                                                             }">
                                                 {{ espacio }}
                                                 </button>
                                                 <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPSS"
-                                                    (click)="seleccionarEspacio(espacio)"
+                                                    (click)="seleccionarEspacio(+espacio)"
                                                     [ngClass]="{
-                                                        'selected': espacio === espacioSeleccionado
+                                                        'selected': +espacio === espacioSeleccionado
                                                         }" >
                                                 {{ espacio }} 
                                                 </button>
@@ -322,6 +322,7 @@
                                 </div>
                             </div>
                         
+                            
                             <div class="row btnEnd">
                                 <button mat-raised-button color="primary" (click)="stepper.previous()">Atrás</button>
                                 <button mat-raised-button (click)="stepper.next()" [disabled]="habilitarBtnSiguienteRegistroVehiculo()">Siguiente <mat-icon>arrow_forward</mat-icon></button>
@@ -389,7 +390,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                            <p><strong>Espacio asignado:</strong> {{ espacioSeleccionado }}</p>
+                            <p><strong>Espacio asignado:</strong> {{ espacioSeleccionado}}</p>
                             </div>
                         </div>
                         <div class="row">

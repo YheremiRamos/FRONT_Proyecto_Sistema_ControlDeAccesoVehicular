@@ -26,12 +26,12 @@ export class UsuarioService {
   }
 
     //Buscar Cliente por Identificador
-    buscarCliente(identificador: string): Observable<any> {
+    buscarClientePorDni(identificador: string): Observable<any> {
       const params = new HttpParams()
         .set("identificador", identificador)
   
       return this.http.get(baseUrlConsultaUsuario + "/buscarClientePorDni", { params });
-    }
+    } 
 
   listaTipoUsuario():Observable<TipoUsuario[]>{
     return this.http.get<TipoUsuario[]>(baseUrlConsultaUsuario+"/listarTipoUsuario");
