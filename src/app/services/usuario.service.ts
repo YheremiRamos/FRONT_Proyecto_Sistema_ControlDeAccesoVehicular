@@ -26,7 +26,7 @@ export class UsuarioService {
   }
 
     //Buscar Cliente por Identificador
-    buscarCliente(identificador: string): Observable<any> {
+    buscarClientePorDni(identificador: string): Observable<any> {
       const params = new HttpParams()
         .set("identificador", identificador)
   

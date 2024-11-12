@@ -49,21 +49,6 @@ export class AgregarIngresoComponent implements OnInit {
       idEspacio: 0 // Añadir idEspacio para evitar el error en el acceso
     }
   };
-  
-  objAcceso: AccesoVehicular = {
-    cliente: {
-
-      idCliente: 5 // Añadir idCliente para evitar el error en el acceso
-    },
-    placaVehiculo: "EE-000",
-    parqueo: {
-      idParqueo: 1 // Añadir idParqueo para evitar el error en el acceso
-    },
-    espacio: {
-      numeroEspacio: 0,
-      idEspacio: 5 // Añadir idEspacio para evitar el error en el acceso
-    }
-  }
 
   formRegistraUsuario = this.formBuilder.group({
     idCliente: [0], // Campo oculto que contiene el ID del cliente
@@ -102,7 +87,7 @@ export class AgregarIngresoComponent implements OnInit {
   espacioGerentePSS: string[] = [];
   espaciosGeneralPSS: string[] = [];
 
-  espacioSeleccionado: string = '--';
+  espacioSeleccionado: number = 0;
   dataSource: any;
   filtro: string = '';
   varDni: string = '';
@@ -179,68 +164,94 @@ export class AgregarIngresoComponent implements OnInit {
       error => console.error('Error al obtener idEspacio:', error)
     );
   }
+    
   
-
-
-
-
   guardarDatos() {
     console.log("Iniciando guardarDatos...");
-
-    // Asignar IDs directamente a los objetos de acceso vehicular
+  
+    // Inicializar objAccesoVehicular con los datos del formulario, asignando IDs si están presentes
     this.objAccesoVehicular = {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
-      parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value ||  0},
-      espacio: { idEspacio: Number(this.formRegistraVehiculo.get('espacio')?.value) || 0 },
-
+      parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value || 0 },
+      espacio: { idEspacio: this.espacioSeleccionado},
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
   
-    // Llamadas en paralelo usando forkJoin
-    const dni = this.formRegistraUsuario.get('dni')?.value;
-    const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
-    const espacio = this.formRegistraVehiculo.get('espacio')?.value;
+    console.log("PRIMERA DEPURACION");
+    console.log("Cliente ID inicial:", this.objAccesoVehicular.cliente?.idCliente);
+    console.log("Cliente:", this.objAccesoVehicular.cliente);
+    console.log("Usuario:", this.objAccesoVehicular.usuario);
+    console.log("Parqueo:", this.objAccesoVehicular.parqueo);
+    console.log("Espacio:", this.objAccesoVehicular.espacio);
+    console.log("Valor de espacio antes de la solicitud:", this.formRegistraVehiculo.get('espacio')?.value);
+
+    const requests = [];
   
-    // Verificar si es necesario hacer las solicitudes
-    const requests = [0];
-   // Llama a los métodos para obtener y asignar IDs solo si no se han asignado aún
-      if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
-        const dni = this.formRegistraUsuario.get('dni')?.value;
-        if (dni) {
-          this.obtenerClienteId(dni);
-        }
+    if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
+      const dni = this.formRegistraUsuario.get('dni')?.value;
+      if (dni) {
+        requests.push(this.utilService.obtenerIdCliente(dni));
       }
-
-      if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
-        const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
-        if (tipoVehiculo) {
-          this.obtenerParqueoId(tipoVehiculo);
+    }
+  
+    if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
+      const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
+      if (tipoVehiculo) {
+        requests.push(this.utilService.obtenerIdParqueo(tipoVehiculo));
       }
-      }
-
-      if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
+    }
+  
+    if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
       const espacio = this.formRegistraVehiculo.get('espacio')?.value;
-        if (espacio) {
-          this.obtenerEspacioId(Number(espacio));
-  }
+      if (espacio) {
+        requests.push(this.utilService.obtenerIdEspacio(espacio));
+      }
+    }
+  
+    console.log("SEGUNDA DEPURACION");
+    console.log("Cliente ID antes de forkJoin:", this.objAccesoVehicular.cliente?.idCliente);
+    console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueo?.idParqueo);
+    console.log("Espacio ID antes de forkJoin:", this.objAccesoVehicular.espacio?.idEspacio);
   
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
-        (responses: any[]) => {
-          // Asignar las respuestas de las peticiones a los IDs correspondientes
-          if (responses[0]) {
-            this.formRegistraUsuario.patchValue({ idCliente: responses[0] ??  0});
-          }
-          if (responses[1]) {
-            this.formRegistraUsuario.patchValue({ idParqueo: responses[1] ?? 0 });
-          }
-          if (responses[2]) {
-            this.formRegistraUsuario.patchValue({ idEspacio: responses[2] ?? 0 });
-          }
+        (resultados) => {
+          console.log("Resultados de forkJoin:", resultados);
   
-          // Ahora que tenemos todos los IDs, procedemos a realizar el registro
-          this.ingresoVehicularService.registrarAccesoVehicular(this.objAcceso).subscribe({
+        // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
+          if (resultados[0]) {
+            this.objAccesoVehicular.cliente = this.objAccesoVehicular.cliente || {}; // Inicializar si es undefined
+            this.objAccesoVehicular.cliente.idCliente = resultados[0];
+            console.log("ID Cliente asignado:", resultados[0]);
+          }
+
+          if (resultados[1]) {
+            this.objAccesoVehicular.parqueo = this.objAccesoVehicular.parqueo || {}; // Inicializar si es undefined
+            this.objAccesoVehicular.parqueo.idParqueo = resultados[1];
+            console.log("ID Parqueo asignado:", resultados[1]);
+          }
+          
+          if (resultados[2]) {
+            this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
+            this.objAccesoVehicular.espacio.idEspacio = resultados[2];
+            console.log("ID Espacio asignado:", resultados[2]);
+          } else {
+            console.log("No se recibió ID para el espacio.");
+          }
+          
+
+          // if (resultados[2]) {
+          //   this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
+          //   this.objAccesoVehicular.espacio.idEspacio = resultados[2];
+          //   console.log("ID Espacio asignado:", resultados[2]);
+          // }
+
+  
+          // Registrar el acceso vehicular con los IDs asignados
+          console.log("OBJETO PARA REGISTRO DESPUÉS DE forkJoin:", this.objAccesoVehicular);
+          
+          this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
             next: (response) => {
               Swal.fire({
                 icon: 'info',
@@ -252,15 +263,11 @@ export class AgregarIngresoComponent implements OnInit {
             error: (error) => {
               Swal.fire({
                 icon: 'error',
-                title: 'error en el registro',
+                title: 'Error en el registro',
                 text: 'Registro no completado.',
               });
               console.error('Error en el registro:', error);
-              console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-              console.log('Registro DATOS MALassdsad:', this.objAcceso);
-              console.log('Registro DATOS MALasdasdsad:', this.formRegistraUsuario);
-
-
+              console.error('JSON DEL REGISTRO:', this.objAccesoVehicular);
             },
             complete: () => {
               console.log('Proceso de registro completado.');
@@ -268,23 +275,18 @@ export class AgregarIngresoComponent implements OnInit {
           });
         },
         (error) => {
-          console.error('Error en las solicitudes:', error);
-          console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-
-          // Swal.fire('Error', 'Ocurrió un error al obtener los datos necesarios.', 'error');
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Tienes un error hermanito ',
+            text: 'Ocurrió un error al obtener los datos necesarios.',
           });
-          console.error('Error en el registro:', error);
-          console.log('Registro DATOS MAL:', this.objAccesoVehicular);
-          console.log('Registro DATOS MALassdsad:', this.objAcceso);
-          console.log('Registro DATOS MALasdasdsad:', this.formRegistraUsuario);
+          console.error('Error en las peticiones de IDs:', error);
         }
       );
     } else {
-      // Si los IDs ya están disponibles, simplemente registrar
+      // Si no hay requests pendientes, proceder con el registro directamente
+      console.log("No se necesitan peticiones adicionales, registrando acceso vehicular...");
+  
       this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
         next: (response) => {
           Swal.fire({
@@ -297,11 +299,11 @@ export class AgregarIngresoComponent implements OnInit {
         error: (error) => {
           Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Ocurrió un error al registrar el acceso vehicular.',
+            title: 'Error en el registro',
+            text: 'Registro no completado.',
           });
           console.error('Error en el registro:', error);
-          console.log('Registro DATOS MAL:', this.objAccesoVehicular);
+          console.error('JSON DEL REGISTRO:', this.objAccesoVehicular);
         },
         complete: () => {
           console.log('Proceso de registro completado.');
@@ -309,7 +311,7 @@ export class AgregarIngresoComponent implements OnInit {
       });
     }
   }
-}
+  
 
 // Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
 private formatDate(date: Date): string {
@@ -322,31 +324,90 @@ private formatDate(date: Date): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-  buscarPorDni() {
-    this.usuarioService.buscarCliente(this.varDni).subscribe(
-      x => {
-        this.dataSource = x;
 
+
+buscarUsuarioPorDni(){
+  console.log(">>> Filtrar EXCEL [ini]");
+  console.log(">>> varDni: "+ this.varDni);
+
+  this.usuarioService.buscarUsuarioDni(
+
+    
+    this.varDni
+    ).subscribe(
+      (x) => {
+        this.dataSource = x;
+  
+        // Asegurarse de que los datos existan antes de usarlos
         if (this.dataSource && this.dataSource.length > 0) {
-          const usuario = this.dataSource[0];
-          this.formRegistraUsuario.patchValue({ nombres: usuario.nombres, apellidos: usuario.apellidos });
-          this.varNombres = usuario.nombres;
-          this.varApellidos = usuario.apellidos;
+          const usuario = this.dataSource[0]; // Si es una lista, accede al primer usuario
+          
+          // Llenar los campos del formulario con los datos traídos
+          this.formRegistraUsuario.patchValue({
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos
+          });
+          console.log(">>> data: " + usuario.nombres);
         } else {
-          Swal.fire('Por favor registrar los nuevos datos del propietario.');
-          this.formRegistraUsuario.get('nombres')?.enable();
-          this.formRegistraUsuario.get('apellidos')?.enable();
-          this.formRegistraUsuario.patchValue({ nombres: '', apellidos: '' });
-          this.varNombres = '';
-          this.varApellidos = '';
+          console.log(">>> Usuario no encontrado");
+          // Limpiar los campos si no hay resultados
+          this.formRegistraUsuario.patchValue({
+            nombres: '',
+            apellidos: ''
+          });
         }
       },
-      error => {
-        console.error('Error al buscar por DNI: ', error);
+      (error) => {
+        console.log(">>> Error al buscar por DNI: ", error);
         this.limpiarFormulario();
       }
     );
+  
+    console.log(">>> Filtrar [fin]");
   }
+
+    buscarClientePorDni() {
+      // Verificamos el valor de `varDni` antes de hacer la petición
+      console.log('DNI buscado:', this.varDni);
+
+      this.usuarioService.buscarClientePorDni(this.varDni).subscribe(
+        (response) => {
+          this.dataSource = response;
+          console.log('Respuesta del servicio:', this.dataSource);
+
+          if (this.dataSource && this.dataSource.length > 0) {
+            const usuario = this.dataSource[0];
+            console.log('Usuario encontrado:', usuario);
+
+            // Actualizamos los valores del formulario y de las variables
+            this.formRegistraUsuario.patchValue({
+              nombres: usuario.nombres,
+              apellidos: usuario.apellidos,
+            });
+            this.formRegistraUsuario.get('nombres')?.disable();
+            this.formRegistraUsuario.get('apellidos')?.disable();
+
+            this.varNombres = usuario.nombres;
+            this.varApellidos = usuario.apellidos;
+          } else {
+            Swal.fire('Por favor registrar los nuevos datos del propietario.');
+
+            // Habilitamos y limpiamos los campos del formulario
+            this.formRegistraUsuario.get('nombres')?.enable();
+            this.formRegistraUsuario.get('apellidos')?.enable();
+            this.formRegistraUsuario.patchValue({ nombres: '', apellidos: '' });
+
+            this.varNombres = '';
+            this.varApellidos = '';
+          }
+        },
+        (error) => {
+          console.error('Error al buscar por DNI:', error);
+          this.limpiarFormulario();
+        }
+      );
+    }
+
 
   limpiarFormulario() {
     this.formRegistraUsuario.patchValue({ nombres: '', apellidos: '' });
@@ -371,7 +432,11 @@ private formatDate(date: Date): string {
   //   }, 0);
   // }
 
-  seleccionarEspacio(espacio: string) {
+  seleccionarEspacio(espacio: number) {
+    this.espacioSeleccionado = espacio;
+    console.log('Espacio seleccionado:', espacio);
+  }
+  seleccionarEspacioN(espacio: number) {
     this.espacioSeleccionado = espacio;
     console.log('Espacio seleccionado:', espacio);
   }
@@ -461,7 +526,7 @@ private formatDate(date: Date): string {
   }
 
   habilitarBtnSiguienteRegistroVehiculo(){
-    if (this.formRegistraVehiculo.invalid === true || this.espacioSeleccionado === "--") {
+    if (this.formRegistraVehiculo.invalid === true || this.espacioSeleccionado === 0) {
       //console.log("hay campos vacíos en vehículo");
       return true; 
     } else {
