@@ -7,13 +7,14 @@ import { AgregarIngresoComponent } from './components/agregar-ingreso/agregar-in
 //import { CrudEspacioParqueoComponent } from './components/crud-EspacioParqueo/crud-EspacioParqueo.component';
 import { AgregarParqueosComponent } from './components/crud-EspacioParqueo/crud-EspacioParqueo.component';
 import { InfoProblemasIngresoComponent } from './components/info-problemas-ingreso/info-problemas-ingreso.component';
+import { AddSalidaVehicularComponent } from './components/add-salida-vehicular/add-salida-vehicular.component';
 
 
 export const routes: Routes = [
     {path:"verRegistraIngreso", component:AgregarIngresoComponent },
     {path:"verEspacioParqueo", component:AgregarParqueosComponent },
 
-    // {path:"verRegistraSalida", component:AgregarSalidaComponent },
+    {path:"verRegistraSalida", component:AddSalidaVehicularComponent },
 
     {path:"verInfoProblemasIngreso", component:InfoProblemasIngresoComponent},
   

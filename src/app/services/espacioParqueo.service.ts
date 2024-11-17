@@ -19,10 +19,10 @@ export class EspacioParqueoService {
 
 
 
- // Método para eliminar un espacio de parqueo
- eliminarEspacioParqueo(id: number): Observable<any> {
-    return this.http.delete(`/api/espacios-parqueo/${id}`);
-  }
+  // Método para eliminar un espacio de parqueo
+  eliminarEspacioParqueo(id: number): Observable<any> {
+      return this.http.delete(`/api/espacios-parqueo/${id}`);
+    }
 
 
   // Método para obtener todos los espacios de parqueo
