@@ -59,10 +59,10 @@ export class CrudEspacioParqueoComponent implements OnInit {
     dialogo.afterClosed().subscribe(
 
           x => {
-               console.log(">>> x >> "  +  x); 
-               if (x === 1){
+              console.log(">>> x >> "  +  x); 
+              if (x === 1){
                   this.refreshTable();
-               }
+                }
           }
     );
     console.log(">>> openAddDialog [fin]");
