@@ -1,7 +1,7 @@
 <div class="main-container">
     <app-menu></app-menu>
     <div class="content">
-        <div class="container">
+        <div class="container form-container" >
             <h1>Listado de salidas Vehiculares</h1>
     
             <!-- Tabla de Accesos Vehiculares -->
@@ -34,14 +34,27 @@
             <!-- Columna Fecha de Registro -->
             <ng-container matColumnDef="fechaRegistro">
                 <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Registro </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.fechaRegistro }}</mat-cell>
+                <mat-cell *matCellDef="let acceso">
+                    {{ acceso.fechaRegistro | date: 'yyyy/MM/dd HH:mm' }}
+                </mat-cell>
             </ng-container>
-    
-            <!-- Columna Fecha de Actualización -->
-            <ng-container matColumnDef="fechaActualizacion">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Actualización </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.fechaActualizacion }}</mat-cell>
-            </ng-container>
+
+        <ng-container matColumnDef="fechaActualizacion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Actualización </mat-header-cell>
+            <mat-cell *matCellDef="let acceso">
+                <ng-container *ngIf="acceso.fechaActualizacion; else registrarSalidaBtn">
+                    {{ acceso.fechaActualizacion | date: 'yyyy/MM/dd HH:mm' }}
+                </ng-container>
+                <ng-template #registrarSalidaBtn>
+                    <button mat-raised-button color="primary" (click)="registrarSalida(acceso.idAccesoVehicular)">
+                        Registrar Salida
+                    </button>
+                </ng-template>
+            </mat-cell>
+        </ng-container>
+            
+
+            
     
             <!-- Columna Número de Incidencias -->
             <ng-container matColumnDef="numIncidencias">
@@ -50,10 +63,10 @@
             </ng-container>
     
             <!-- Columna Acción de Registrar Salida -->
-            <ng-container matColumnDef="accionSalida">
+            <ng-container matColumnDef="accionIncidencia">
                 <mat-header-cell *matHeaderCellDef> Acción </mat-header-cell>
                 <mat-cell *matCellDef="let acceso">
-                <button mat-raised-button color="primary">Registrar Salida</button>
+                <button mat-raised-button color="primary" (click)="registrarIncidencia(acceso.idAccesoVehicular)" >Registrar Incidencia</button>
                 </mat-cell>
             </ng-container>
     

@@ -97,11 +97,61 @@ agruparPorUbicacion() {
 
 
   ngOnInit(): void {
+<<<<<<< HEAD
+    this.inicializarFormulario();
+    this.cargarEspaciosParqueo();
+  }
+
+  // Inicializa el formulario para registrar o editar los espacios de parqueo
+  inicializarFormulario(): void {
+    this.espacioParqueoForm = this.fb.group({
+      nombre: ['', [Validators.required, Validators.minLength(3)]],
+      descripcion: ['', Validators.required],
+      estado: [true] // Por defecto, activo
+    });
+  }
+
+  // Función para abrir el formulario de registro
+  openAddDialog(){
+    console.log(">>> openAddDialog [ini]");
+    const dialogo = this.dialogService.open(CrudEspacioParqueoAddComponent);
+    dialogo.afterClosed().subscribe(
+
+          x => {
+              console.log(">>> x >> "  +  x); 
+              if (x === 1){
+                  this.refreshTable();
+                }
+          }
+    );
+    console.log(">>> openAddDialog [fin]");
+}
+  // Función para cerrar el formulario
+  closeForm(): void {
+    this.showForm = false; // Oculta el formulario
+  }
+
+  // Función para enviar el formulario
+  onSubmit(): void {
+    if (this.espacioParqueoForm.valid) {
+      const nuevoEspacio = this.espacioParqueoForm.value;
+      console.log('Formulario enviado', nuevoEspacio);
+      this.closeForm(); // Cierra el formulario después de enviarlo
+    }
+  }
+
+  // Función para cargar los espacios de parqueo
+  cargarEspaciosParqueo(): void {
+    this.espacioParqueoService.obtenerEspaciosParqueo().subscribe({
+      next: (data) => {
+        this.dataSource.data = data;
+=======
     // Traemos la lista de parqueos y agrupamos por ubicación después de obtenerlos
     this.parqueosService.listarTodos().subscribe(
       (data: Parqueos[]) => {
         this.parqueos = data;
         this.agruparPorUbicacion(); // Llamamos al método de agrupación después de obtener los parqueos
+>>>>>>> 749e5f1447b59dcc4becdca2a5455f47bc12e22e
       },
       (error) => {
         console.error('Error al cargar los parqueos', error);
