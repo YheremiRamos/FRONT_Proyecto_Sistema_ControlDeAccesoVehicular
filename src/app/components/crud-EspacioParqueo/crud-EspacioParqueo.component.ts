@@ -56,12 +56,14 @@ export class AgregarParqueosComponent implements OnInit {
 
   objUsuario: Usuario = {};
   
+
   espacioParqueoForm!: FormGroup;
 
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
   filtro: string = ''; // Para el filtro de búsqueda
   displayedColumns: string[] = ['idEspacio', 'idParqueo', 'tipoEspacio', 'numeroEspacio', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<any>([]);
+
 
   // Validaciones del formulario
   formsRegistra = this.formBuilder.group({
@@ -70,7 +72,6 @@ export class AgregarParqueosComponent implements OnInit {
     validaTipoVehiculo: ['', Validators.min(1)],
     validaEstadoEspacios: ['', Validators.min(1)]  
   });
-
 
   constructor(
     private tokenService: TokenService,
