@@ -245,7 +245,7 @@ export class AgregarIngresoComponent implements OnInit {
             next: (response) => {
               Swal.fire({
                 icon: 'info',
-                title: 'Resultado del Registro',
+                title: 'Registro Exitoso',
                 text: response.mensaje,
               });
               console.log('Registro completado:', this.objAccesoVehicular);

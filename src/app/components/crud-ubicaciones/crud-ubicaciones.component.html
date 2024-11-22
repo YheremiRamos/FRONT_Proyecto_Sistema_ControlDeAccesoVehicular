@@ -107,7 +107,7 @@
                         <!-- Botón para enviar el formulario -->
                         <div style="margin-top: 15px; text-align: right;">
                             <button class="reg_boton" mat-raised-button type="submit" [disabled]="formsRegistra.invalid"
-                                (click)="registra()" color="primary">Registra</button>
+                                (click)="registra()" >Registra</button>
                         </div>
                     </form>
                 </div>
@@ -145,7 +145,7 @@
                                     'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
                                     'color': 'white'
                                   }">
-                            {{ parqueo.idParqueo }}
+                            {{ parqueo.idParqueos }}
                           </button>
                         </div>
                       </div>

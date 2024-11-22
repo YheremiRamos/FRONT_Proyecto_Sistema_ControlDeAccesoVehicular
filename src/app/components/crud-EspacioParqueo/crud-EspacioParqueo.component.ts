@@ -20,6 +20,7 @@ import { ParqueosService } from '../../services/parqueos.service';
 import { UtilService } from '../../services/util.service';
 import { CrudEspacioParqueoUpdateComponent } from '../crud-espacio-parqueo-update/crud-espacio-parqueo-update.component';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-crudEspacio-parqueo',

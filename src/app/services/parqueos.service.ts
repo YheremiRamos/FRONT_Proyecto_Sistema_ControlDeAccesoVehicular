@@ -33,14 +33,8 @@ export class ParqueosService {
 
 
 actualizarParqueo(parqueo: Parqueos): Observable<any> {
-  return this.http.put<any>(`${this.baseUrl}/actualizaParqueo/${parqueo.idParqueo}`, parqueo);
+  return this.http.put<any>(`${this.baseUrl}/actualizaParqueo/${parqueo.idParqueos}`, parqueo);
 }
-
-
-
-  actualizarParqueo(parqueo: Parqueos): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${parqueo.idParqueos}`, parqueo);
-  }
 
 
   // Eliminar parqueo por ID
