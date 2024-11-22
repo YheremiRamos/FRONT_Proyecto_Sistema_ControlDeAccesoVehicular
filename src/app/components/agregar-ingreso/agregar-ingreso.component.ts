@@ -21,7 +21,8 @@ import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-agregar-ingreso',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], 
+  imports: [AppMaterialModule, 
+    FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], 
   templateUrl: './agregar-ingreso.component.html',
   styleUrls: ['./agregar-ingreso.component.css']
 })
@@ -127,17 +128,9 @@ export class AgregarIngresoComponent implements OnInit {
   ngOnInit(): void {
     // this.loadWatsonAssistant();
     this.cargarEspacios();
-    // this.usuarioService.listaTipoUsuario().subscribe(x => this.lstTipoUsuario = x);
-
-
-          // Asigna el idUsuario autenticado desde el tokenService.
       this.formRegistraUsuario.patchValue({
         idUsuario: this.tokenService.getUserId()
       });
-
-
-
-
 
   }
 

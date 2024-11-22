@@ -137,9 +137,14 @@
                         [ngStyle]="{
                           'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
                           'color': 'white'
+
                         }"
                         (click)="openUpdateDialog(parqueo)">
                   {{ parqueo.idParqueo }}
+
+                        }">
+                  {{ parqueo.idParqueos }}
+
                 </button>
               </div>
             </div>

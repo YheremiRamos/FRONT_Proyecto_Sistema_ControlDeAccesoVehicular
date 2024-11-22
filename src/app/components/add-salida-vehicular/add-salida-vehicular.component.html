@@ -1,0 +1,88 @@
+<div class="main-container">
+    <app-menu></app-menu>
+    <div class="content">
+        <div class="container form-container" >
+            <h1>Listado de salidas Vehiculares</h1>
+    
+            <!-- Tabla de Accesos Vehiculares -->
+            <mat-table [dataSource]="dataSource" matSort>
+    
+            <!-- Columna ID de Acceso Vehicular -->
+            <ng-container matColumnDef="idAccesoVehicular">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> ID Acceso </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">{{ acceso.idAccesoVehicular }}</mat-cell>
+            </ng-container>
+    
+            <!-- Columna Nombre Completo -->
+            <ng-container matColumnDef="nombreCompleto">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre Completo </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">{{ acceso.nombreCompleto }}</mat-cell>
+            </ng-container>
+    
+            <!-- Columna Tipo de Vehículo Permitido -->
+            <ng-container matColumnDef="tipoVehiculoPermitido">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Vehículo </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">{{ acceso.tipoVehiculoPermitido }}</mat-cell>
+            </ng-container>
+    
+            <!-- Columna Placa del Vehículo -->
+            <ng-container matColumnDef="placaVehiculo">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Placa </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">{{ acceso.placaVehiculo }}</mat-cell>
+            </ng-container>
+    
+            <!-- Columna Fecha de Registro -->
+            <ng-container matColumnDef="fechaRegistro">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Registro </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">
+                    {{ acceso.fechaRegistro | date: 'yyyy/MM/dd HH:mm' }}
+                </mat-cell>
+            </ng-container>
+
+        <ng-container matColumnDef="fechaActualizacion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Actualización </mat-header-cell>
+            <mat-cell *matCellDef="let acceso">
+                <ng-container *ngIf="acceso.fechaActualizacion; else registrarSalidaBtn">
+                    {{ acceso.fechaActualizacion | date: 'yyyy/MM/dd HH:mm' }}
+                </ng-container>
+                <ng-template #registrarSalidaBtn>
+                    <button mat-raised-button color="primary" (click)="registrarSalida(acceso.idAccesoVehicular)">
+                        Registrar Salida
+                    </button>
+                </ng-template>
+            </mat-cell>
+        </ng-container>
+            
+
+            
+    
+            <!-- Columna Número de Incidencias -->
+            <ng-container matColumnDef="numIncidencias">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Incidencias </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">{{ acceso.numIncidencias }}</mat-cell>
+
+                
+            </ng-container>
+    
+
+
+
+
+
+
+            <!-- Columna Acción de Registrar Salida -->
+            <ng-container matColumnDef="accionIncidencia">
+                <mat-header-cell *matHeaderCellDef> Acción </mat-header-cell>
+                <mat-cell *matCellDef="let acceso">
+                <button mat-raised-button color="primary" (click)="registrarIncidencia(acceso.idAccesoVehicular)" >Registrar Incidencia</button>
+                </mat-cell>
+            </ng-container>
+    
+            <!-- Filas de la tabla -->
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+        </div>
+    </div>
+    
