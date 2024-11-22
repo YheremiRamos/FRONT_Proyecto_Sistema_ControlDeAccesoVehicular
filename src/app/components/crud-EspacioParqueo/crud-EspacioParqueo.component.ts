@@ -9,7 +9,6 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { AppMaterialModule } from '../../app.material.module';
 import { MenuComponent } from '../../menu/menu.component';
 
-import { MatDialog } from '@angular/material/dialog';
 import { Ubicacion } from '../../models/ubicacion.model';
 import { TipoParqueo } from '../../models/tipoParqueo.model';
 import { TipoVehiculo } from '../../models/tipoVehiculo.model';
@@ -61,7 +60,7 @@ export class AgregarParqueosComponent implements OnInit {
 
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
   filtro: string = ''; // Para el filtro de búsqueda
-  displayedColumns: string[] = ['idEspacio', 'idParqueo', 'tipoEspacio', 'numeroEspacio', 'estado', 'acciones'];
+  displayedColumns: string[] = ['idEspacio', 'idParqueos', 'tipoEspacio', 'numeroEspacio', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<any>([]);
 
 

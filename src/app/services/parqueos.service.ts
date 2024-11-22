@@ -17,8 +17,8 @@ export class ParqueosService {
   }
 
   // Buscar parqueo por ID
-  buscarPorId(idParqueo: number): Observable<Parqueos> {
-    return this.http.get<Parqueos>(`${this.baseUrl}/${idParqueo}`);
+  buscarPorId(idParqueos: number): Observable<Parqueos> {
+    return this.http.get<Parqueos>(`${this.baseUrl}/${idParqueos}`);
   }
 
   // Registrar nuevo parqueo
@@ -28,12 +28,12 @@ export class ParqueosService {
 
   // Actualizar parqueo existente
   actualizarParqueo(parqueo: Parqueos): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${parqueo.idParqueo}`, parqueo);
+    return this.http.put<any>(`${this.baseUrl}/${parqueo.idParqueos}`, parqueo);
   }
 
   // Eliminar parqueo por ID
-  eliminarParqueo(idParqueo: number): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${idParqueo}`);
+  eliminarParqueo(idParqueos: number): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/${idParqueos}`);
   }
 
   // Listar parqueos por estado
