@@ -6,7 +6,7 @@ import { Usuario } from "./usuario.model";
 
 export class Parqueos {
    
-    idParqueo?: number;
+    idParqueos?: number;
     ubicacion?: Ubicacion; // Referencia a la ubicación asociada
 
     tipoParqueo?: TipoParqueo; // Referencia al tipo de parqueo asociado

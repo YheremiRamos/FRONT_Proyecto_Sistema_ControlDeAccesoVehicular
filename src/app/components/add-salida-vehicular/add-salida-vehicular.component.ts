@@ -12,6 +12,7 @@ import { MatCommonModule } from '@angular/material/core';
 import { AppMaterialModule } from '../../app.material.module';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { AccesoVehicular } from '../../models/accesoVehicular.model';
 
 @Component({
   selector: 'app-add-salida-vehicular',
@@ -70,6 +71,12 @@ export class AddSalidaVehicularComponent {
       if (result.isConfirmed) {
         this.salidaVehicularService.registrarIncidencia(idAccesoVehicular).subscribe({
           next: (response) => {
+
+          
+
+
+
+
             console.log('Incidencia registrada con éxito:', response);
             this.cargarDatos(); // Recarga los datos de la tabla para actualizar la vista
             Swal.fire('Registrado!', 'La incidencia ha sido registrada.', 'success');
