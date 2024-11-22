@@ -1,82 +1,73 @@
 import { Component, OnInit } from '@angular/core';
-import { EspacioParqueoService } from '../../services/espacioParqueo.service';
-import { MatTableDataSource } from '@angular/material/table';
-import Swal from 'sweetalert2';
-import { EspacioParqueo } from '../../models/espacioParqueo';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatStepperModule } from '@angular/material/stepper';
-import { AppMaterialModule } from '../../app.material.module';
-import { MenuComponent } from '../../menu/menu.component';
-
-import { MatDialog } from '@angular/material/dialog';
+import { UbicacionService } from '../../services/ubicacion.service';
 import { Ubicacion } from '../../models/ubicacion.model';
-import { TipoParqueo } from '../../models/tipoParqueo.model';
-import { TipoVehiculo } from '../../models/tipoVehiculo.model';
-import { EstadoEspacios } from '../../models/estadoEspacios.model';
+import { AppMaterialModule } from '../../app.material.module';
+import { CommonModule } from '@angular/common';
+import { MenuComponent } from '../../menu/menu.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { TipoUbicacion } from '../../models/tipoUbicacion.model';
 import { Parqueos } from '../../models/parqueos.model';
 import { Usuario } from '../../models/usuario.model';
 import { TokenService } from '../../security/token.service';
-import { ParqueosService } from '../../services/parqueos.service';
 import { UtilService } from '../../services/util.service';
-import { CrudEspacioParqueoUpdateComponent } from '../crud-espacio-parqueo-update/crud-espacio-parqueo-update.component';
-import { Router } from '@angular/router';
+import { ParqueosService } from '../../services/parqueos.service';
+import Swal from 'sweetalert2';
+import { EstadoEspacios } from '../../models/estadoEspacios.model';
+import { CrudUbicacionUpdateComponent } from '../crud-ubicacion-update/crud-ubicacion-update.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-crudEspacio-parqueo',
+  selector: 'app-crud-ubicaciones',
   standalone: true,
   imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule],
-  templateUrl: './crud-EspacioParqueo.component.html',
+  templateUrl: './crud-ubicaciones.component.html',
+  styleUrls: ['./crud-ubicaciones.component.css']
 
-  styleUrls: ['./crud-EspacioParqueo.component.css']
+
 })
-export class AgregarParqueosComponent implements OnInit {
+export class CrudUbicacionesComponent implements OnInit {
   lstUbicaciones: Ubicacion[] = []; // Se declara la propiedad lstPaises
-  lstTipoParqueo: TipoParqueo[] = []; // Se declara la propiedad lstTipoParqueo
-  lstTipoVehiculo: TipoVehiculo[] = []; // Se declara la propiedad lstTipoVehiculo
+  lstTipoUbicacion: TipoUbicacion[] = []; // Se declara la propiedad lstTipoParqueo
   lstEstadoEspacios: EstadoEspacios[] = []; // Se declara la propiedad lstEstadoEspacios
   parqueos: Parqueos[] = [];
-  // Este será el objeto donde vamos a agrupar los parqueos por ubicación
+  //--listado-- Este será el objeto donde vamos a agrupar los parqueos por ubicación
   parqueosPorUbicacion: { [key: number]: Parqueos[] } = {}; // Definimos que cada clave es de tipo 'number' y el valor es un array de 'Parqueos'.
 
 
-
-  objParqueo: Parqueos = {
-    ubicacion: {
-      idUbicacion: -1
+  objUbicacion: Ubicacion = {
+    nombreUbicacion: "",
+    tipoUbicacion: {
+      idTipoUbicacion: -1
     },
-    tipoParqueo: {
-      idTipoParqueo: -1
-    },
-    tipoVehiculo: {
-      idTipoVehiculo: -1
-    },
+    limiteParqueos: undefined,
     estadoEspacios: {
       idEstadoEspacios: 1
     }
   }
 
   objUsuario: Usuario = {};
-
-  // Validaciones del formulario
+  //2.VALIDACIONES
   formsRegistra = this.formBuilder.group({
-    validaUbicacion: ['', Validators.min(1)],
-    validaTipo: ['', Validators.min(1)],
-    validaTipoVehiculo: ['', Validators.min(1)],
+    //aqui se define lo que se va a validar
+    validaNombreUbicacion: ['', [Validators.required, Validators.pattern('^[a-zA-Zá-úÁ-ÚñÑ0-9 ]{3,30}$')]],
+    validaTipoUbicacion: ['', Validators.min(1)],
+    validaLimiteParqueos: ['', [Validators.required, Validators.min(1), Validators.max(300)]],
     validaEstadoEspacios: ['', Validators.min(1)]
-  });
 
+
+  });
+  //
   constructor(
-    private router: Router, // PARA OPCION +NUEVO
     private dialogService: MatDialog,
     private tokenService: TokenService,
+    private ubicacionService: UbicacionService,
     private parqueosService: ParqueosService,
     private UtilService: UtilService,
     private formBuilder: FormBuilder
+    //vldcn
   ) {
-    this.UtilService.listaUbicacion().subscribe(x => this.lstUbicaciones = x);
-    this.UtilService.listaTipoParqueo().subscribe(x => this.lstTipoParqueo = x);
-    this.UtilService.listaTipoVehiculo().subscribe(x => this.lstTipoVehiculo = x);
+    this.UtilService.listaTipoUbicacion().subscribe(x => this.lstTipoUbicacion = x);
     this.UtilService.listaEstadoEspacios().subscribe(x => this.lstEstadoEspacios = x);
     this.objUsuario.idUsuario = tokenService.getUserId();
   }
@@ -100,6 +91,9 @@ export class AgregarParqueosComponent implements OnInit {
 
 
   ngOnInit(): void {
+    // Cargar lista de ubicaciones
+    this.ubicacionService.listarTodos().subscribe(x => this.lstUbicaciones = x);
+  
     // Traemos la lista de parqueos y agrupamos por ubicación después de obtenerlos
     this.parqueosService.listarTodos().subscribe(
       (data: Parqueos[]) => {
@@ -110,12 +104,13 @@ export class AgregarParqueosComponent implements OnInit {
         console.error('Error al cargar los parqueos', error);
       }
     );
-
-     //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
-     this.UtilService.listaEstadoEspacios().subscribe(x => {
+  
+    //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
+    this.UtilService.listaEstadoEspacios().subscribe(x => {
       this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 5);
     });
   }
+  
 
 
   ///COLOR
@@ -134,12 +129,11 @@ export class AgregarParqueosComponent implements OnInit {
     }
   }
 
-
-  // Método de registro de parqueo
+  // Método de registro de ubiscacion
   registra() {
-    this.objParqueo.usuarioActualiza = this.objUsuario;
-    this.objParqueo.usuarioRegistro = this.objUsuario;
-    this.parqueosService.registrarParqueo(this.objParqueo).subscribe(
+    this.objUbicacion.usuarioActualiza = this.objUsuario;
+    this.objUbicacion.usuarioRegistro = this.objUsuario;
+    this.ubicacionService.registrarUbicacion(this.objUbicacion).subscribe(
       x => {
         Swal.fire({
           icon: 'info',
@@ -147,10 +141,11 @@ export class AgregarParqueosComponent implements OnInit {
           text: x.mensaje,
         });
 
+        //LISTADO
         // Actualizamos la lista de parqueos después de registrar uno nuevo
-        this.parqueosService.listarTodos().subscribe(
-          (data: Parqueos[]) => {
-            this.parqueos = data;
+        this.ubicacionService.listarTodos().subscribe(
+          (data: Ubicacion[]) => {
+            this.lstUbicaciones = data;
             // Agrupamos nuevamente los parqueos después de la actualización
             this.agruparPorUbicacion();
           },
@@ -158,23 +153,29 @@ export class AgregarParqueosComponent implements OnInit {
             console.error('Error al cargar los parqueos', error);
           }
         );
+        //FIN LISTADO
 
         // Limpiamos el formulario después de registrar
-        this.objParqueo = {
-          ubicacion: { idUbicacion: -1 },
-          tipoParqueo: { idTipoParqueo: -1 },
-          tipoVehiculo: { idTipoVehiculo: -1 },
-          estadoEspacios: { idEstadoEspacios: 1 }
+        this.objUbicacion = {
+          nombreUbicacion: "",
+          tipoUbicacion: {
+            idTipoUbicacion: -1
+          },
+          limiteParqueos: undefined,
+          estadoEspacios: {
+            idEstadoEspacios: 1
+          }
         };
         this.formsRegistra.reset();
       }
     );
   }
 
+
   //abrir opendialog
   openUpdateDialog(obj: Ubicacion) {
     console.log(">>> openUpdateDialog [ini]");
-    const dialogo = this.dialogService.open(CrudEspacioParqueoUpdateComponent, { data: obj });
+    const dialogo = this.dialogService.open(CrudUbicacionUpdateComponent, { data: obj });
     dialogo.afterClosed().subscribe(
       x => {
         console.log(">>> x >> " + x);
@@ -195,11 +196,5 @@ export class AgregarParqueosComponent implements OnInit {
     );
     console.log(">>> openUpdateDialog [fin]");
   }
-
-  //OPCION +NUEVO
-// Método para redirigir a la página de registro de ubicaciones
-redirigirARegistroUbicacion() {
-  this.router.navigate(['/verCrudUbicacion']); // Aquí puedes poner la ruta de tu página de registro
-}
 
 }

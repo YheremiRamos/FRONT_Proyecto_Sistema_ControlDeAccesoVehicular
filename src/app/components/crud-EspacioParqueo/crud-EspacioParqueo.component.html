@@ -26,15 +26,20 @@
           </mat-toolbar>
         </div>
 
-        <!-- ---------------------------------------teggggFormulario para registro de espacios de parqueo -->
+        <!-- --------------------------------Formulario para registro de espacios de parqueo -->
         <div class="form-container" style="margin-top: 3%;">
-          <!--<form [formGroup]="espacioParqueoForm" (ngSubmit)="onSubmit()">-->
+    
           <form id="idFormModalidad" [formGroup]="formsRegistra">
             <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 15px;">
               <!-- Campo de selección: Ubicación -->
               <mat-form-field class="col-md-4">
                 <mat-label>Ubicacion:</mat-label>
                 <mat-select [(ngModel)]="objParqueo.ubicacion!.idUbicacion" formControlName="validaUbicacion">
+                  <!-- Opción "+ Nuevo" -->
+                  <mat-option value="new" (click)="redirigirARegistroUbicacion()" style="color: green;">
+                    + Nuevo
+                  </mat-option>
+                  <!-- opciones de la base de dtos -->
                   <mat-option value="-1"> [Seleccione] </mat-option>
                   <mat-option *ngFor="let x of lstUbicaciones" [value]="x.idUbicacion">
                     {{x.nombreUbicacion}}
@@ -44,10 +49,9 @@
                   <span *ngIf="formsRegistra.controls.validaUbicacion.hasError('min')">
                     El Ubicacion es requerido
                   </span>
-
                 </mat-hint>
-
               </mat-form-field>
+              
 
               <!-- Campo de selección: Tipo Parqueo -->
               <mat-form-field class="col-md-4">
@@ -108,6 +112,8 @@
           </form>
         </div>
 
+
+        <!--<button><a href="verCrudUbicacion">Espacio de Parqueo</a></button>-->
         <!-----------------------------------------LEYENDA-->
 
         <div class="leyenda">
@@ -117,35 +123,28 @@
         </div>
         
      
-        
-        
-
         <!---------------------------LISTADO--- Tabla de listado con filtro -->
-
         <div class="parqueos-list">
           <!-- Iteramos sobre las ubicaciones -->
           <div *ngFor="let ubicacion of lstUbicaciones" class="ubicacion-group">
             <div class="ubicacion-header">
               <h3>{{ ubicacion.nombreUbicacion }}</h3>
             </div>
-
-            <!-- Asegúrate de que idUbicacion no sea undefined antes de acceder al objeto -->
+      
             <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
               <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
                 <button mat-raised-button 
                         [ngStyle]="{
                           'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
                           'color': 'white'
-                        }">
+                        }"
+                        (click)="openUpdateDialog(parqueo)">
                   {{ parqueo.idParqueo }}
                 </button>
               </div>
             </div>
-            
           </div>
         </div>
-
-
 
         <!-- ------------------------------Fin listado -->
 
