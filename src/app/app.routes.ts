@@ -10,12 +10,13 @@ import { InfoProblemasIngresoComponent } from './components/info-problemas-ingre
 import { CrudUbicacionesComponent } from './components/crud-ubicaciones/crud-ubicaciones.component';
 import { AddSalidaVehicularComponent } from './components/add-salida-vehicular/add-salida-vehicular.component';
 import { ListaEspaciosComponent } from './components/lista-espacios/lista-espacios.component';
-
+import { incidenciasComponent } from './components/Incidencias_Consulta/incidencias_listado.component';
 
 export const routes: Routes = [
     {path:"verRegistraIngreso", component:AgregarIngresoComponent },
     {path:"verEspacioParqueo", component:AgregarParqueosComponent },
     {path:"verCrudUbicacion", component:CrudUbicacionesComponent },
+    {path:"verIncidencias", component:incidenciasComponent },
 
     {path:"verRegistraSalida", component:AddSalidaVehicularComponent },
     {path:"verListaEspacios", component:ListaEspaciosComponent},

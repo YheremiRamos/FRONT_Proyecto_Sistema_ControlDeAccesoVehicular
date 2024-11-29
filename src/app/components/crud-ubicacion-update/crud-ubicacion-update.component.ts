@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MenuComponent } from '../../menu/menu.component';
 import { CommonModule } from '@angular/common';
 import { AppMaterialModule } from '../../app.material.module';
 import { Ubicacion } from '../../models/ubicacion.model';
@@ -19,7 +18,7 @@ import { Parqueos } from '../../models/parqueos.model';
 @Component({
   selector: 'app-crud-ubicacion-update',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, ReactiveFormsModule, MatStepperModule],
   templateUrl: './crud-ubicacion-update.component.html',
   styleUrl: './crud-ubicacion-update.component.css'
 })
@@ -50,6 +49,7 @@ export class CrudUbicacionUpdateComponent implements OnInit {
     private UtilService: UtilService,
     private parqueosService: ParqueosService,
     private ubicacionService: UbicacionService,
+    private parqueosService: ParqueosService,
     private utilService: UtilService,
     private formBuilder: FormBuilder,
     private tokenService: TokenService,
@@ -62,12 +62,6 @@ export class CrudUbicacionUpdateComponent implements OnInit {
     this.objUsuario.idUsuario = tokenService.getUserId();
   }
 
-  /*ngOnInit(): void {
-     //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
-     this.utilService.listaEstadoEspacios().subscribe(x => {
-      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 5);
-    });
-   }*/
 
   ngOnInit(): void {
     this.formsActualiza.patchValue({
@@ -88,6 +82,23 @@ export class CrudUbicacionUpdateComponent implements OnInit {
 
 
 
+
+
+   agruparPorUbicacion() {
+    this.parqueosPorUbicacion = {}; // Limpiamos el objeto antes de agrupar
+    this.parqueos.forEach(parqueo => {
+      // Verificamos que la ubicación y su id sean válidos
+      const idUbicacion = parqueo.ubicacion?.idUbicacion;
+      if (idUbicacion !== undefined) {
+        // Si no existe la clave de la ubicación, la creamos
+        if (!this.parqueosPorUbicacion[idUbicacion]) {
+          this.parqueosPorUbicacion[idUbicacion] = [];
+        }
+        // Agregamos el parqueo al arreglo de la ubicación correspondiente
+        this.parqueosPorUbicacion[idUbicacion].push(parqueo);
+      }
+    });
+  }
   // Método de actualización de ubicación
   actualizar() {
     // Asegurarte de que el valor del formulario se asigna solo cuando se presiona actualizar
@@ -126,6 +137,7 @@ export class CrudUbicacionUpdateComponent implements OnInit {
           this.formsActualiza.reset();
         }
       });
+
     }
   }
 
@@ -141,6 +153,31 @@ export class CrudUbicacionUpdateComponent implements OnInit {
     this.dialogRef.close();  // Esto cierra el modal
     this.parqueosService.listarTodos().subscribe((nuevosParqueos) => {
       this.parqueos = nuevosParqueos;
+
+  
+
+      this.parqueosService.listarTodos().subscribe(
+        (data: Parqueos[]) => {
+          this.parqueos = data;
+          // Agrupamos nuevamente los parqueos después de la actualización
+          this.agruparPorUbicacion();
+        },
+        (error) => {
+          console.error('Error al cargar los parqueos', error);
+        }
+      );
+
+
+
+      // Limpiamos el formulario y el objeto después de la actualización
+      this.objUbicacion = {
+        nombreUbicacion: "",
+        tipoUbicacion: { idTipoUbicacion: -1 },
+        limiteParqueos: undefined,
+        estadoEspacios: { idEstadoEspacios: -1 }
+      };
+      this.formsActualiza.reset();
+
     });
   }
 }

@@ -17,6 +17,7 @@ import { Parqueo } from '../../models/parqueo.model';
 import { AccesoVehicular } from '../../models/accesoVehicular.model';
 import { UtilService } from '../../services/util.service';
 import { forkJoin } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-agregar-ingreso',
@@ -24,8 +25,17 @@ import { forkJoin } from 'rxjs';
   imports: [AppMaterialModule, 
     FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule], 
   templateUrl: './agregar-ingreso.component.html',
-  styleUrls: ['./agregar-ingreso.component.css']
+  styleUrls: ['./agregar-ingreso.component.css'],
+  animations: [
+    trigger('fadeSlide', [
+      state('hidden', style({ opacity: 0, transform: 'translateY(-10px)' })),
+      state('visible', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('hidden => visible', [animate('300ms ease-out')]),
+      transition('visible => hidden', [animate('300ms ease-in')])
+    ])
+  ]
 })
+
 export class AgregarIngresoComponent implements OnInit {
   espacioForm = this.formBuilder.group({
     espacio: ['', Validators.required],
@@ -51,6 +61,16 @@ export class AgregarIngresoComponent implements OnInit {
     }
   };
 
+  objCliente: Cliente = {
+    idCliente: 0,
+    nombres: "",
+    apellidos: "",
+    identificador: "",
+    telefono: "",
+    numIncidencias: 0
+
+  }
+
   formRegistraUsuario = this.formBuilder.group({
     idCliente: [0], // Campo oculto que contiene el ID del cliente
     idUsuario: [0], // Campo oculto para el usuario autenticado
@@ -65,13 +85,14 @@ export class AgregarIngresoComponent implements OnInit {
   
 
   formRegistraVehiculo = this.formBuilder.group({
-    tipoVehiculo: ['', Validators.min(1)],
+    tipoVehiculo: [{ value: '', disabled: true }, Validators.min(1)],
     placa: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]],
     cantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]],
     espacio: [0, []], 
   });
   
 
+  // Variables para almacenar los espacios obtenidos de la API
   objetosEspaciosPP: EspacioParqueo[] = [];
   objetosEspaciosPS: EspacioParqueo[] = [];
   objetosEspaciosPSS: EspacioParqueo[] = [];
@@ -89,11 +110,15 @@ export class AgregarIngresoComponent implements OnInit {
   espaciosGeneralPSS: string[] = [];
 
   espacioSeleccionado: number = 0;
+  mostrarNivelPrincipal: boolean = false;
+  mostrarNivelSemiSotano: boolean = false;
+  mostrarNivelSotano: boolean = false;
+
   dataSource: any;
   filtro: string = '';
   varDni: string = '';
 
-  objCliente: Cliente = {};
+
   objUsuario: Usuario = {};
   objParqueo: Parqueo = {};
   objEspacio: EspacioParqueo = {};
@@ -113,14 +138,15 @@ export class AgregarIngresoComponent implements OnInit {
     hour: '2-digit',
     minute: '2-digit'
   });
-
+    // Variable para indicar si hubo error en la búsqueda
+    errorEnBusqueda: boolean = false;
   constructor(
     private tokenService: TokenService,
     private usuarioService: UsuarioService,
     private ingresoVehicularService: ingresoVehicularService,
     private formBuilder: FormBuilder,
     private espaciService: EspacioParqueoService,
-    private utilService: UtilService
+    private utilService: UtilService,
   ) {
     this.objUsuario.idUsuario = this.tokenService.getUserId();
   }
@@ -128,8 +154,20 @@ export class AgregarIngresoComponent implements OnInit {
   ngOnInit(): void {
     // this.loadWatsonAssistant();
     this.cargarEspacios();
+
+
       this.formRegistraUsuario.patchValue({
         idUsuario: this.tokenService.getUserId()
+      });
+
+
+      this.formRegistraUsuario.get('tipoUsuario')?.valueChanges.subscribe((valor) => {
+        if (valor && valor !== '-1') {
+          this.formRegistraVehiculo.get('tipoVehiculo')?.enable(); // Habilitar si se selecciona un tipo de usuario
+        } else {
+          this.formRegistraVehiculo.get('tipoVehiculo')?.disable(); // Deshabilitar si no hay selección válida
+          this.formRegistraVehiculo.get('tipoVehiculo')?.reset(); // Limpiar el valor si se deshabilita
+        }
       });
 
   }
@@ -217,7 +255,7 @@ export class AgregarIngresoComponent implements OnInit {
         (resultados) => {
           console.log("Resultados de forkJoin:", resultados);
   
-          // Asignar los resultados a los campos correspondientes
+              // Asignar los resultados a los campos correspondientes
               // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
               if (resultados[0]) {
                 this.objAccesoVehicular.cliente = this.objAccesoVehicular.cliente || {}; // Inicializar si es undefined
@@ -242,10 +280,11 @@ export class AgregarIngresoComponent implements OnInit {
           console.log("OBJETO PARA REGISTRO DESPUÉS DE forkJoin:", this.objAccesoVehicular);
           
           this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
+
             next: (response) => {
               Swal.fire({
                 icon: 'info',
-                title: 'Resultado del Registro',
+                title: 'Registro Exitoso',
                 text: response.mensaje,
               });
               console.log('Registro completado:', this.objAccesoVehicular);
@@ -422,10 +461,6 @@ buscarUsuarioPorDni(){
   //   }, 0);
   // }
 
-  seleccionarEspacio(espacio: number) {
-    this.espacioSeleccionado = espacio;
-    console.log('Espacio seleccionado:', espacio);
-  }
   seleccionarEspacioN(espacio: number) {
     this.espacioSeleccionado = espacio;
     console.log('Espacio seleccionado:', espacio);
@@ -494,6 +529,26 @@ buscarUsuarioPorDni(){
     );
   }
 
+
+  // Manejo de tipo de vehículo
+  onTipoVehiculoChange(tipo: string) {
+    this.mostrarNivelPrincipal = false;
+    this.mostrarNivelSotano = false;
+    this.mostrarNivelSemiSotano = false;
+
+    if (tipo === "Automovil") {
+      this.mostrarNivelPrincipal = true;
+      this.mostrarNivelSotano = true;
+    } else if (tipo === "Motocicleta") {
+      this.mostrarNivelSemiSotano = true;
+    }
+  }
+
+    // Selección de espacio
+    seleccionarEspacio(espacio: string) {
+      this.espacioSeleccionado = Number(espacio);
+    }
+  
   guardarNombresApe() {
     const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? ''; 
     const apellidosBuscado = this.formRegistraUsuario.get('apellidos')?.value ?? '';
@@ -523,6 +578,36 @@ buscarUsuarioPorDni(){
       return false; 
     }
   }
+
+
+
+crearCliente() {
+  const nuevoCliente: Cliente = {
+    identificador: this.formRegistraUsuario.get('dni')?.value ?? '',
+    nombres: this.formRegistraUsuario.get('nombres')?.value ?? '',
+    apellidos: this.formRegistraUsuario.get('apellidos')?.value ?? '',
+    telefono: this.formRegistraUsuario.get('telefono')?.value ?? ''
+  };
+
+    this.ingresoVehicularService.registrarCliente(nuevoCliente).subscribe({
+    next: (response) => {
+      console.log("Nuevo cliente creado:", response);
+      this.formRegistraUsuario.patchValue({ idCliente: response.idCliente });
+    },
+    error: (error) => {
+      console.error("Error al crear cliente:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error en el registro',
+        text: 'No se pudo registrar el cliente.',
+      });
+    }
+  });
+}
+
+
+
+
   
 
 

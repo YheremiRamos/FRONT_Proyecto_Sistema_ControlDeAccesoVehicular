@@ -99,7 +99,17 @@
 
 
 
+
             </div>
+
+                        <!-- Botón para enviar el formulario -->
+                        <div style="margin-top: 15px; text-align: right;">
+                            <button class="reg_boton" mat-raised-button type="submit" [disabled]="formsRegistra.invalid"
+                                (click)="registra()" >Registra</button>
+                        </div>
+                    </form>
+                </div>
+
 
             <!-- Botón para enviar el formulario -->
             <div style="margin-top: 15px; text-align: right;">
@@ -123,6 +133,8 @@
 
 <!-----------------------------------------LEYENDA DISPONIBLE/NO DISPONIBLE-->
 
+
+    
 <div class="leyenda">
   <!-- Leyenda de Disponible -->
   <p>
@@ -144,6 +156,34 @@
 
 
         <!-- -------------------------LISTADO--- Tabla de listado con filtro -->
+
+                <div class="parqueos-list">
+                    <!-- Iteramos sobre las ubicaciones -->
+                    <div *ngFor="let ubicacion of lstUbicaciones" class="ubicacion-group">
+                      <div class="ubicacion-header">
+                        <h3  (click)="openUpdateDialog(ubicacion)">{{ ubicacion.nombreUbicacion }} </h3>
+                      </div>
+          
+                      <!-- Asegúrate de que idUbicacion no sea undefined antes de acceder al objeto -->
+                      <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
+                        <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
+                          <button mat-raised-button 
+                                  [ngStyle]="{
+                                    'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
+                                    'color': 'white'
+                                  }">
+                            {{ parqueo.idParqueos }}
+                          </button>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+
+
+
+                <!-- ------------------------------Fin listado -->
+
 
         <div class="parqueos-list">
           <!-- Iteramos sobre las ubicaciones -->

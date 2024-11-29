@@ -56,18 +56,19 @@ app-menu {
 
 .parking-layout {
     display: flex;
-    justify-content: space-between;
     margin-top: 3ch;
     margin: auto;
   }
   
   .parking-section {
-    width: 40%;
+    width: auto;
     height: 30ch;
-    margin: 0 5px 0 5px;
+    margin: auto;
+    margin-right: 2ch;
     padding: 10px;
     background-color: #D9DBDC;
     border-radius: 10%;
+
     }
   
     .parking-section  h5{
@@ -86,8 +87,8 @@ app-menu {
   }
   
   .parking-spaces button {
-    width: 40px;
-    height: 40px;
+    width: 5ch;
+    height: 5ch;
     background-color: white;
     border: none;
     cursor: pointer;
@@ -182,4 +183,13 @@ h6 {
   flex-direction: column;
   align-items: center;
   width: 100%;
+}
+
+.contenedor_espacios{
+  display: flex;
+  margin: auto;
+}
+
+.seleccionInicial{
+  margin: 1ch 2ch 1ch 1ch;
 }
