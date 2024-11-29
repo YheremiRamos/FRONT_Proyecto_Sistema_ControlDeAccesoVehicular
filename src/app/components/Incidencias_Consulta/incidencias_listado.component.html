@@ -1,0 +1,84 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100..700&display=swap" rel="stylesheet">
+
+
+  <style>
+      /* Aquí va el CSS mencionado anteriormente */
+  </style>
+</head>
+
+<body>
+  <div class="main-container">
+      <app-menu></app-menu>
+
+   <div class="content">
+          <a href="#" class="volver-link">> VOLVER</a>
+
+          <div class="contenido_gen">
+              <div class="row">
+                  <mat-toolbar color="primary">
+                      <span>Incidencias</span>
+                  </mat-toolbar>
+              </div>
+
+              <div class="inputContent">
+                <mat-form-field class="col-md-4" appearance="fill">
+                    <mat-label>Nombre del cliente</mat-label>
+                    <input matInput [(ngModel)]="filtro" placeholder="Filtrar por nombre" />
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" class="reg_boton" (click)="refreshTable()">Filtrar</button>
+            </div>
+
+         <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="idCliente">
+                    <mat-header-cell *matHeaderCellDef>Código del cliente</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.idCliente }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="nombres">
+                    <mat-header-cell *matHeaderCellDef>Nombre</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.nombres }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="apellidos">
+                    <mat-header-cell *matHeaderCellDef>Apellido</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.apellidos }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="identificador">
+                    <mat-header-cell *matHeaderCellDef>DNI</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.identificador }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="telefono">
+                    <mat-header-cell *matHeaderCellDef>Teléfono</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.telefono }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="numIncidencias">
+                    <mat-header-cell *matHeaderCellDef>Incidencias</mat-header-cell>
+                    <mat-cell *matCellDef="let aux">{{ aux.numIncidencias }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="exportar">
+                  <mat-header-cell *matHeaderCellDef>Exportar</mat-header-cell>
+                  <mat-cell *matCellDef="let aux">
+                      <button mat-raised-button color="accent" class="exportar">
+                        PDF
+                      </button>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table> 
+        
+
+            <mat-paginator [pageSizeOptions]="[6, 8, 10]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+  </div>
+</body>
