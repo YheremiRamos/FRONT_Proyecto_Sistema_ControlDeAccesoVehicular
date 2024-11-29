@@ -9,6 +9,7 @@ import { AgregarParqueosComponent } from './components/crud-EspacioParqueo/crud-
 import { InfoProblemasIngresoComponent } from './components/info-problemas-ingreso/info-problemas-ingreso.component';
 import { CrudUbicacionesComponent } from './components/crud-ubicaciones/crud-ubicaciones.component';
 import { AddSalidaVehicularComponent } from './components/add-salida-vehicular/add-salida-vehicular.component';
+import { ListaEspaciosComponent } from './components/lista-espacios/lista-espacios.component';
 
 
 export const routes: Routes = [
@@ -17,11 +18,14 @@ export const routes: Routes = [
     {path:"verCrudUbicacion", component:CrudUbicacionesComponent },
 
     {path:"verRegistraSalida", component:AddSalidaVehicularComponent },
+    {path:"verListaEspacios", component:ListaEspaciosComponent},
 
     {path:"verInfoProblemasIngreso", component:InfoProblemasIngresoComponent},
   
     { path: '', component: IndexComponent },
     { path: 'login', component: LoginComponent },
     { path: '**', redirectTo: '', pathMatch: 'full' }
+
+    
   ];
   

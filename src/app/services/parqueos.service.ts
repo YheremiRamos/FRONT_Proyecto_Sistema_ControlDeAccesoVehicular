@@ -33,14 +33,8 @@ export class ParqueosService {
 
 
 actualizarParqueo(parqueo: Parqueos): Observable<any> {
-  return this.http.put<any>(`${this.baseUrl}/actualizaParqueo/${parqueo.idParqueo}`, parqueo);
+  return this.http.put<any>(`${this.baseUrl}/actualizaParqueo/${parqueo.idParqueos}`, parqueo);
 }
-
-
-
-  actualizarParqueo(parqueo: Parqueos): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${parqueo.idParqueos}`, parqueo);
-  }
 
 
   // Eliminar parqueo por ID
@@ -64,5 +58,22 @@ actualizarParqueo(parqueo: Parqueos): Observable<any> {
 agrupadosPorUbicacion(): Observable<any> {
   return this.http.get<any>(`${this.baseUrl}/agrupadosPorUbicacion`);
 }
+
+//consulta compleja
+consultaParqueosPorParametros(
+  tipoVehiculo: number,
+  estadoEspacio: number,
+  tipoParqueo: number
+): Observable<any> {
+  const params = new HttpParams()
+    .set("tipoVehiculo", tipoVehiculo.toString())
+    .set("estadoEspacio", estadoEspacio.toString())
+    .set("tipoParqueo", tipoParqueo.toString());
+
+  return this.http.get<any>(`${this.baseUrl}/consultaParqueosPorParametros`, { params });
+}
+
+
+
 
 }

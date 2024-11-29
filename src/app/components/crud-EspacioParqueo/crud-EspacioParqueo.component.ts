@@ -20,16 +20,18 @@ import { ParqueosService } from '../../services/parqueos.service';
 import { UtilService } from '../../services/util.service';
 import { CrudEspacioParqueoUpdateComponent } from '../crud-espacio-parqueo-update/crud-espacio-parqueo-update.component';
 import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-crudEspacio-parqueo',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule, MatDialogModule],
   templateUrl: './crud-EspacioParqueo.component.html',
 
   styleUrls: ['./crud-EspacioParqueo.component.css']
 })
 export class AgregarParqueosComponent implements OnInit {
+  lstParqueos: Parqueos[]= [];
   lstUbicaciones: Ubicacion[] = []; // Se declara la propiedad lstPaises
   lstTipoParqueo: TipoParqueo[] = []; // Se declara la propiedad lstTipoParqueo
   lstTipoVehiculo: TipoVehiculo[] = []; // Se declara la propiedad lstTipoVehiculo
@@ -57,7 +59,7 @@ export class AgregarParqueosComponent implements OnInit {
 
   objUsuario: Usuario = {};
 
-  
+
 
   espacioParqueoForm!: FormGroup;
 
@@ -121,16 +123,19 @@ export class AgregarParqueosComponent implements OnInit {
       }
     );
 
-     //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
-     this.UtilService.listaEstadoEspacios().subscribe(x => {
-      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 5);
+    //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
+    this.UtilService.listaEstadoEspacios().subscribe(x => {
+      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 1);
+      // Limitar la lista a los primeros 3 elementos
+      this.lstEstadoEspacios = this.lstEstadoEspacios.slice(1, 4);
+
     });
   }
 
 
-  ///COLOR
+  ///----------------------------------------COLOR
 
-
+  // Obtener el color según el tipo de parqueo
   getColor(tipo: string): string {
     switch (tipo) {
       case 'Gerencia':
@@ -140,47 +145,85 @@ export class AgregarParqueosComponent implements OnInit {
       case 'Discapacitado':
         return '#15395A';
       default:
-        return 'transparent';  // Si no es ninguno de los anteriores, el color será transparente
+        return 'transparent';
     }
   }
 
+  // Obtener el ícono de vehículo según el tipo
+  getVehiculoIcon(tipo: string): string {
+    switch (tipo) {
+      case 'Automóvil':
+        return 'fa-car';
+      case 'Motocicleta':
+        return 'fa-motorcycle';
+      case 'Bicicleta':
+        return 'fa-bicycle';
+      case 'Camión':
+        return 'fa-truck';
+      case 'Furgoneta':
+        return 'caravan';
+      case 'Bicicross':
+        return 'fa-bicycle';
+      case 'Mototaxi':
+        return 'fa-moped';
+      default:
+        return 'fa-car'; // Default icon
+    }
+  } 
 
+  // Obtener opacidad según el estado
+  getEstadoOpacity(estado: string): string {
+    return estado === 'Disponible' ? '1' : '0.5'; // Disponible = opaco, Ocupado = menos opaco
+  }
+
+  //----------------------------------FIN ESTILOS DE BOTON
   // Método de registro de parqueo
   registra() {
     this.objParqueo.usuarioActualiza = this.objUsuario;
     this.objParqueo.usuarioRegistro = this.objUsuario;
     this.parqueosService.registrarParqueo(this.objParqueo).subscribe(
       x => {
-        Swal.fire({
-          icon: 'info',
-          title: 'Resultado del Registro',
-          text: x.mensaje,
-        });
+        if (x.error) {
+          // Si hay un error, mostramos el mensaje de error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error en la Actualización',
+            text: x.error, // Aquí asumimos que `response.error` contiene el mensaje de error
+          });
+        } else {
+          // Si no hay error, mostramos el mensaje de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Resultado de la Actualización',
+            text: x.mensaje, // Aquí usamos `response.mensaje` si la actualización fue exitosa
+          });
 
-        // Actualizamos la lista de parqueos después de registrar uno nuevo
-        this.parqueosService.listarTodos().subscribe(
-          (data: Parqueos[]) => {
-            this.parqueos = data;
-            // Agrupamos nuevamente los parqueos después de la actualización
-            this.agruparPorUbicacion();
-          },
-          (error) => {
-            console.error('Error al cargar los parqueos', error);
-          }
-        );
+          // Actualizamos la lista de parqueos después de registrar uno nuevo
+          this.parqueosService.listarTodos().subscribe(
+            (data: Parqueos[]) => {
+              this.parqueos = data;
+              // Agrupamos nuevamente los parqueos después de la actualización
+              this.agruparPorUbicacion();
+            },
+            (error) => {
+              console.error('Error al cargar los parqueos', error);
+            }
+          );
 
-        // Limpiamos el formulario después de registrar
-        this.objParqueo = {
-          ubicacion: { idUbicacion: -1 },
-          tipoParqueo: { idTipoParqueo: -1 },
-          tipoVehiculo: { idTipoVehiculo: -1 },
-          estadoEspacios: { idEstadoEspacios: 1 }
-        };
-        this.formsRegistra.reset();
+          // Limpiamos el formulario después de registrar
+          this.objParqueo = {
+            ubicacion: { idUbicacion: -1 },
+            tipoParqueo: { idTipoParqueo: -1 },
+            tipoVehiculo: { idTipoVehiculo: -1 },
+            estadoEspacios: { idEstadoEspacios: 1 }
+          };
+          this.formsRegistra.reset();
+        }
       }
     );
   }
 
+  
 
   //abrir opendialog
   openUpdateDialog(obj: Ubicacion) {
@@ -208,9 +251,13 @@ export class AgregarParqueosComponent implements OnInit {
   }
 
   //OPCION +NUEVO
-// Método para redirigir a la página de registro de ubicaciones
-redirigirARegistroUbicacion() {
-  this.router.navigate(['/verCrudUbicacion']); // Aquí puedes poner la ruta de tu página de registro
-}
+  // Método para redirigir a la página de registro de ubicaciones
+  redirigirARegistroUbicacion() {
+    this.router.navigate(['/verCrudUbicacion']); // Aquí puedes poner la ruta de tu página de registro
+  }
+
+  redirigirAListaEspacios() {
+    this.router.navigate(['/verListaEspacios']);
+  }
 
 }

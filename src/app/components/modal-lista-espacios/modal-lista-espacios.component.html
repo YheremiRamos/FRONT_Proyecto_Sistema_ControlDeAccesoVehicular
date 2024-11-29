@@ -1,0 +1,52 @@
+
+<div class="container">
+    <div class="mat-dialog-content">
+      <div class="row">
+        <mat-toolbar color="primary">
+          <span>Detalles del Parqueo</span>
+        </mat-toolbar>
+      </div>
+  
+      <!-- Ubicación -->
+      <div class="row" style="margin-top: 3%; margin-bottom: 3%;">
+        <mat-form-field class="col-md-4">
+          <mat-label>Ubicación</mat-label>
+          <mat-select [(ngModel)]="objParqueo.ubicacion!.idUbicacion" [disabled]="true">
+            <mat-option value="-1">[Seleccione]</mat-option>
+            <mat-option *ngFor="let x of lstUbicaciones" [value]="x.idUbicacion">
+              {{x.nombreUbicacion}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <!-- Tipo de Parqueo -->
+        <mat-form-field class="col-md-4">
+          <mat-label>Tipo de Parqueo</mat-label>
+          <mat-select [(ngModel)]="objParqueo.tipoParqueo!.idTipoParqueo" [disabled]="true">
+            <mat-option value="-1">[Seleccione]</mat-option>
+            <mat-option *ngFor="let x of lstTipoParqueo" [value]="x.idTipoParqueo">
+              {{x.nombreTipoParqueo}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <!-- Estado del Parqueo -->
+        <mat-form-field class="col-md-4">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="objParqueo.estadoEspacios!.idEstadoEspacios" [disabled]="true">
+            <mat-option value="-1">[Seleccione]</mat-option>
+            <mat-option *ngFor="let x of lstEstadoEspacios" [value]="x.idEstadoEspacios">
+              {{x.nombreEstadoEspacios}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+  
+      <!-- Botones -->
+       <h3>EN PROCESO  PARA CONECTAR CON EL CLIENTE</h3>
+      <div mat-dialog-actions>
+        <button mat-button color="primary" (click)="cancelar()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  

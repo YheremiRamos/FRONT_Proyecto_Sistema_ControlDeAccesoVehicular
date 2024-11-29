@@ -13,33 +13,32 @@ import { Usuario } from '../../models/usuario.model';
 import { ParqueosService } from '../../services/parqueos.service';
 import { UtilService } from '../../services/util.service';
 import { TokenService } from '../../security/token.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crud-espacio-parqueo-update',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule, MatDialogModule],
   templateUrl: './crud-espacio-parqueo-update.component.html',
-  styleUrl: './crud-espacio-parqueo-update.component.css'
+  styleUrls: ['./crud-espacio-parqueo-update.component.css'] // <-- Corrección aquí
 })
 export class CrudEspacioParqueoUpdateComponent implements OnInit {
+  lstParqueos: Parqueos[]= [];
   lstUbicaciones: Ubicacion[] = [];
   lstTipoParqueo: TipoParqueo[] = [];
   lstTipoVehiculo: TipoVehiculo[] = [];
   lstEstadoEspacios: EstadoEspacios[] = [];
   parqueos: Parqueos[] = [];
   //listado
- 
+
   parqueosPorUbicacion: { [key: number]: Parqueos[] } = {};
-  
 
   objParqueo: Parqueos = {
     ubicacion: { idUbicacion: -1 },
     tipoParqueo: { idTipoParqueo: -1 },
     tipoVehiculo: { idTipoVehiculo: -1 },
     estadoEspacios: { idEstadoEspacios: -1 }
-
   };
   objUsuario: Usuario = {};
 
@@ -51,6 +50,7 @@ export class CrudEspacioParqueoUpdateComponent implements OnInit {
   });
 
   constructor(
+    private UtilService: UtilService,
     private parqueosService: ParqueosService,
     private utilService: UtilService,
     private formBuilder: FormBuilder,
@@ -65,48 +65,66 @@ export class CrudEspacioParqueoUpdateComponent implements OnInit {
     this.utilService.listaEstadoEspacios().subscribe(x => this.lstEstadoEspacios = x);
     this.objUsuario.idUsuario = tokenService.getUserId();
   }
-  
 
   ngOnInit(): void {
-     //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
-     this.utilService.listaEstadoEspacios().subscribe(x => {
+    //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
+    this.utilService.listaEstadoEspacios().subscribe(x => {
       this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 5);
     });
+    //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
+    this.UtilService.listaEstadoEspacios().subscribe(x => {
+      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 1);
+      // Limitar la lista a los primeros 3 elementos
+      this.lstEstadoEspacios = this.lstEstadoEspacios.slice(1, 4);
+
+    });
   }
-  
 
   // Método de actualización
   actualizar() {
     this.objParqueo.usuarioActualiza = this.objUsuario;
     this.objParqueo.usuarioRegistro = this.objUsuario;
-  
+
     this.parqueosService.actualizarParqueo(this.objParqueo).subscribe((response) => {
-      Swal.fire({
-        icon: "info",
-        title: 'Resultado de la Actualización',
-        text: response.mensaje,
-      });
-  
-      // Refresca la lista de parqueos tras la actualización
-      this.parqueosService.listarTodos().subscribe((nuevosParqueos) => {
-        this.parqueos = nuevosParqueos; // Actualiza los datos en la lista local
-      });
-  
-      // Reinicializa el objeto y el formulario después de la actualización
-      this.objParqueo = {
-        ubicacion: { idUbicacion: -1 },
-        tipoParqueo: { idTipoParqueo: -1 },
-        tipoVehiculo: { idTipoVehiculo: -1 },
-        estadoEspacios: { idEstadoEspacios: -1 }
-      };
-      this.formsActualiza.reset();
+      if (response.error) {
+        // Si hay un error, mostramos el mensaje de error
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el Registro',
+          text: response.error, // Aquí asumimos que `response.error` contiene el mensaje de error
+        }); 
+      } else {
+        // Si no hay error, mostramos el mensaje de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'Resultado del Registro',
+          text: response.mensaje, // Aquí usamos `response.mensaje` si la actualización fue exitosa
+        });
+
+        // Refresca la lista de parqueos tras la actualización
+        this.parqueosService.listarTodos().subscribe((nuevosParqueos) => {
+          this.parqueos = nuevosParqueos; // Actualiza los datos en la lista local
+        });
+
+        // Reinicializa el objeto y el formulario después de la actualización
+        this.objParqueo = {
+          ubicacion: { idUbicacion: -1 },
+          tipoParqueo: { idTipoParqueo: -1 },
+          tipoVehiculo: { idTipoVehiculo: -1 },
+          estadoEspacios: { idEstadoEspacios: -1 }
+        };
+        this.formsActualiza.reset();
+      }
     });
   }
+
+  elimina(obj: Parqueos) {
+    
+  }
+  
 
   // Método de cancelación
   cancelar() {
     this.dialogRef.close();  // Esto cierra el modal
   }
-  
-
 }

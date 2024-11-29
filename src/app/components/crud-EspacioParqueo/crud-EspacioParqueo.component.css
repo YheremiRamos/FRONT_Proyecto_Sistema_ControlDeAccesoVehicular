@@ -32,43 +32,10 @@ mat-toolbar{
   }
   
 
-/* Estilos de columnas de la tabla */
-.mat-column-idTesis {
-    flex: 0 0 10%;
-}
-
-.mat-column-titulo {
-    flex: 0 0 20%;
-}
-
-.mat-column-fechaCreacion {
-    flex: 0 0 10%;
-}
-
-.mat-column-tema {
-    flex: 0 0 10%;
-}
-
-.mat-column-idioma {
-    flex: 0 0 10%;
-}
-
-.mat-column-centroEstudios {
-    flex: 0 0 10%;
-}
-
-.mat-column-estado {
-    flex: 0 0 10%;
-}
-
-.mat-column-acciones {
-    flex: 0 0 20%;
-}
-
 /* Estilos para botones */
 .reg_boton{
     background-color: #2BA574;
-    color: #2BA574;
+    color: #ffffff;
     margin: auto;
     width: 20%;
     height: 50px;
@@ -141,7 +108,7 @@ app-menu {
    
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Espaciado entre grupos de ubicación */
+    gap: 20px;
     justify-content: center;
 }
 
@@ -168,7 +135,7 @@ app-menu {
     border-radius: 5px;
 }
 
-/* Contenedor interno de parqueos */
+/* Contenedor interno de parqueos--------------------------------- */
 .parqueos-list-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Distribución flexible */
@@ -176,8 +143,36 @@ app-menu {
     margin-top: 1px;
 }
 
+/*-----------------------LOLLLL-------------*/
+
+  
+  .parqueo-card:hover {
+    transform: scale(1.1); /* Aumentar ligeramente el tamaño */
+  }
+  /* Oculta el ícono inicialmente */
+.edit-icon {
+    display: none;
+    color: white; /* Color blanco para el ícono */
+    font-size: 20px; /* Tamaño opcional */
+    transition: transform 0.3s ease; /* Animación opcional */
+  }
+  
+  /* Muestra el ícono y oculta el ID al hacer hover */
+  .parqueo-card:hover .edit-icon {
+    display: inline;
+  }
+  
+  .parqueo-card:hover .parqueo-id {
+    display: none;
+  }
+  
+  
+  
+
 /* Tarjetas de parqueo */
 .parqueo-card {
+    margin: 10px;
+    transition: transform 0.3s ease; /* Animación suave para el escalado */
     width: 45px; /* Reduce el tamaño de las tarjetas */
     height: 50px;
     display: flex;
@@ -195,6 +190,30 @@ app-menu {
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
+
+
+.parqueo-button {
+  transition: all 0.3s ease;
+}
+
+.parqueo-button:hover {
+  transform: scale(1.1); /* Agranda el botón ligeramente */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega un efecto de sombra */
+}
+
+.edit-icon {
+    transition: all 0.3s ease;
+    color: white; /* Color blanco para el ícono */
+    font-size: 18px; /* Tamaño opcional del ícono */
+    vertical-align: middle; /* Para centrar el ícono en el botón */
+  }
+
+  .edit-icon:hover{
+    transform: scale(1.1);
+  }
+ 
+  
+
 
 
 /* Botones dentro de las tarjetas */
