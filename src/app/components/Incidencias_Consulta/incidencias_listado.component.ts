@@ -14,6 +14,8 @@ import { MatPaginator } from '@angular/material/paginator';
 
 import { MatDialog } from '@angular/material/dialog';
 
+
+
 @Component({
   selector: 'app-incidencias',
   standalone: true,
@@ -63,14 +65,7 @@ export class incidenciasComponent implements OnInit {
     this.showForm = false; // Oculta el formulario
   }
 
-  // Función para enviar el formulario
-  onSubmit(): void {
-    if (this.espacioParqueoForm.valid) {
-      const nuevoEspacio = this.espacioParqueoForm.value;
-      console.log('Formulario enviado', nuevoEspacio);
-      this.closeForm(); // Cierra el formulario después de enviarlo
-    }
-  }
+
 
   // Función para cargar los espacios de parqueo
   cargarTodosClientes(): void {
@@ -96,4 +91,65 @@ export class incidenciasComponent implements OnInit {
 ngAfterViewInit() {
   this.dataSource.paginator = this.paginator;
 }
+
+
+
+// Para los filtros - Inicializar los campos con valores por defecto
+varNombres: string = "";
+varApellidos: string = "";
+VarIdentificador: string = ""
+
+// Método para filtrar
+filtrar() {
+  console.log(">>> Filtrar [inicio]"); 
+  console.log(">>> varNombre: "+this.varNombres );
+  console.log(">>> varApellidos: "+this.varApellidos);
+  console.log(">>> varIdentificador: "+this.VarIdentificador); 
+
+
+  this.clienteService.consultarClienteComplejo(
+    this.varNombres,
+    this.varApellidos,
+    this.VarIdentificador
+ 
+  ).subscribe(
+    x => {
+          this.dataSource = x;
+          this.dataSource.paginator = this.paginator;
+    }
+);
+console.log(">>> Filtrar [fin]"); 
+
+}
+
+/*
+// Exportar PDF
+exportarPDF() {
+ 
+  this.autorService.generateAutorReportPDF(
+    this.varNombres,
+    this.varApellidos,
+    this.varFecNacDesde.toISOString(),
+    this.varFecNacHasta.toISOString(),
+    this.varTelefono,
+    this.varCelular,
+    this.varOrcid,
+    this.varEstado ? 1 : 0,
+    this.varIdPais,
+    this.varGrado
+  ).subscribe(
+    response => {
+      console.log(response);
+      var url = window.URL.createObjectURL(response.data);
+      var a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.setAttribute('target', 'blank');
+      a.href = url;
+      a.download = response.filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+  }); 
+}*/
 }
