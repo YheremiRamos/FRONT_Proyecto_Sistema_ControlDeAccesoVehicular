@@ -11,7 +11,7 @@
             <div class="row" style="margin-top: 3%; margin-bottom: 3%;">
                 <mat-form-field class="col-md-4">
                     <mat-label>Ubicación</mat-label>
-                    <input matInput [(ngModel)]="objUbicacion.nombreUbicacion" formControlName="validaNombreUbicacion">
+                    <input matInput formControlName="validaNombreUbicacion">
                     <mat-hint style="color: red" *ngIf="formsActualiza.controls.validaNombreUbicacion.touched">
                       <span *ngIf="formsActualiza.controls.validaNombreUbicacion.hasError('required')">
                         El nombre es requerido
@@ -21,6 +21,7 @@
                       </span>
                     </mat-hint>
                   </mat-form-field>
+                  
 
                 <!-- Tipo de Ubicación -->
                 <mat-form-field class="col-md-4">
@@ -75,7 +76,12 @@
                     [disabled]="formsActualiza.invalid" (click)="actualizar()">
                     Actualizar
                 </button>
-                <button mat-button color="primary">Cancelar</button>
+                <button mat-button color="primary" (click)="cancelar()">Cancelar</button>
+
+                <button mat-icon-button color="accent" (click)="elimina(objUbicacion)">
+                    <mat-icon aria-label="Delete">delete</mat-icon>
+                  </button>
+                  
             </div>
         </div>
     </form>

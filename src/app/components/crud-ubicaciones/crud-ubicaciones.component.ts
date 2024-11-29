@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { EstadoEspacios } from '../../models/estadoEspacios.model';
 import { CrudUbicacionUpdateComponent } from '../crud-ubicacion-update/crud-ubicacion-update.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-crud-ubicaciones',
@@ -59,16 +60,17 @@ export class CrudUbicacionesComponent implements OnInit {
   });
   //
   constructor(
+    private router: Router, // PARA REDIRIGIR
     private dialogService: MatDialog,
     private tokenService: TokenService,
     private ubicacionService: UbicacionService,
     private parqueosService: ParqueosService,
-    private UtilService: UtilService,
+    private utilService: UtilService,
     private formBuilder: FormBuilder
     //vldcn
   ) {
-    this.UtilService.listaTipoUbicacion().subscribe(x => this.lstTipoUbicacion = x);
-    this.UtilService.listaEstadoEspacios().subscribe(x => this.lstEstadoEspacios = x);
+    this.utilService.listaTipoUbicacion().subscribe(x => this.lstTipoUbicacion = x);
+    this.utilService.listaEstadoEspacios().subscribe(x => this.lstEstadoEspacios = x);
     this.objUsuario.idUsuario = tokenService.getUserId();
   }
 
@@ -93,7 +95,7 @@ export class CrudUbicacionesComponent implements OnInit {
   ngOnInit(): void {
     // Cargar lista de ubicaciones
     this.ubicacionService.listarTodos().subscribe(x => this.lstUbicaciones = x);
-  
+
     // Traemos la lista de parqueos y agrupamos por ubicación después de obtenerlos
     this.parqueosService.listarTodos().subscribe(
       (data: Parqueos[]) => {
@@ -104,18 +106,20 @@ export class CrudUbicacionesComponent implements OnInit {
         console.error('Error al cargar los parqueos', error);
       }
     );
-  
+
     //SACAR EL "DESHABILITADO" DEL CBO (ESTE ES PARA LA ELIMINAICON)
-    this.UtilService.listaEstadoEspacios().subscribe(x => {
-      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 5);
+    this.utilService.listaEstadoEspacios().subscribe(x => {
+      this.lstEstadoEspacios = x.filter(estado => estado.idEstadoEspacios !== 1);
+      // Limitar la lista a los primeros 3 elementos
+      this.lstEstadoEspacios = this.lstEstadoEspacios.slice(1, 4);
     });
   }
-  
 
 
-  ///COLOR
 
+   ///----------------------------------------COLOR
 
+  // Obtener el color según el tipo de parqueo
   getColor(tipo: string): string {
     switch (tipo) {
       case 'Gerencia':
@@ -125,9 +129,38 @@ export class CrudUbicacionesComponent implements OnInit {
       case 'Discapacitado':
         return '#15395A';
       default:
-        return 'transparent';  // Si no es ninguno de los anteriores, el color será transparente
+        return 'transparent';
     }
   }
+
+  // Obtener el ícono de vehículo según el tipo
+  getVehiculoIcon(tipo: string): string {
+    switch (tipo) {
+      case 'Automóvil':
+        return 'fa-car';
+      case 'Motocicleta':
+        return 'fa-motorcycle';
+      case 'Bicicleta':
+        return 'fa-bicycle';
+      case 'Camión':
+        return 'fa-truck';
+      case 'Furgoneta':
+        return 'caravan';
+      case 'Bicicross':
+        return 'fa-bicycle';
+      case 'Mototaxi':
+        return 'fa-moped';
+      default:
+        return 'fa-car'; // Default icon
+    }
+  } 
+
+  // Obtener opacidad según el estado
+  getEstadoOpacity(estado: string): string {
+    return estado === 'Disponible' ? '1' : '0.5'; // Disponible = opaco, Ocupado = menos opaco
+  }
+
+  //----------------------------------FIN ESTILOS DE BOTON
 
   // Método de registro de ubiscacion
   registra() {
@@ -135,38 +168,48 @@ export class CrudUbicacionesComponent implements OnInit {
     this.objUbicacion.usuarioRegistro = this.objUsuario;
     this.ubicacionService.registrarUbicacion(this.objUbicacion).subscribe(
       x => {
-        Swal.fire({
-          icon: 'info',
-          title: 'Resultado del Registro',
-          text: x.mensaje,
-        });
+        if (x.error) {
+          // Si hay un error, mostramos el mensaje de error
+          Swal.fire({
+            icon: 'error',
+            title: 'Error en el Registro',
+            text: x.error, // Aquí asumimos que `response.error` contiene el mensaje de error
+          });
+        } else {
+          // Si no hay error, mostramos el mensaje de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'Resultado del Registro',
+            text: x.mensaje, // Aquí usamos `response.mensaje` si la actualización fue exitosa
+          });
 
-        //LISTADO
-        // Actualizamos la lista de parqueos después de registrar uno nuevo
-        this.ubicacionService.listarTodos().subscribe(
-          (data: Ubicacion[]) => {
-            this.lstUbicaciones = data;
-            // Agrupamos nuevamente los parqueos después de la actualización
-            this.agruparPorUbicacion();
-          },
-          (error) => {
-            console.error('Error al cargar los parqueos', error);
-          }
-        );
-        //FIN LISTADO
+          //LISTADO
+          // Actualizamos la lista de parqueos después de registrar uno nuevo
+          this.ubicacionService.listarTodos().subscribe(
+            (data: Ubicacion[]) => {
+              this.lstUbicaciones = data;
+              // Agrupamos nuevamente los parqueos después de la actualización
+              this.agruparPorUbicacion();
+            },
+            (error) => {
+              console.error('Error al cargar los parqueos', error);
+            }
+          );
+          //FIN LISTADO
 
-        // Limpiamos el formulario después de registrar
-        this.objUbicacion = {
-          nombreUbicacion: "",
-          tipoUbicacion: {
-            idTipoUbicacion: -1
-          },
-          limiteParqueos: undefined,
-          estadoEspacios: {
-            idEstadoEspacios: 1
-          }
-        };
-        this.formsRegistra.reset();
+          // Limpiamos el formulario después de registrar
+          this.objUbicacion = {
+            nombreUbicacion: "",
+            tipoUbicacion: {
+              idTipoUbicacion: -1
+            },
+            limiteParqueos: undefined,
+            estadoEspacios: {
+              idEstadoEspacios: 1
+            }
+          };
+          this.formsRegistra.reset();
+        }
       }
     );
   }
@@ -195,6 +238,10 @@ export class CrudUbicacionesComponent implements OnInit {
       }
     );
     console.log(">>> openUpdateDialog [fin]");
+  }
+
+  redirigirAListaEspacios() {
+    this.router.navigate(['/verListaEspacios']); 
   }
 
 }

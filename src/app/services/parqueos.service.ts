@@ -59,4 +59,21 @@ agrupadosPorUbicacion(): Observable<any> {
   return this.http.get<any>(`${this.baseUrl}/agrupadosPorUbicacion`);
 }
 
+//consulta compleja
+consultaParqueosPorParametros(
+  tipoVehiculo: number,
+  estadoEspacio: number,
+  tipoParqueo: number
+): Observable<any> {
+  const params = new HttpParams()
+    .set("tipoVehiculo", tipoVehiculo.toString())
+    .set("estadoEspacio", estadoEspacio.toString())
+    .set("tipoParqueo", tipoParqueo.toString());
+
+  return this.http.get<any>(`${this.baseUrl}/consultaParqueosPorParametros`, { params });
+}
+
+
+
+
 }

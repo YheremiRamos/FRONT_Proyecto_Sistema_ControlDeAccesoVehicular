@@ -20,4 +20,6 @@ export class Parqueos {
 
     usuarioRegistro?: Usuario;
     usuarioActualiza?: Usuario;
+
+    isHovered?: boolean; // Nueva propiedad opcional
 }

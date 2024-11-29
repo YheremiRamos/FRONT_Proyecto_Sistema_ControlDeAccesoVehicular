@@ -33,38 +33,7 @@ mat-toolbar{
   }
   
 
-/* Estilos de columnas de la tabla */
-.mat-column-idTesis {
-    flex: 0 0 10%;
-}
 
-.mat-column-titulo {
-    flex: 0 0 20%;
-}
-
-.mat-column-fechaCreacion {
-    flex: 0 0 10%;
-}
-
-.mat-column-tema {
-    flex: 0 0 10%;
-}
-
-.mat-column-idioma {
-    flex: 0 0 10%;
-}
-
-.mat-column-centroEstudios {
-    flex: 0 0 10%;
-}
-
-.mat-column-estado {
-    flex: 0 0 10%;
-}
-
-.mat-column-acciones {
-    flex: 0 0 20%;
-}
 
 /* Estilos para botones */
 .reg_boton{
@@ -160,14 +129,36 @@ app-menu {
 
 
 /* Encabezado de ubicación */
+.ubicacion-header i {
+    margin-left: 8px; 
+    transition: transform 0.3s ease; /* Transición suave */
+    scale: 8px;
+    
+  }
 .ubicacion-header {
+    
     margin-bottom: 10px;
     text-align: center;
     color: white;
     background-color: #ffffff;
     padding: 5px;
     border-radius: 5px;
+    
 }
+  
+  .ubicacion-header:hover h3{
+    transform: scale(1.1);  /* Aumenta ligeramente el tamaño del ícono al pasar el ratón */
+    background-color: #15395A;
+    color: #F4F4F4;
+  }
+
+  .ubicacion-header:hover i{
+    transform: scale(1.1);  /* Aumenta ligeramente el tamaño del ícono al pasar el ratón */
+  }
+
+  /*icon*/
+ 
+  
 
 /* Contenedor interno de parqueos */
 .parqueos-list-grid {
