@@ -6,7 +6,7 @@
                 <div class="col-md-12">
                     <mat-horizontal-stepper linear #stepper >
                         <!-- Apartado 1: Tipo de usuario, Tipo de vehículo y Espacios disponibles -->
-                        <mat-step [stepControl]="formRegistraUsuario" label="Selección Inicial" >
+                        <mat-step [stepControl]="formRegistraUsuario" optional="true" label="Selección Inicial">
                             <form [formGroup]="formRegistraUsuario">
                                 <div class="row">
                                     <mat-toolbar
@@ -376,6 +376,6 @@
         </div>
         
 
-   
+
     </div>
 </div>

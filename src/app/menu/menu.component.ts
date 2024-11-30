@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Opcion } from '../security/opcion';
 import { TokenService } from '../security/token.service';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AppMaterialModule } from '../app.material.module';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, AppMaterialModule, FormsModule, CommonModule],
+  imports: [ RouterLink, AppMaterialModule, FormsModule, CommonModule],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })

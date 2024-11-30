@@ -102,11 +102,7 @@
 
             </div>
 
-                        <!-- Botón para enviar el formulario -->
-                        <div style="margin-top: 15px; text-align: right;">
-                            <button class="reg_boton" mat-raised-button type="submit" [disabled]="formsRegistra.invalid"
-                                (click)="registra()" >Registra</button>
-                        </div>
+             
                     </form>
                 </div>
 
@@ -116,7 +112,8 @@
               <button class="reg_boton" mat-raised-button type="submit" [disabled]="formsRegistra.invalid"
                 (click)="registra()" color="primary">Registra</button>
             </div>
-          </form>
+
+      
         </div>
 
         <!-----------------------------------------LEYENDA-->
@@ -185,38 +182,7 @@
                 <!-- ------------------------------Fin listado -->
 
 
-        <div class="parqueos-list">
-          <!-- Iteramos sobre las ubicaciones -->
-          <div *ngFor="let ubicacion of lstUbicaciones" class="ubicacion-group">
-            <div class="ubicacion-header" (click)="openUpdateDialog(ubicacion)" style="cursor: pointer;">
-              <h3>{{ ubicacion.nombreUbicacion }} <i class="fas fa-edit"></i></h3>
-            </div>
 
-
-            <!-- Asegúrate de que idUbicacion no sea undefined antes de acceder al objeto -->
-            <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
-              <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
-                <button mat-raised-button  
-                        [ngStyle]="{
-                          'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
-                          'color': 'white',
-                          'opacity': getEstadoOpacity(parqueo.estadoEspacios?.nombreEstadoEspacios ?? 'Disponible')
-                        }" [disabled]="true"
-                       
-                        style="display: flex; flex-direction: column; align-items: center; padding: 10px;">
-          
-                  <!-- Ícono de tipo de vehículo -->
-                  <i  class="fas fa-car fa-xs" [ngClass]="getVehiculoIcon(parqueo.tipoVehiculo?.nombreTipoVehiculo ?? '')" 
-                     style="font-size: 14px; margin :3px;"></i>
-          
-                  <!-- Número de parqueo -->
-                  <span>{{ parqueo.idParqueos }}</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
 
 
 
@@ -224,5 +190,5 @@
 
       </div>
     </div>
-  </div>
+
 </body>

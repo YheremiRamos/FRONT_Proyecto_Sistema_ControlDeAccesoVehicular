@@ -43,13 +43,13 @@ export class CrudUbicacionUpdateComponent implements OnInit {
     validaLimiteParqueos: ['', [Validators.required, Validators.min(1), Validators.max(300)]],
     validaEstadoEspacios: ['', Validators.min(1)]
   });
+  parqueosPorUbicacion: any;
 
   constructor(
 
     private UtilService: UtilService,
     private parqueosService: ParqueosService,
     private ubicacionService: UbicacionService,
-    private parqueosService: ParqueosService,
     private utilService: UtilService,
     private formBuilder: FormBuilder,
     private tokenService: TokenService,
@@ -99,6 +99,9 @@ export class CrudUbicacionUpdateComponent implements OnInit {
       }
     });
   }
+
+
+  
   // Método de actualización de ubicación
   actualizar() {
     // Asegurarte de que el valor del formulario se asigna solo cuando se presiona actualizar

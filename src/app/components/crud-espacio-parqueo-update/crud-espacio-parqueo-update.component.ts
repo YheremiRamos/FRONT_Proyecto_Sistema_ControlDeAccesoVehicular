@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {  Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MenuComponent } from '../../menu/menu.component';
 import { CommonModule } from '@angular/common';
 import { AppMaterialModule } from '../../app.material.module';
 import { Ubicacion } from '../../models/ubicacion.model';
@@ -19,7 +18,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-crud-espacio-parqueo-update',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule, MatDialogModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, ReactiveFormsModule, MatStepperModule, MatDialogModule],
   templateUrl: './crud-espacio-parqueo-update.component.html',
   styleUrls: ['./crud-espacio-parqueo-update.component.css'] // <-- Corrección aquí
 })
