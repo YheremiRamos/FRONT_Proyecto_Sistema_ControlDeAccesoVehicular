@@ -199,13 +199,12 @@ export class AgregarIngresoComponent implements OnInit {
       error => console.error('Error al obtener idEspacio:', error)
     );
   }
-   
 
-
+  
 
   guardarDatos() {
     console.log("Iniciando guardarDatos...");
- 
+
     // Inicializar objAccesoVehicular con los datos del formulario, asignando IDs si están presentes
     this.objAccesoVehicular = {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
@@ -214,49 +213,48 @@ export class AgregarIngresoComponent implements OnInit {
       espacio: { idEspacio: this.espacioSeleccionado },
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
- 
+
     console.log("PRIMERA DEPURACION");
     console.log("Cliente ID inicial:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Cliente:", this.objAccesoVehicular.cliente);
     console.log("Usuario:", this.objAccesoVehicular.usuario);
     console.log("Parqueo:", this.objAccesoVehicular.parqueo);
     console.log("Espacio:", this.objAccesoVehicular.espacio);
- 
+
     const requests = [];
- 
+
     if (this.objAccesoVehicular.cliente && !this.objAccesoVehicular.cliente.idCliente) {
       const dni = this.formRegistraUsuario.get('dni')?.value;
       if (dni) {
         requests.push(this.utilService.obtenerIdCliente(dni));
       }
     }
- 
+
     if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
       const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
       if (tipoVehiculo) {
         requests.push(this.utilService.obtenerIdParqueo(tipoVehiculo));
       }
     }
- 
+
     if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
       const espacio = this.formRegistraVehiculo.get('espacio')?.value;
       if (espacio) {
         requests.push(this.utilService.obtenerIdEspacio(espacio));
       }
     }
- 
+
     console.log("SEGUNDA DEPURACION");
     console.log("Cliente ID antes de forkJoin:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueo?.idParqueo);
     console.log("Espacio ID antes de forkJoin:", this.objAccesoVehicular.espacio?.idEspacio);
- 
+
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
         (resultados) => {
           console.log("Resultados de forkJoin:", resultados);
- 
-              // Asignar los resultados a los campos correspondientes
-              // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
+
+          // Asignar los resultados a los campos correspondientes, asegurando que los objetos existan
               if (resultados[0]) {
                 this.objAccesoVehicular.cliente = this.objAccesoVehicular.cliente || {}; // Inicializar si es undefined
                 this.objAccesoVehicular.cliente.idCliente = resultados[0];
@@ -275,10 +273,10 @@ export class AgregarIngresoComponent implements OnInit {
                 console.log("ID Espacio asignado:", resultados[2]);
               }
 
- 
+
           // Registrar el acceso vehicular con los IDs asignados
           console.log("OBJETO PARA REGISTRO DESPUÉS DE forkJoin:", this.objAccesoVehicular);
-         
+
           this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
 
             next: (response) => {
@@ -315,7 +313,7 @@ export class AgregarIngresoComponent implements OnInit {
     } else {
       // Si no hay requests pendientes, proceder con el registro directamente
       console.log("No se necesitan peticiones adicionales, registrando acceso vehicular...");
- 
+
       this.ingresoVehicularService.registrarAccesoVehicular(this.objAccesoVehicular).subscribe({
         next: (response) => {
           Swal.fire({
@@ -340,7 +338,7 @@ export class AgregarIngresoComponent implements OnInit {
       });
     }
   }
- 
+
 
 // Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
 private formatDate(date: Date): string {
@@ -548,7 +546,7 @@ buscarUsuarioPorDni(){
     seleccionarEspacio(espacio: string) {
       this.espacioSeleccionado = Number(espacio);
     }
- 
+
   guardarNombresApe() {
     const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? '';
     const apellidosBuscado = this.formRegistraUsuario.get('apellidos')?.value ?? '';
@@ -604,11 +602,6 @@ crearCliente() {
     }
   });
 }
-
-
-
-
- 
 
 
 }
