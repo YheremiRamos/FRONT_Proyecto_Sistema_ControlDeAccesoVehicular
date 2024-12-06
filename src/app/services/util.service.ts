@@ -20,6 +20,7 @@ const baseUrlCBOS = AppSettings.API_ENDPOINT+ '/utilCBO';
 
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -57,12 +58,12 @@ export class UtilService {
 
   // Método para obtener el ID de un Parqueo por nombre
   obtenerIdParqueo(nombre: string): Observable<number> {
-    return this.http.get<number>(`${baseUrl}/parqueo/id/${nombre}`);
+    return this.http.get<number>(`${baseUrl}/parqueos/id/${nombre}`);
   }
 
   // Método para obtener el ID de un Espacio de Parqueo por número
   obtenerIdEspacio(numeroEspacio: number): Observable<number> {
-    return this.http.get<number>(`${baseUrl}/espacio/id/${numeroEspacio}`);
+    return this.http.get<number>(`${baseUrl}/ubicacion/idUbicacion${numeroEspacio}`);
 
   }
 
