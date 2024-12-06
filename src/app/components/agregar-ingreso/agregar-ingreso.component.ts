@@ -9,7 +9,6 @@ import { Usuario } from '../../models/usuario.model';
 import { MatStepperModule } from '@angular/material/stepper';
 import { UsuarioService } from '../../services/usuario.service';
 import { TipoUsuario } from '../../models/tipoUsuario.model';
-import { EspacioParqueo } from '../../models/espacioParqueo';
 import { EspacioParqueoService } from '../../services/espacioParqueo.service';
 import { ingresoVehicularService } from '../../services/ingresoVehicular.service';
 import { Cliente } from '../../models/cliente.model';
@@ -18,7 +17,15 @@ import { AccesoVehicular } from '../../models/accesoVehicular.model';
 import { UtilService } from '../../services/util.service';
 import { forkJoin } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-
+import { TipoVehiculo } from '../../models/tipoVehiculo.model';
+import { Parqueos } from '../../models/parqueos.model';
+import { Ubicacion } from '../../models/ubicacion.model';
+import { ParqueosService } from '../../services/parqueos.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CrudEspacioParqueoUpdateComponent } from '../crud-espacio-parqueo-update/crud-espacio-parqueo-update.component';
+import { ModalListaEspaciosComponent } from '../modal-lista-espacios/modal-lista-espacios.component';
+import { TipoParqueo } from '../../models/tipoParqueo.model';
+import { EstadoEspacios } from '../../models/estadoEspacios.model';
 @Component({
   selector: 'app-agregar-ingreso',
   standalone: true,
@@ -85,7 +92,7 @@ export class AgregarIngresoComponent implements OnInit {
  
 
   formRegistraVehiculo = this.formBuilder.group({
-    tipoVehiculo: [{ value: '', disabled: true }, Validators.min(1)],
+    tipoVehiculo: [{ value: '', disabled: false }, Validators.min(1)],
     placa: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]],
     cantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]],
     espacio: [0, []],
@@ -93,9 +100,9 @@ export class AgregarIngresoComponent implements OnInit {
  
 
   // Variables para almacenar los espacios obtenidos de la API
-  objetosEspaciosPP: EspacioParqueo[] = [];
-  objetosEspaciosPS: EspacioParqueo[] = [];
-  objetosEspaciosPSS: EspacioParqueo[] = [];
+  objetosEspaciosPP: Parqueos[] = [];
+  objetosEspaciosPS: Parqueos[] = [];
+  objetosEspaciosPSS: Parqueos[] = [];
 
   espaciosDiscapacitadoPP: string[] = [];
   espacioGerentePP: string[] = [];
@@ -118,10 +125,16 @@ export class AgregarIngresoComponent implements OnInit {
   filtro: string = '';
   varDni: string = '';
 
+  parqueosPorUbicacion: { [key: number]: Parqueos[] } = {}; // Definimos que cada clave es de tipo 'number' y el valor es un array de 'Parqueos'.
+  lstUbicaciones: Ubicacion[] = []; // Se declara la propiedad lstPaises
+  parqueos: Parqueos[] = [];
+  lstTipoParqueo: TipoParqueo[] = [];
+  lstTipoVehiculo: TipoVehiculo[] = [];
+  lstEstadoEspacios: EstadoEspacios[] = [];
 
   objUsuario: Usuario = {};
   objParqueo: Parqueo = {};
-  objEspacio: EspacioParqueo = {};
+  objEspacio: Parqueos = {};
 
   dni = '';
   varNombres = '';
@@ -140,6 +153,15 @@ export class AgregarIngresoComponent implements OnInit {
   });
     // Variable para indicar si hubo error en la búsqueda
     errorEnBusqueda: boolean = false;
+
+
+    tipoVehiculo: TipoVehiculo ={
+      nombreTipoVehiculo: ""
+    }
+
+
+
+  
   constructor(
     private tokenService: TokenService,
     private usuarioService: UsuarioService,
@@ -147,30 +169,107 @@ export class AgregarIngresoComponent implements OnInit {
     private formBuilder: FormBuilder,
     private espaciService: EspacioParqueoService,
     private utilService: UtilService,
+    private parqueosService:  ParqueosService,
+    private dialogService: MatDialog,
+
   ) {
+
+    this.utilService.listaTipoVehiculo().subscribe(x => this.lstTipoVehiculo = x);
+
+
     this.objUsuario.idUsuario = this.tokenService.getUserId();
+
+    // Cargar listas al iniciar
+    this.utilService.listaUbicacion().subscribe(x => this.lstUbicaciones = x);
+    this.utilService.listaTipoParqueo().subscribe(x => this.lstTipoParqueo = x);
+    this.utilService.listaTipoVehiculo().subscribe(x => this.lstTipoVehiculo = x);
+    this.utilService.listaEstadoEspacios().subscribe(x => this.lstEstadoEspacios = x);
+
   }
+
+  
+  
 
   ngOnInit(): void {
     // this.loadWatsonAssistant();
-    this.cargarEspacios();
 
 
       this.formRegistraUsuario.patchValue({
         idUsuario: this.tokenService.getUserId()
       });
 
+        // Traer parqueos y agrupar
+    this.parqueosService.listarTodos().subscribe(
+      (data: Parqueos[]) => {
+        this.parqueos = data;
+        this.agruparPorUbicacion();
+      },
+      (error) => {
+        console.error('Error al cargar los parqueos', error);
+      }
+    );
 
+
+
+    
+/*
       this.formRegistraUsuario.get('tipoUsuario')?.valueChanges.subscribe((valor) => {
         if (valor && valor !== '-1') {
           this.formRegistraVehiculo.get('tipoVehiculo')?.enable(); // Habilitar si se selecciona un tipo de usuario
         } else {
           this.formRegistraVehiculo.get('tipoVehiculo')?.disable(); // Deshabilitar si no hay selección válida
-          this.formRegistraVehiculo.get('tipoVehiculo')?.reset(); // Limpiar el valor si se deshabilita
+          this.formRegistraVehiculo.ge t('tipoVehiculo')?.reset(); // Limpiar el valor si se deshabilita
         }
       });
-
+*/
   }
+
+
+  
+  ///----------------------------------------COLOR
+
+  // Obtener el color según el tipo de parqueo
+  getColor(tipo: string): string {
+    switch (tipo) {
+      case 'Gerencia':
+        return '#2BA555';
+      case 'General':
+        return 'grey';
+      case 'Discapacitado':
+        return '#15395A';
+      default:
+        return 'transparent';
+    }
+  }
+
+  // Obtener el ícono de vehículo según el tipo
+  getVehiculoIcon(tipo: string): string {
+    switch (tipo) {
+      case 'Automóvil':
+        return 'fa-car';
+      case 'Motocicleta':
+        return 'fa-motorcycle';
+      case 'Bicicleta':
+        return 'fa-bicycle';
+      case 'Camión':
+        return 'fa-truck';
+      case 'Furgoneta':
+        return 'caravan';
+      case 'Bicicross':
+        return 'fa-bicycle';
+      case 'Mototaxi':
+        return 'fa-moped';
+      default:
+        return 'fa-car'; // Default icon
+    }
+  }
+   
+  // Obtener opacidad según el estado
+  getEstadoOpacity(estado: string): string {
+    return estado === 'Disponible' ? '1' : '0.5'; // Disponible = opaco, Ocupado = menos opaco
+  }
+
+
 
   obtenerClienteId(identificador: string) {
     this.utilService.obtenerIdCliente(identificador).subscribe(
@@ -180,7 +279,7 @@ export class AgregarIngresoComponent implements OnInit {
       error => console.error('Error al obtener idCliente:', error)
     );
   }
- 
+
   obtenerParqueoId(tipoVehiculo: string) {
     this.utilService.obtenerIdParqueo(tipoVehiculo).subscribe(
       idParqueo => {
@@ -189,8 +288,6 @@ export class AgregarIngresoComponent implements OnInit {
       error => console.error('Error al obtener idParqueo:', error)
     );
   }
- 
- 
   obtenerEspacioId(numeroEspacio: number) {
     this.utilService.obtenerIdEspacio(numeroEspacio).subscribe(
       idEspacio => {
@@ -359,16 +456,13 @@ buscarUsuarioPorDni(){
 
   this.usuarioService.buscarUsuarioDni(
 
-   
     this.varDni
     ).subscribe(
       (x) => {
         this.dataSource = x;
- 
         // Asegurarse de que los datos existan antes de usarlos
         if (this.dataSource && this.dataSource.length > 0) {
           const usuario = this.dataSource[0]; // Si es una lista, accede al primer usuario
-         
           // Llenar los campos del formulario con los datos traídos
           this.formRegistraUsuario.patchValue({
             nombres: usuario.nombres,
@@ -443,91 +537,11 @@ buscarUsuarioPorDni(){
   }
 
 
-
-  // loadWatsonAssistant(): void {
-  //   (window as any).watsonAssistantChatOptions = {
-  //     integrationID: "1d7eb15e-bcf5-4ddb-8486-f8c82f1d58de",
-  //     region: "au-syd",
-  //     serviceInstanceID: "138e5014-a8e7-4f39-a7eb-31c2ebd87e46",
-  //     onLoad: (instance: any) => instance.render(),
-  //   };
-
-  //   setTimeout(() => {
-  //     const script = document.createElement('script');
-  //     script.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/latest/WatsonAssistantChatEntry.js";
-  //     document.head.appendChild(script);
-  //   }, 0);
-  // }
-
   seleccionarEspacioN(espacio: number) {
     this.espacioSeleccionado = espacio;
     console.log('Espacio seleccionado:', espacio);
   }
-
-  cargarEspacios() {
-    this.traerEspaciosParqueoPrincipal();
-    this.traerEspaciosParqueoSotano();
-    this.traerEspaciosParqueoSemiSotano();
-  }
-
-  traerEspaciosParqueoPrincipal() {
-    this.espaciService.listarEspaciosPorIdParqueo(1).subscribe(
-      esp => {
-        this.objetosEspaciosPP = esp;
-        this.objetosEspaciosPP.forEach(espacio => {
-          if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
-            if (espacio.tipoEspacio === "general") {
-              this.espaciosGeneralPP.push(espacio.numeroEspacio.toString());
-            } else if (espacio.tipoEspacio === "discapacitado") {
-              this.espaciosDiscapacitadoPP.push(espacio.numeroEspacio.toString());
-            } else {
-              this.espacioGerentePP.push(espacio.numeroEspacio.toString());
-            }
-          }
-        });
-      }
-    );
-  }
-
-  traerEspaciosParqueoSotano() {
-    this.espaciService.listarEspaciosPorIdParqueo(2).subscribe(
-      esp => {
-        this.objetosEspaciosPS = esp;
-        this.objetosEspaciosPS.forEach(espacio => {
-          if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
-            if (espacio.tipoEspacio === "general") {
-              this.espaciosGeneralPS.push(espacio.numeroEspacio.toString());
-            } else if (espacio.tipoEspacio === "discapacitado") {
-              this.espaciosDiscapacitadoPS.push(espacio.numeroEspacio.toString());
-            } else {
-              this.espacioGerentePS.push(espacio.numeroEspacio.toString());
-            }
-          }
-        });
-      }
-    );
-  }
-
-  traerEspaciosParqueoSemiSotano() {
-    this.espaciService.listarEspaciosPorIdParqueo(3).subscribe(
-      esp => {
-        this.objetosEspaciosPSS = esp;
-        this.objetosEspaciosPSS.forEach(espacio => {
-          if (espacio.numeroEspacio !== undefined && espacio.estado === "disponible") {
-            if (espacio.tipoEspacio === "general") {
-              this.espaciosGeneralPSS.push(espacio.numeroEspacio.toString());
-            } else if (espacio.tipoEspacio === "discapacitado") {
-              this.espaciosDiscapacitadoPSS.push(espacio.numeroEspacio.toString());
-            } else {
-              this.espacioGerentePSS.push(espacio.numeroEspacio.toString());
-            }
-          }
-        });
-      }
-    );
-  }
-
-
+  
   // Manejo de tipo de vehículo
   onTipoVehiculoChange(tipo: string) {
     this.mostrarNivelPrincipal = false;
@@ -550,10 +564,13 @@ buscarUsuarioPorDni(){
   guardarNombresApe() {
     const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? '';
     const apellidosBuscado = this.formRegistraUsuario.get('apellidos')?.value ?? '';
+    const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value ?? '';
 
+    this.tipoVehiculo.nombreTipoVehiculo = tipoVehiculo;
     this.varNombres= nombresBuscado;
     this.varApellidos = apellidosBuscado;
  
+    console.log('Tipo de Vehiculo guardado:', this.tipoVehiculo);
     console.log('Nombres guardados:', this.varNombres);
     console.log('Apellidos guardados:', this.varApellidos);  
   }
@@ -576,8 +593,6 @@ buscarUsuarioPorDni(){
       return false;
     }
   }
-
-
 
 crearCliente() {
   const nuevoCliente: Cliente = {
@@ -603,5 +618,69 @@ crearCliente() {
   });
 }
 
+agruparPorUbicacion() {
+  this.parqueosPorUbicacion = {}; // Limpiamos el objeto antes de agrupar
+  this.parqueos.forEach(parqueo => {
+    const idUbicacion = parqueo.ubicacion?.idUbicacion;
+    console.log(`Procesando parqueo con idUbicacion: ${idUbicacion}`);  // Verifica si idUbicacion existe
+    if (idUbicacion !== undefined) {
+      if (!this.parqueosPorUbicacion[idUbicacion]) {
+        this.parqueosPorUbicacion[idUbicacion] = [];
+      }
+      this.parqueosPorUbicacion[idUbicacion].push(parqueo);
+    }
+  });
+  console.log('parqueosPorUbicacion:', this.parqueosPorUbicacion); // Verifica si el objeto está agrupado correctamente
+}
+
+
+    // Método para abrir el diálogo de actualización
+    openReadDialog(obj: Ubicacion) {
+      const dialogo = this.dialogService.open(ModalListaEspaciosComponent, { data: obj });
+      dialogo.afterClosed().subscribe(
+        x => {
+          if (x === 1) {
+            this.parqueosService.listarTodos().subscribe(
+              (data: Parqueos[]) => {
+                this.parqueos = data;
+                this.agruparPorUbicacion();
+              },
+              (error) => {
+                console.error('Error al cargar los parqueos', error);
+              }
+            );
+          }
+        }
+      );
+    }
+  
+
+  //abrir opendialog
+  openUpdateDialog(obj: Ubicacion) {
+    console.log(">>> openUpdateDialog [ini]");
+    const dialogo = this.dialogService.open(CrudEspacioParqueoUpdateComponent, { data: obj });
+    dialogo.afterClosed().subscribe(
+      x => {
+        console.log(">>> x >> " + x);
+        if (x === 1) { // Se lleva 1 le doy refrescar a la tabla
+          // Actualizamos la lista de parqueos después de registrar uno nuevo
+          this.parqueosService.listarTodos().subscribe(
+            (data: Parqueos[]) => {
+              this.parqueos = data;
+              // Agrupamos nuevamente los parqueos después de la actualización
+              this.agruparPorUbicacion();
+            },
+            (error) => {
+              console.error('Error al cargar los parqueos', error);
+            }
+          );
+        }
+      }
+    );
+    console.log(">>> openUpdateDialog [fin]");
+  }
+
+
+  
 
 }
