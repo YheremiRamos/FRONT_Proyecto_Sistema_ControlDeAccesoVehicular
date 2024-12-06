@@ -100,33 +100,32 @@
             <div class="parqueos-list">
                 <!-- Iteramos sobre las ubicaciones -->
                 <div *ngFor="let ubicacion of lstUbicaciones" class="ubicacion-group">
-                <div class="ubicacion-header">
-                    <h3>{{ ubicacion.nombreUbicacion }}</h3>
-                </div>
-    
-                <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
-                    <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
-                    <button mat-raised-button [ngStyle]="{
+                    <div class="ubicacion-header">
+                        <h3>{{ ubicacion.nombreUbicacion }}</h3>
+                    </div>
+            
+                    <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
+                        <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
+                            <button mat-raised-button 
+                            [ngStyle]="{
                                 'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
                                 'color': 'white',
                                 'opacity': getEstadoOpacity(parqueo.estadoEspacios?.nombreEstadoEspacios ?? 'Disponible')
-                            }" (click)="openReadDialog(parqueo)"
-                        style="display: flex; flex-direction: column; align-items: center; padding: 10px;">
-    
-                        <!-- Ícono de tipo de vehículo -->
-                        <i class="fas fa-car fa-xs"
-                        [ngClass]="getVehiculoIcon(parqueo.tipoVehiculo?.nombreTipoVehiculo ?? '')"
-                        style="font-size: 14px; margin :3px;"></i>
-    
-                        <!-- Número de parqueo -->
-                        <span>{{ parqueo.idParqueos }}</span>
-                    </button>
+                            }" 
+                            (click)="seleccionarEspacioN(parqueo.idParqueos)"
+                                    [ngClass]="{'selected': parqueo.idParqueos === espacioSeleccionado}"
+                                    style="display: flex; flex-direction: column; align-items: center; padding: 10px;">
+                                <i class="fas fa-car fa-xs"
+                                [ngClass]="getVehiculoIcon(parqueo.tipoVehiculo?.nombreTipoVehiculo ?? '')"
+                                style="font-size: 14px; margin: 3px;"></i>
+                                <span>{{ parqueo.idParqueos }}</span>
+                            </button>
+                    
+                        </div>
                     </div>
                 </div>
-                </div>
-    
             </div>
-
+            
 
 
 
@@ -347,9 +346,20 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p><strong>Tipo de vehículo:</strong> {{ tipoVehiculo.nombreTipoVehiculo }}
-                                    </p>
+                                    <p><strong>Tipo de vehículo:</strong></p>
+                                    <ng-container [ngSwitch]="tipoVehiculo.nombreTipoVehiculo">
+                                      <span *ngSwitchCase=1>Automovil</span>
+                                      <span *ngSwitchCase=2>Motocicleta</span>
+                                      <span *ngSwitchCase=3>Bicicleta</span>
+                                      <span *ngSwitchCase=4>Camión</span>
+                                      <span *ngSwitchCase=5>Furgoneta</span>
+                                      <span *ngSwitchCase=6>Camioneta</span>
+                                      <span *ngSwitchCase=7>Bicicross</span>
+                                      <span *ngSwitchCase=8>Motocarro</span>
+                                      <span *ngSwitchDefault>Desconocido</span>
+                                    </ng-container>
                                 </div>
+                                
                             </div>
                             <div class="row">
                                 <div class="col-md-12">

@@ -33,14 +33,6 @@ import { EstadoEspacios } from '../../models/estadoEspacios.model';
     FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatStepperModule],
   templateUrl: './agregar-ingreso.component.html',
   styleUrls: ['./agregar-ingreso.component.css'],
-  animations: [
-    trigger('fadeSlide', [
-      state('hidden', style({ opacity: 0, transform: 'translateY(-10px)' })),
-      state('visible', style({ opacity: 1, transform: 'translateY(0)' })),
-      transition('hidden => visible', [animate('300ms ease-out')]),
-      transition('visible => hidden', [animate('300ms ease-in')])
-    ])
-  ]
 })
 
 export class AgregarIngresoComponent implements OnInit {
@@ -59,12 +51,12 @@ export class AgregarIngresoComponent implements OnInit {
       idCliente: 0 // Añadir idCliente para evitar el error en el acceso
     },
     placaVehiculo: "",
-    parqueo: {
-      idParqueo: 0 // Añadir idParqueo para evitar el error en el acceso
+    parqueos: {
+      idParqueos: 0// Añadir idParqueo para evitar el error en el acceso
     },
-    espacio: {
-      numeroEspacio: 0,
-      idEspacio: 0 // Añadir idEspacio para evitar el error en el acceso
+    ubicacion: {
+      idUbicacion: 0,
+      nombreUbicacion: ""
     }
   };
 
@@ -81,7 +73,7 @@ export class AgregarIngresoComponent implements OnInit {
   formRegistraUsuario = this.formBuilder.group({
     idCliente: [0], // Campo oculto que contiene el ID del cliente
     idUsuario: [0], // Campo oculto para el usuario autenticado
-    idParqueo: [0], // Campo oculto para el parqueo
+    idParqueos: [0], // Campo oculto para el parqueo
     idEspacio: [0], // Campo oculto para el espacio de parqueo
     tipoUsuario: ['', Validators.min(1)],
     dni: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[0-9]{8,12}$')]],
@@ -283,7 +275,7 @@ export class AgregarIngresoComponent implements OnInit {
   obtenerParqueoId(tipoVehiculo: string) {
     this.utilService.obtenerIdParqueo(tipoVehiculo).subscribe(
       idParqueo => {
-        this.formRegistraUsuario.patchValue({ idParqueo: idParqueo ?? 0 });
+        this.formRegistraUsuario.patchValue({ idParqueos: idParqueo ?? 0 });
       },
       error => console.error('Error al obtener idParqueo:', error)
     );
@@ -306,8 +298,8 @@ export class AgregarIngresoComponent implements OnInit {
     this.objAccesoVehicular = {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
-      parqueo: { idParqueo: this.formRegistraUsuario.get('idParqueo')?.value || 0 },
-      espacio: { idEspacio: this.espacioSeleccionado },
+      parqueos: { idParqueos: this.formRegistraUsuario.get('idParqueos')?.value || 0 },
+      ubicacion: { idUbicacion: this.espacioSeleccionado },
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
 
@@ -315,8 +307,8 @@ export class AgregarIngresoComponent implements OnInit {
     console.log("Cliente ID inicial:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Cliente:", this.objAccesoVehicular.cliente);
     console.log("Usuario:", this.objAccesoVehicular.usuario);
-    console.log("Parqueo:", this.objAccesoVehicular.parqueo);
-    console.log("Espacio:", this.objAccesoVehicular.espacio);
+    console.log("Parqueo:", this.objAccesoVehicular.parqueos);
+    console.log("Espacio:", this.objAccesoVehicular.ubicacion);
 
     const requests = [];
 
@@ -327,14 +319,14 @@ export class AgregarIngresoComponent implements OnInit {
       }
     }
 
-    if (this.objAccesoVehicular.parqueo && !this.objAccesoVehicular.parqueo.idParqueo) {
+    if (this.objAccesoVehicular.parqueos && !this.objAccesoVehicular.parqueos.idParqueos) {
       const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
       if (tipoVehiculo) {
         requests.push(this.utilService.obtenerIdParqueo(tipoVehiculo));
       }
     }
 
-    if (this.objAccesoVehicular.espacio && !this.objAccesoVehicular.espacio.idEspacio) {
+    if (this.objAccesoVehicular.ubicacion && !this.objAccesoVehicular.ubicacion.idUbicacion) {
       const espacio = this.formRegistraVehiculo.get('espacio')?.value;
       if (espacio) {
         requests.push(this.utilService.obtenerIdEspacio(espacio));
@@ -343,8 +335,8 @@ export class AgregarIngresoComponent implements OnInit {
 
     console.log("SEGUNDA DEPURACION");
     console.log("Cliente ID antes de forkJoin:", this.objAccesoVehicular.cliente?.idCliente);
-    console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueo?.idParqueo);
-    console.log("Espacio ID antes de forkJoin:", this.objAccesoVehicular.espacio?.idEspacio);
+    console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueos?.idParqueos);
+    console.log("Espacio ID antes de forkJoin:", this.objAccesoVehicular.ubicacion?.idUbicacion);
 
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
@@ -359,14 +351,14 @@ export class AgregarIngresoComponent implements OnInit {
               }
 
               if (resultados[1]) {
-                this.objAccesoVehicular.parqueo = this.objAccesoVehicular.parqueo || {}; // Inicializar si es undefined
-                this.objAccesoVehicular.parqueo.idParqueo = resultados[1];
+                this.objAccesoVehicular.parqueos = this.objAccesoVehicular.parqueos || {}; // Inicializar si es undefined
+                this.objAccesoVehicular.parqueos.idParqueos = resultados[1];
                 console.log("ID Parqueo asignado:", resultados[1]);
               }
 
               if (resultados[2]) {
-                this.objAccesoVehicular.espacio = this.objAccesoVehicular.espacio || {}; // Inicializar si es undefined
-                this.objAccesoVehicular.espacio.idEspacio = resultados[2];
+                this.objAccesoVehicular.ubicacion = this.objAccesoVehicular.ubicacion || {}; // Inicializar si es undefined
+                this.objAccesoVehicular.ubicacion.idUbicacion = resultados[2];
                 console.log("ID Espacio asignado:", resultados[2]);
               }
 
@@ -537,10 +529,15 @@ buscarUsuarioPorDni(){
   }
 
 
-  seleccionarEspacioN(espacio: number) {
-    this.espacioSeleccionado = espacio;
-    console.log('Espacio seleccionado:', espacio);
+  seleccionarEspacioN(espacio: number | undefined) {
+    if (espacio !== undefined) {
+      this.espacioSeleccionado = espacio;
+      console.log('Espacio seleccionado:', espacio);
+    } else {
+      console.warn('El espacio seleccionado es undefined');
+    }
   }
+  
   
   // Manejo de tipo de vehículo
   onTipoVehiculoChange(tipo: string) {
@@ -556,10 +553,14 @@ buscarUsuarioPorDni(){
     }
   }
 
-    // Selección de espacio
-    seleccionarEspacio(espacio: string) {
-      this.espacioSeleccionado = Number(espacio);
+// Selección de espacio
+  seleccionarEspacio(espacio: string | number | undefined) {
+    if (espacio === undefined) {
+      console.warn('Espacio no válido seleccionado.');
+      return;
     }
+    this.espacioSeleccionado = Number(espacio);
+  }
 
   guardarNombresApe() {
     const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? '';
