@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { EspacioParqueo } from "../models/espacioParqueo";
 
-const baseUrlEspacioParqueo = AppSettings.API_ENDPOINT + '/espacioParqueo';
+const baseUrlEspacioParqueo = AppSettings.API_ENDPOINT + '/parqueos';
 
 
 @Injectable({
@@ -14,7 +14,7 @@ export class EspacioParqueoService {
     constructor(private http: HttpClient){}
 
    listarEspaciosPorIdParqueo(idParqueo: number): Observable<EspacioParqueo[]>{
-        return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/listarEspaciosIdParqueo/`+idParqueo);
+        return this.http.get<EspacioParqueo[]>(`${baseUrlEspacioParqueo}/`+idParqueo);
     }
 
 
