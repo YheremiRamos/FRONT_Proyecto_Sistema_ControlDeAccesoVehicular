@@ -1,3 +1,15 @@
+<head>
+    <!-- Enlaces para cargar fuentes desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+    <!-- Carga de la fuente "Josefin Sans" -->
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet">
+  </head>
+
+
 <div class="main-container">
     <app-menu></app-menu>
     <div class="content">
@@ -30,116 +42,107 @@
                                         </mat-form-field>
                                     </div>
                                 
-                                    <form [formGroup]="formRegistraVehiculo">
+                                   
+                            <!-- Formulario para seleccionar el tipo de vehículo -->
+                            <form [formGroup]="formRegistraVehiculo">
+                                <div class="inputContent">
+                                <h5>1. Tipo de Vehiculo:</h5>
+                                <mat-form-field class="col-md-6" style="margin: auto;">
+                                    <mat-label>Seleccione el tipo de vehiculo</mat-label>
                                     <!-- Combo box Tipo de vehículo -->
-                                        <div class="inputContent">
-                                        <h5>2. Tipo de vehículo:</h5>
-                                        <mat-form-field class="col-md-6" style="margin: auto;">
-                                            <mat-label>Tipo vehículo</mat-label>
-                                            <mat-select formControlName="tipoVehiculo" (selectionChange)="onTipoVehiculoChange($event.value)">
-                                            <mat-option value="-1">[Seleccione el tipo de vehículo]</mat-option>
-                                            <mat-option value="Automovil">Automovil</mat-option>
-                                            <mat-option value="Motocicleta">Motocicleta</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                        </div>
-                                    </form>
-
+                                    <mat-select formControlName="tipoVehiculo">
+                                    <mat-option value="-1"> [Seleccione] </mat-option>
+                                    <mat-option *ngFor="let x of lstTipoVehiculo" [value]="x.idTipoVehiculo">
+                                        {{ x.nombreTipoVehiculo }}
+                                    </mat-option>
+                                    </mat-select>
+                                    <mat-hint style="color: red" *ngIf="formRegistraVehiculo.controls.tipoVehiculo.touched">
+                                    <span *ngIf="formRegistraVehiculo.controls.tipoVehiculo.hasError('required')">
+                                        El Tipo de Vehiculo es requerido
+                                    </span>
+                                    </mat-hint>
+                                </mat-form-field>
+                                </div>
+                            </form>
         
                                     <div class="row">
-            
-                                        <!-- Espacios de estacionamiento gráfico -->
-                                    
-                                        <h4 style="text-align: center; margin: 1ch auto 1ch auto;">Espacios de parqueo disponibles</h4>
-                                        <div class="row leyenda">
-                                            <div class="col-md-4">
-                                                <div class="leyenda-item generales">
-                                                    <span class="color-general"></span>
-                                                    <h6>Generales</h6>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="leyenda-item discapacitados">
-                                                    <span class="color-discapacitado"></span>
-                                                    <h6>Discapacitados</h6>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="leyenda-item gerencia">
-                                                    <span class="color-gerencia"    ></span>
-                                                    <h6>Gerencia</h6>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <!-- Espacios de estacionamiento -->
-                        <div class="contenedor_espacios">
-                            <div class="parking-layout">
-                            <!-- Espacios para el Primer Nivel -->
-                            <div *ngIf="mostrarNivelPrincipal" class="parking-section"  [@fadeSlide]>
-                                <h5>Primer nivel (Principal)</h5>
-                                <div class="parking-spaces">
-                                <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPP"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button class="gt" *ngFor="let espacio of espacioGerentePP"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button *ngFor="let espacio of espaciosGeneralPP"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                </div>
-                            </div>
-                    
-                            <!-- Espacios para el Semi-Sótano -->
-                            <div *ngIf="mostrarNivelSemiSotano" class="parking-section">
-                                <h5>Semi-Sótano</h5>
-                                <div class="parking-spaces">
-                                <button class="gt" *ngFor="let espacio of espacioGerentePS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button *ngFor="let espacio of espaciosGeneralPS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                </div>
-                            </div>
-                    
-                            <!-- Espacios para el Sótano -->
-                            <div *ngIf="mostrarNivelSotano" class="parking-section">
-                                <h5>Sótano</h5>
-                                <div class="parking-spaces">
-                                <button class="gt" *ngFor="let espacio of espacioGerentePSS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button *ngFor="let espacio of espaciosGeneralPSS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                <button class="d" *ngFor="let espacio of espaciosDiscapacitadoPSS"
-                                    (click)="seleccionarEspacio(espacio)" [ngClass]="{'selected': +espacio === espacioSeleccionado}">
-                                    {{ espacio }}
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-
-                                    </div>
-
-                                </div>
         
+        <!-- Espacios de estacionamiento -->
+
+
+
+
+
+        <!-----------------------------------------LEYENDA-->
+
+            <div class="leyenda">
+                <p><span class="color-circle" style="background-color: #2BA555;"></span> <span>Gerencia</span></p>
+                <p><span class="color-circle" style="background-color: grey;"></span> <span>General</span></p>
+                <p><span class="color-circle" style="background-color: #15395A;"></span> <span>Discapacitado</span></p>
+            </div>
+            <!-- Leyenda de disponibilidad de espacios -->
+            <div class="leyenda">
+                <p>
+                <span class="color-circle" style="background-color: #2BA555;"></span>
+                <span class="color-circle" style="background-color: grey;"></span>
+                <span class="color-circle" style="background-color: #15395A;"></span>
+                <span>Disponible</span>
+                </p>
+                <p>
+                <span class="color-circle" style="background-color: #2BA555; opacity: 0.5;"></span>
+                <span class="color-circle" style="background-color: grey; opacity: 0.5;"></span>
+                <span class="color-circle" style="background-color: #15395A; opacity: 0.5;"></span>
+                <span>No Disponible/Inactivo</span>
+                </p>
+            </div>
+    
+            <!---------------------------LISTADO--- Tabla de listado con filtro -->
+            <div class="parqueos-list">
+                <!-- Iteramos sobre las ubicaciones -->
+                <div *ngFor="let ubicacion of lstUbicaciones" class="ubicacion-group">
+                <div class="ubicacion-header">
+                    <h3>{{ ubicacion.nombreUbicacion }}</h3>
+                </div>
+    
+                <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
+                    <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
+                    <button mat-raised-button [ngStyle]="{
+                                'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
+                                'color': 'white',
+                                'opacity': getEstadoOpacity(parqueo.estadoEspacios?.nombreEstadoEspacios ?? 'Disponible')
+                            }" (click)="openReadDialog(parqueo)"
+                        style="display: flex; flex-direction: column; align-items: center; padding: 10px;">
+    
+                        <!-- Ícono de tipo de vehículo -->
+                        <i class="fas fa-car fa-xs"
+                        [ngClass]="getVehiculoIcon(parqueo.tipoVehiculo?.nombreTipoVehiculo ?? '')"
+                        style="font-size: 14px; margin :3px;"></i>
+    
+                        <!-- Número de parqueo -->
+                        <span>{{ parqueo.idParqueos }}</span>
+                    </button>
+                    </div>
+                </div>
+                </div>
+    
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                                    </div>
+                                </div>
                                 <div class="row btnEnd">
                                     <button mat-raised-button (click)="stepper.next()" color="primary">Siguiente
                                         <mat-icon>arrow_forward</mat-icon>
@@ -149,7 +152,7 @@
                         </mat-step>
         
                         <!-- Apartado 2: Datos del cliente -->
-                        <mat-step [stepControl]="formRegistraUsuario" label="Datos del Cliente" >
+                        <mat-step [stepControl]="formRegistraUsuario" label="Datos del Cliente" optional="true" >
                             <form [formGroup]="formRegistraUsuario">
                                 <div class="row">
                                     <mat-toolbar
@@ -243,7 +246,8 @@
                             </div>
                 
                             <div class="row btnEnd">
-                            <button mat-raised-button (click)="crearCliente()"  (click)="guardarNombresApe(); stepper.next()"
+                                <button mat-raised-button color="primary" (click)="stepper.previous()">Atrás</button>
+                            <button mat-raised-button  (click)="guardarNombresApe(); stepper.next()"
                                 [disabled]="habilitarBtnSiguienteRegistroUsuario()">
                                 Siguiente <mat-icon>arrow_forward</mat-icon>
                             </button>
@@ -252,7 +256,7 @@
                         </mat-step>
         
                         <!-- Apartado 3: Datos del vehículo -->
-                        <mat-step [stepControl]="formRegistraVehiculo" label="Datos del Vehículo"   >
+                        <mat-step [stepControl]="formRegistraVehiculo" label="Datos del Vehículo" optional="true">
                             <form [formGroup]="formRegistraVehiculo">
                                 <div class="row">
                                     <mat-toolbar
@@ -294,7 +298,7 @@
                         </mat-step>
         
                         <!-- Apartado 4: Resumen de Datos -->
-                <mat-step [stepControl]="formRegistraVehiculo" label="Registro">
+                <mat-step [stepControl]="formRegistraVehiculo" label="Registro" optional="true">
                     <div class="row">
                         <mat-toolbar style="background:#4B9DA6; border-radius: 20px 20px 20px 20px; padding-left: 5%;">
                             <h2>Datos del Registro</h2>
@@ -343,7 +347,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p><strong>Tipo de vehículo:</strong> {{ formRegistraVehiculo.value.tipoVehiculo }}
+                                    <p><strong>Tipo de vehículo:</strong> {{ tipoVehiculo.nombreTipoVehiculo }}
                                     </p>
                                 </div>
                             </div>
