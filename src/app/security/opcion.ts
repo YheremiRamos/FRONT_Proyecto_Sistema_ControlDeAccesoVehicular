@@ -5,5 +5,3 @@ export class Opcion {
     estado?: number;
     tipo?: number;
 }
-
-

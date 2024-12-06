@@ -22,14 +22,12 @@
                 </div>
                 <h6 class="username">{{nombreUsuario}}</h6>
             </div>
-            <ul class="sidebar-menu">
-                <li><a href="">Inicio</a></li>
-                <li><a href="verRegistraIngreso">Ingresos</a></li>
-                <li><a href="verRegistraSalida">Salidas</a></li>
-                <li><a href="verEspacioParqueo">Espacio de Parqueo</a></li>
-                <li><a href="verIncidencias">Incidencias</a></li>
-
-                <li *ngIf="isLogged" (click)="onLogOut()"><a href="verRegistraIngreso">Cerrar sesión</a></li>
+            <ul class="sidebar-menu" *ngIf="isLogged">
+                    <li><a href="">Inicio</a></li>
+                    <li>
+                        <a *ngFor="let item of opciones"  routerLink="/{{ item.ruta }}">{{ item.nombre }}</a>
+                    </li>
+                <li *ngIf="isLogged" (click)="onLogOut()"><a routerLink="/login">Cerrar sesión</a></li>
             </ul>
         </div>
 

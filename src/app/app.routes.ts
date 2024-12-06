@@ -13,14 +13,15 @@ import { ListaEspaciosComponent } from './components/lista-espacios/lista-espaci
 import { incidenciasComponent } from './components/Incidencias_Consulta/incidencias_listado.component';
 
 export const routes: Routes = [
-    {path:"verRegistraIngreso", component:AgregarIngresoComponent },
-    {path:"verEspacioParqueo", component:AgregarParqueosComponent },
+    {path:"verRegistroIngreso", component:AgregarIngresoComponent },
+    {path:"verRegistroSalida", component:AddSalidaVehicularComponent },
+    {path:"verGestionIncidencias", component:incidenciasComponent },
+    {path:"verGestionZonasParqueo", component:AgregarParqueosComponent },
+    {path:"verGestionPlazasEspacios", component:ListaEspaciosComponent},  
+    {path:"verReportes", component:ListaEspaciosComponent},  
+
     {path:"verCrudUbicacion", component:CrudUbicacionesComponent },
-    {path:"verIncidencias", component:incidenciasComponent },
-
-    {path:"verRegistraSalida", component:AddSalidaVehicularComponent },
     {path:"verListaEspacios", component:ListaEspaciosComponent},
-
     {path:"verInfoProblemasIngreso", component:InfoProblemasIngresoComponent},
   
     { path: '', component: IndexComponent },
