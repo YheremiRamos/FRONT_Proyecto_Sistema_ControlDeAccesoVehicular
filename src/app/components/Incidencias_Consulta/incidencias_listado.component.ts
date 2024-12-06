@@ -13,6 +13,8 @@ import { MenuComponent } from '../../menu/menu.component';
 import { MatPaginator } from '@angular/material/paginator';
 
 import { MatDialog } from '@angular/material/dialog';
+import { Cliente } from '../../models/cliente.model';
+import { TokenService } from '../../security/token.service';
 
 
 
@@ -25,7 +27,6 @@ import { MatDialog } from '@angular/material/dialog';
 })
 
 export class incidenciasComponent implements OnInit {
-  
   espacioParqueoForm!: FormGroup;
 
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
@@ -33,15 +34,12 @@ export class incidenciasComponent implements OnInit {
   displayedColumns: string[] = ['idCliente', 'nombres', 'apellidos', 'identificador', 'telefono', 'numIncidencias', 'exportar'];
   dataSource = new MatTableDataSource<any>([]);
 
-
-
-    
-
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private dialogService: MatDialog,
     private incidenciasService: incidenciasService,
-    private clienteService: clienteService
+    private clienteService: clienteService,
+    private tokenService: TokenService
 
   ) {}
 
@@ -50,9 +48,15 @@ export class incidenciasComponent implements OnInit {
     this.cargarTodosClientes();
   }
 
+  formFiltrarClientes = this.formBuilder.group({
+    identificador: ['', [Validators.pattern('^[0-9]$')]],
+    nombre: [[Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
+    apellido: [[Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
+  });
+
   // Inicializa el formulario para registrar o editar los espacios de parqueo
   inicializarFormulario(): void {
-    this.espacioParqueoForm = this.fb.group({
+    this.espacioParqueoForm = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       descripcion: ['', Validators.required],
       estado: [true] // Por defecto, activo
@@ -119,37 +123,55 @@ filtrar() {
     }
 );
 console.log(">>> Filtrar [fin]"); 
-
 }
 
-/*
-// Exportar PDF
-exportarPDF() {
- 
-  this.autorService.generateAutorReportPDF(
-    this.varNombres,
-    this.varApellidos,
-    this.varFecNacDesde.toISOString(),
-    this.varFecNacHasta.toISOString(),
-    this.varTelefono,
-    this.varCelular,
-    this.varOrcid,
-    this.varEstado ? 1 : 0,
-    this.varIdPais,
-    this.varGrado
-  ).subscribe(
-    response => {
-      console.log(response);
-      var url = window.URL.createObjectURL(response.data);
-      var a = document.createElement('a');
-      document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.setAttribute('target', 'blank');
-      a.href = url;
-      a.download = response.filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-  }); 
-}*/
+
+  generarInformePDF(obj:Cliente) {
+    console.log(">>> Filtrar [inicio]"); 
+    console.log(">>> Nombre: "+obj.nombres );
+    console.log(">>> Apellidos: "+obj.apellidos);
+    console.log(">>> Identificador: "+obj.identificador); 
+    Swal.fire({
+      icon: "success",
+      title: "Informe generado",
+      text: "El informe del usuario será descargado en PDF",
+      showClass: {
+        popup: `
+          animate__animated
+          animate__fadeInUp
+          animate__faster
+        `
+      },
+      hideClass: {
+        popup: `
+          animate__animated
+          animate__fadeOutDown
+          animate__faster
+        `
+      }
+    });
+    this.clienteService.buscarClientePorId(obj.idCliente || 0).subscribe(
+      x => {
+            this.refreshTable();
+            this.clienteService.informeLimiteIncidencias(obj.idCliente || 0).subscribe(
+                response => {
+                  console.log(response);
+                  var url = window.URL.createObjectURL(response.data);
+                  var a = document.createElement('a');
+                  document.body.appendChild(a);
+                  a.setAttribute('style', 'display: none');
+                  a.setAttribute('target', 'blank');
+                  a.href = url;
+                  a.download = response.filename;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                  a.remove();
+              }); 
+      }
+    );
+  }
+
+  limite(){
+
+  }
 }

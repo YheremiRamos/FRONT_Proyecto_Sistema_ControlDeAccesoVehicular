@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { AppSettings } from "../app.settings";
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { Cliente } from "../models/cliente.model";
 
-const baseUrCliente = AppSettings.API_ENDPOINT + '/cliente';
+const baseUrlCliente = AppSettings.API_ENDPOINT + '/cliente';
 
 
 @Injectable({
@@ -18,20 +18,44 @@ export class clienteService {
 
      // Método para obtener todos los clientes
   obtenerClientes(): Observable<Cliente[]>{
-    return this.http.get<Cliente[]>(`${baseUrCliente}`);
+    return this.http.get<Cliente[]>(`${baseUrlCliente}`);
   }
 
-/*PDF Descarga incidencias*/
-
-//Consultar
+//Consulta
 consultarClienteComplejo(nombres: string, apellidos: string, identificador:string): Observable<any> {
     const params = new HttpParams()
       .set("nombres", nombres)
       .set("apellidos", apellidos)
       .set("identificador", identificador);
   
-    return this.http.get(baseUrCliente + "/consultaClientePorParametros", { params });
+    return this.http.get(baseUrlCliente + "/consultaClientePorParametros", { params });
   }
+
+  buscarClientePorId(id:number): Observable<Cliente[]>{
+    return this.http.get<Cliente[]>(baseUrlCliente+"/buscarClientePorId/"+id);
+  }
+
+  informeLimiteIncidencias(idCliente: number): Observable<any> {
+    // Pasar parámetros
+    const params = new HttpParams().set("idCliente", idCliente.toString());
+
+    // Configurar cabeceras
+    let headers = new HttpHeaders().set('Accept', 'application/pdf');
+
+    // Opciones de solicitud
+    let requestOptions: any = { headers: headers, responseType: 'blob', params: params };
+
+    // Hacer la solicitud POST
+    return this.http.post(baseUrlCliente + "/informeLimiteIncidenciasPDF", '', requestOptions).pipe(
+        map((response) => {
+            return {
+                filename: 'InformeLimiteIncidencias.pdf',
+                data: new Blob([response], { type: 'application/pdf' })
+            };
+        })
+    );
+}
+
   
   
 

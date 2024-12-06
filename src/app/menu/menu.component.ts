@@ -16,10 +16,7 @@ import { CommonModule } from '@angular/common';
 export class MenuComponent implements OnInit {
 
   isLogged = false;
-  opcRegistro : Opcion[] = [];
-  opcConsulta : Opcion[] = [];
-  opcCRUD : Opcion[] = [];
-  opcTransacciones : Opcion[] = [];
+  opciones : Opcion[] = [];
 
   nombreUsuario = "";
 
@@ -30,11 +27,8 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     console.log("MenuComponent >>> ngOnInit >>> ");
 
-    this.opcRegistro = this.tokenService.getOpciones().filter( x => x.tipo === 1);
-    this.opcConsulta = this.tokenService.getOpciones().filter( x => x.tipo === 2);
-    this.opcCRUD = this.tokenService.getOpciones().filter( x => x.tipo === 3);
-    this.opcTransacciones = this.tokenService.getOpciones().filter( x => x.tipo === 4);
-    
+    this.opciones = this.tokenService.getOpciones().filter( x => x.tipo === 1);
+
 
     console.log("MenuComponent >>> ngOnInit >>> " + this.tokenService.getToken());
     if (this.tokenService.getToken()) {
