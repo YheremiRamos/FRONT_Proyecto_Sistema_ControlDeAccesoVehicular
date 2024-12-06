@@ -23,11 +23,12 @@
                 <h6 class="username">{{nombreUsuario}}</h6>
             </div>
             <ul class="sidebar-menu" *ngIf="isLogged">
-                    <li><a href="">Inicio</a></li>
-                    <li>
-                        <a *ngFor="let item of opciones"  routerLink="/{{ item.ruta }}">{{ item.nombre }}</a>
-                    </li>
-                <li *ngIf="isLogged" (click)="onLogOut()"><a routerLink="/login">Cerrar sesión</a></li>
+                <li><a href="">Inicio</a></li>
+                <li><a href="verRegistroIngreso">Ingresos</a></li>
+                <li><a href="verRegistroSalida">Salidas</a></li>
+                <li><a href="verGestionPlazasEspacios">Espacio de Parqueo</a></li>
+                <li><a href="verGestionIncidencias">Incidencias</a></li>
+                <li *ngIf="isLogged" (click)="onLogOut()"><a href="verRegistraIngreso">Cerrar sesión</a></li>
             </ul>
         </div>
 
