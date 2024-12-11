@@ -1,34 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { TokenService } from '../security/token.service';
-
-import { AppMaterialModule } from '../app.material.module';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MenuComponent } from '../menu/menu.component';
-
+import { MenuComponent } from "../menu/menu.component";
 
 @Component({
   selector: 'app-index',
   standalone: true,
-  imports: [ AppMaterialModule, FormsModule, CommonModule, MenuComponent],
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.css']
+  styleUrls: ['./index.component.css'],
+  imports: [MenuComponent]
 })
 export class IndexComponent implements OnInit {
-
   isLogged = false;
-  nombreUsuario = "";
 
-  constructor(private tokenService: TokenService) { }
+  intervalId: any;
+  private nombreUsuario = "";
+
+  constructor(private tokenService: TokenService) {}
 
   ngOnInit() {
     if (this.tokenService.getToken()) {
       this.isLogged = true;
-      this.nombreUsuario = this.tokenService.getUserNameComplete()|| '{}';
     } else {
       this.isLogged = false;
       this.nombreUsuario = '';
     }
+
   }
 
 }

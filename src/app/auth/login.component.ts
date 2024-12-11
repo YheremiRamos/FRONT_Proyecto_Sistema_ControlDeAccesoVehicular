@@ -7,12 +7,11 @@ import { TokenService } from '../security/token.service';
 import { AppMaterialModule } from '../app.material.module';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent],
+  imports: [AppMaterialModule, FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

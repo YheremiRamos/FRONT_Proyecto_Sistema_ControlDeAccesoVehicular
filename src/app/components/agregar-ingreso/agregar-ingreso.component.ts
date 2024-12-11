@@ -53,10 +53,6 @@ export class AgregarIngresoComponent implements OnInit {
     placaVehiculo: "",
     parqueos: {
       idParqueos: 0// Añadir idParqueo para evitar el error en el acceso
-    },
-    ubicacion: {
-      idUbicacion: 0,
-      nombreUbicacion: ""
     }
   };
 
@@ -298,8 +294,7 @@ export class AgregarIngresoComponent implements OnInit {
     this.objAccesoVehicular = {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
-      parqueos: { idParqueos: this.formRegistraUsuario.get('idParqueos')?.value || 0 },
-      ubicacion: { idUbicacion: this.espacioSeleccionado },
+      parqueos: { idParqueos:  this.espacioSeleccionado },
       placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
     };
 
@@ -308,7 +303,6 @@ export class AgregarIngresoComponent implements OnInit {
     console.log("Cliente:", this.objAccesoVehicular.cliente);
     console.log("Usuario:", this.objAccesoVehicular.usuario);
     console.log("Parqueo:", this.objAccesoVehicular.parqueos);
-    console.log("Espacio:", this.objAccesoVehicular.ubicacion);
 
     const requests = [];
 
@@ -326,17 +320,11 @@ export class AgregarIngresoComponent implements OnInit {
       }
     }
 
-    if (this.objAccesoVehicular.ubicacion && !this.objAccesoVehicular.ubicacion.idUbicacion) {
-      const espacio = this.formRegistraVehiculo.get('espacio')?.value;
-      if (espacio) {
-        requests.push(this.utilService.obtenerIdEspacio(espacio));
-      }
-    }
+
 
     console.log("SEGUNDA DEPURACION");
     console.log("Cliente ID antes de forkJoin:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueos?.idParqueos);
-    console.log("Espacio ID antes de forkJoin:", this.objAccesoVehicular.ubicacion?.idUbicacion);
 
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
@@ -356,11 +344,7 @@ export class AgregarIngresoComponent implements OnInit {
                 console.log("ID Parqueo asignado:", resultados[1]);
               }
 
-              if (resultados[2]) {
-                this.objAccesoVehicular.ubicacion = this.objAccesoVehicular.ubicacion || {}; // Inicializar si es undefined
-                this.objAccesoVehicular.ubicacion.idUbicacion = resultados[2];
-                console.log("ID Espacio asignado:", resultados[2]);
-              }
+            
 
 
           // Registrar el acceso vehicular con los IDs asignados
