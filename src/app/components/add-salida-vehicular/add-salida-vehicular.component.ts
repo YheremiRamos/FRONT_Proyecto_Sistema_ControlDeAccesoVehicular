@@ -138,6 +138,10 @@ export class AddSalidaVehicularComponent {
         formattedData.sort((a, b) => a.idAccesoVehicular - b.idAccesoVehicular);
   
         this.dataSource.data = formattedData;
+
+        console.log(this.dataSource);
+
+
       },
       error: (err) => {
         console.error('Error al cargar los datos:', err);
