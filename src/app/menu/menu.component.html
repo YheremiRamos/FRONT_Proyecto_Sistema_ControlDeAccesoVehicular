@@ -4,23 +4,28 @@
             <h1><strong>CIBERTEC</strong></h1>
             <br>
         </div>
-        <ul class="sidebar-menu">
-            <li *ngIf="!isLogged">
-                <a class="nav-link"  routerLink="/login"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
-            </li>
-            <li *ngIf="isLogged" (click)="onLogOut()">
-                <a class="nav-link" style="cursor: pointer;"><i class="fas fa-door-open" ></i> Cerrar Sesión</a>
-            </li>
-        </ul>
-    </div>
-    <div class="sidebar" *ngIf="isLogged">
-        <div class="sidebar-header">
-            <h1><strong>CIBERTEC</strong></h1>
-            <br>
-            <div class="profile-picture">
-                <img src="assets/login_img/user_1.jpg" alt="Foto de perfil">
+
+        <div class="sidebar" *ngIf="isLogged">
+            <div class="sidebar-header">
+                <img class="imagen_menu" src="assets/login_img/Cibertec_logo_menu.png" alt="">
+                <br>
+                <hr class="linea_1">
+
+                <div class="profile-picture">
+                    <img  src="assets/login_img/user_1.jpg" alt="Foto de perfil">
+                </div>
+                <h6 class="username">{{nombreUsuario}}</h6>
+                <hr class="linea_2">
             </div>
-            <h6 class="username">{{nombreUsuario}}</h6>
+            <ul class="sidebar-menu" *ngIf="isLogged">
+                <li><a href=""> <img src="assets/login_img/inicio.png">Inicio</a></li>
+                <li><a href="verRegistroIngreso"> <img src="assets/login_img/ingresos.png" alt="">Ingresos</a></li>
+                <li><a href="verRegistroSalida"><img src="assets/login_img/salidas.png" alt="">Salidas</a></li>
+                <li><a href="verGestionPlazasEspacios"><img class="carro." src="assets/login_img/parqueos.png" alt="">Espacio de Parqueo</a></li>
+                <li><a href="verGestionIncidencias"><img src="assets/login_img/incidencias.png" alt="">Incidencias</a></li>
+                <li class="cerrar_sesion" *ngIf="isLogged" (click)="onLogOut()"><a href="verRegistraIngreso"><img src="assets/login_img/cerrar_sesion.png" alt=""> Cerrar sesión</a></li>
+            </ul>
+
         </div>
         <ul class="sidebar-menu" *ngIf="isLogged">
             <li><a href="">Inicio</a></li>
