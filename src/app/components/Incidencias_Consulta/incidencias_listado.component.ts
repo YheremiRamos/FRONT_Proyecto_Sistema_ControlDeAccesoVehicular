@@ -28,6 +28,9 @@ import { TokenService } from '../../security/token.service';
 
 export class incidenciasComponent implements OnInit {
   espacioParqueoForm!: FormGroup;
+  
+  //Clase para la paginacion 
+  @ViewChild (MatPaginator, { static: true }) paginator!: MatPaginator; 
 
   showForm: boolean = false;  // Variable para mostrar/ocultar el formulario
   filtro: string = ''; // Para el filtro de búsqueda
@@ -44,31 +47,14 @@ export class incidenciasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.inicializarFormulario();
     this.cargarTodosClientes();
   }
 
   formFiltrarClientes = this.formBuilder.group({
-    identificador: ['', [Validators.pattern('^[0-9]$')]],
-    nombre: [[Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
-    apellido: [[Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
+    identificador: ['', [Validators.pattern('^[0-9]+$')]],
+    nombre: ['', [Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$')]],
+    apellido: ['', [Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+$')]],
   });
-
-  // Inicializa el formulario para registrar o editar los espacios de parqueo
-  inicializarFormulario(): void {
-    this.espacioParqueoForm = this.formBuilder.group({
-      nombre: ['', [Validators.required, Validators.minLength(3)]],
-      descripcion: ['', Validators.required],
-      estado: [true] // Por defecto, activo
-    });
-  }
-
-  
-  // Función para cerrar el formulario
-  closeForm(): void {
-    this.showForm = false; // Oculta el formulario
-  }
-
 
 
   // Función para cargar los espacios de parqueo
@@ -83,14 +69,6 @@ export class incidenciasComponent implements OnInit {
     });
   }
 
- 
-
-  // Función para filtrar la tabla
-  refreshTable(): void {
-    this.dataSource.filter = this.filtro.trim().toLowerCase();
-  }
-
-@ViewChild(MatPaginator) paginator!: MatPaginator;
 
 ngAfterViewInit() {
   this.dataSource.paginator = this.paginator;
@@ -99,31 +77,25 @@ ngAfterViewInit() {
 
 
 // Para los filtros - Inicializar los campos con valores por defecto
-varNombres: string = "";
-varApellidos: string = "";
-VarIdentificador: string = ""
+  varNombres: string = ""
+  varApellidos: string = ""
+  varIdentificador: string = ""
 
-// Método para filtrar
-filtrar() {
-  console.log(">>> Filtrar [inicio]"); 
-  console.log(">>> varNombre: "+this.varNombres );
-  console.log(">>> varApellidos: "+this.varApellidos);
-  console.log(">>> varIdentificador: "+this.VarIdentificador); 
-
-
-  this.clienteService.consultarClienteComplejo(
-    this.varNombres,
-    this.varApellidos,
-    this.VarIdentificador
- 
-  ).subscribe(
-    x => {
-          this.dataSource = x;
-          this.dataSource.paginator = this.paginator;
-    }
-);
-console.log(">>> Filtrar [fin]"); 
-}
+  // Método para filtrar
+  filtrar() {
+    this.clienteService.consultarClienteComplejo(
+      this.varNombres,
+      this.varApellidos,
+      this.varIdentificador
+  
+    ).subscribe(
+      x => {
+        this.dataSource = x; 
+        this.dataSource.paginator = this.paginator; 
+      }
+  );
+  console.log(">>> Filtrar [fin]"); 
+  }
 
 
   generarInformePDF(obj:Cliente) {
@@ -150,28 +122,5 @@ console.log(">>> Filtrar [fin]");
         `
       }
     });
-    this.clienteService.buscarClientePorId(obj.idCliente || 0).subscribe(
-      x => {
-            this.refreshTable();
-            this.clienteService.informeLimiteIncidencias(obj.idCliente || 0).subscribe(
-                response => {
-                  console.log(response);
-                  var url = window.URL.createObjectURL(response.data);
-                  var a = document.createElement('a');
-                  document.body.appendChild(a);
-                  a.setAttribute('style', 'display: none');
-                  a.setAttribute('target', 'blank');
-                  a.href = url;
-                  a.download = response.filename;
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-                  a.remove();
-              }); 
-      }
-    );
-  }
-
-  limite(){
-
   }
 }
