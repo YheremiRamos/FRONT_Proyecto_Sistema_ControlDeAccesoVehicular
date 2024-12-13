@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { TokenService } from '../../security/token.service';
 import { Usuario } from '../../models/usuario.model';
 import { salidaVehicularService } from '../../services/salidaVehicular.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {  FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MenuComponent } from '../../menu/menu.component';
 import { MatCommonModule } from '@angular/material/core';
@@ -23,6 +23,7 @@ import { AccesoVehicular } from '../../models/accesoVehicular.model';
   styleUrls: ['./add-salida-vehicular.component.css'],
 })
 export class AddSalidaVehicularComponent {
+
   displayedColumns: string[] = [
     'idAccesoVehicular',
     'nombreCompleto',
@@ -33,15 +34,15 @@ export class AddSalidaVehicularComponent {
     'numIncidencias',
     'accionIncidencia',
   ];
-  fechaBusqueda: Date | null = null;
-  busquedaTexto: string = '';
-  
+
   dataSource = new MatTableDataSource<any>(); // Cambiado para recibir cualquier objeto
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+
   objUsuario: Usuario = {};
+
 
   constructor(
     private salidaVehicularService: salidaVehicularService,
@@ -51,12 +52,9 @@ export class AddSalidaVehicularComponent {
   }
 
   ngOnInit(): void {
+    // this.loadWatsonAssistant();
     this.cargarDatos();
-  }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator; // Conecta el paginador a la tabla
-    this.dataSource.sort = this.sort; // Conecta el ordenamiento a la tabla
   }
 
   registrarIncidencia(idAccesoVehicular: number) {
@@ -73,6 +71,12 @@ export class AddSalidaVehicularComponent {
       if (result.isConfirmed) {
         this.salidaVehicularService.registrarIncidencia(idAccesoVehicular).subscribe({
           next: (response) => {
+
+          
+
+
+
+
             console.log('Incidencia registrada con éxito:', response);
             this.cargarDatos(); // Recarga los datos de la tabla para actualizar la vista
             Swal.fire('Registrado!', 'La incidencia ha sido registrada.', 'success');
@@ -85,6 +89,7 @@ export class AddSalidaVehicularComponent {
       }
     });
   }
+  
 
   registrarSalida(idAccesoVehicular: number) {
     Swal.fire({
@@ -112,6 +117,9 @@ export class AddSalidaVehicularComponent {
       }
     });
   }
+  
+  
+
 
   cargarDatos() {
     this.salidaVehicularService.listarSalidaVehicular().subscribe({
@@ -125,18 +133,22 @@ export class AddSalidaVehicularComponent {
           fechaActualizacion: item[5] ? new Date(item[5]) : null,
           numIncidencias: item[6],
         }));
-
+  
         // Ordena los datos por ID
         formattedData.sort((a, b) => a.idAccesoVehicular - b.idAccesoVehicular);
-
+  
         this.dataSource.data = formattedData;
+
         console.log(this.dataSource);
+
+
       },
       error: (err) => {
         console.error('Error al cargar los datos:', err);
       },
     });
   }
+  
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -146,6 +158,4 @@ export class AddSalidaVehicularComponent {
       this.dataSource.paginator.firstPage();
     }
   }
-
-  
 }
