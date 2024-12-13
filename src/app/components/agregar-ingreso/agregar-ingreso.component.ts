@@ -16,7 +16,6 @@ import { Parqueo } from '../../models/parqueo.model';
 import { AccesoVehicular } from '../../models/accesoVehicular.model';
 import { UtilService } from '../../services/util.service';
 import { forkJoin } from 'rxjs';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TipoVehiculo } from '../../models/tipoVehiculo.model';
 import { Parqueos } from '../../models/parqueos.model';
 import { Ubicacion } from '../../models/ubicacion.model';
@@ -36,11 +35,6 @@ import { EstadoEspacios } from '../../models/estadoEspacios.model';
 })
 
 export class AgregarIngresoComponent implements OnInit {
-  espacioForm = this.formBuilder.group({
-    espacio: ['', Validators.required],
-
-
-  });
 
   objAccesoVehicular: AccesoVehicular = {
     cliente: {
@@ -66,6 +60,16 @@ export class AgregarIngresoComponent implements OnInit {
 
   }
 
+  espacioForm = this.formBuilder.group({
+    espacio: ['', Validators.required],
+
+
+  });
+
+  formRegistraUsuarioa= this.formBuilder.group({});
+
+
+
   formRegistraUsuario = this.formBuilder.group({
     idCliente: [0], // Campo oculto que contiene el ID del cliente
     idUsuario: [0], // Campo oculto para el usuario autenticado
@@ -75,17 +79,14 @@ export class AgregarIngresoComponent implements OnInit {
     dni: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[0-9]{8,12}$')]],
     nombres: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
     apellidos: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$')]],
-    telefono: ['', [Validators.required, Validators.minLength(7), Validators.pattern('^[0-9]{7,9}$')]],
-  });
- 
-
-  formRegistraVehiculo = this.formBuilder.group({
     tipoVehiculo: [{ value: '', disabled: false }, Validators.min(1)],
     placa: ['', [Validators.required, Validators.pattern('^[A-Z]{2}-\\d{3,5}$')]],
     cantPersonas: ['', [Validators.required, Validators.pattern('^[1-9]$')]],
     espacio: [0, []],
+    telefono: ['', [Validators.required, Validators.minLength(7), Validators.pattern('^[0-9]{7,9}$')]],
+
   });
- 
+
 
   // Variables para almacenar los espacios obtenidos de la API
   objetosEspaciosPP: Parqueos[] = [];
@@ -103,12 +104,14 @@ export class AgregarIngresoComponent implements OnInit {
   espaciosDiscapacitadoPSS: string[] = [];
   espacioGerentePSS: string[] = [];
   espaciosGeneralPSS: string[] = [];
-
   espacioSeleccionado: number = 0;
+  ubicacionSeleccionada: string | null | undefined;
+
   mostrarNivelPrincipal: boolean = false;
   mostrarNivelSemiSotano: boolean = false;
   mostrarNivelSotano: boolean = false;
-
+  registrarButtonDisabled: boolean = false;
+  siguienteButtonDisabled: boolean = false;
   dataSource: any;
   filtro: string = '';
   varDni: string = '';
@@ -130,7 +133,7 @@ export class AgregarIngresoComponent implements OnInit {
   varTelefono: number = 0;
   varIdTipoUsuario: number = -1;
   lstTipoUsuario: TipoUsuario[] = [];
-
+  esClienteNuevo: number  =0;
   horaIngreso: Date = new Date();
   formattedDate = this.horaIngreso.toLocaleString('es-ES', {
     day: '2-digit',
@@ -285,7 +288,18 @@ export class AgregarIngresoComponent implements OnInit {
     );
   }
 
-  
+// Método para obtener el idUbicacion basado en el parqueo seleccionado
+getIdUbicacionFromParqueo(parqueoId: number): number | undefined {
+  for (let ubicacion of this.lstUbicaciones) {
+    if (ubicacion.idUbicacion !== undefined) {  // Verificamos que idUbicacion no sea undefined
+      const parqueos = this.parqueosPorUbicacion[ubicacion.idUbicacion];
+      if (parqueos?.some(parqueo => parqueo.idParqueos === parqueoId)) {
+        return ubicacion.idUbicacion;  // Devolvemos el idUbicacion correspondiente
+      }
+    }
+  }
+  return undefined;  // Si no encontramos la ubicación, devolvemos undefined
+}
 
   guardarDatos() {
     console.log("Iniciando guardarDatos...");
@@ -295,7 +309,9 @@ export class AgregarIngresoComponent implements OnInit {
       cliente: { idCliente: this.formRegistraUsuario.get('idCliente')?.value || 0 },
       usuario: { idUsuario: this.formRegistraUsuario.get('idUsuario')?.value || 0 },
       parqueos: { idParqueos:  this.espacioSeleccionado },
-      placaVehiculo: this.formRegistraVehiculo.get('placa')?.value || ''
+      ubicacion: { 
+        idUbicacion: this.getIdUbicacionFromParqueo(this.espacioSeleccionado)
+      },      placaVehiculo: this.formRegistraUsuario.get('placa')?.value || ''
     };
 
     console.log("PRIMERA DEPURACION");
@@ -303,6 +319,8 @@ export class AgregarIngresoComponent implements OnInit {
     console.log("Cliente:", this.objAccesoVehicular.cliente);
     console.log("Usuario:", this.objAccesoVehicular.usuario);
     console.log("Parqueo:", this.objAccesoVehicular.parqueos);
+    console.log("Ubicacion:", this.objAccesoVehicular.ubicacion);
+
 
     const requests = [];
 
@@ -314,7 +332,7 @@ export class AgregarIngresoComponent implements OnInit {
     }
 
     if (this.objAccesoVehicular.parqueos && !this.objAccesoVehicular.parqueos.idParqueos) {
-      const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value;
+      const tipoVehiculo = this.formRegistraUsuario.get('tipoVehiculo')?.value;
       if (tipoVehiculo) {
         requests.push(this.utilService.obtenerIdParqueo(tipoVehiculo));
       }
@@ -325,6 +343,9 @@ export class AgregarIngresoComponent implements OnInit {
     console.log("SEGUNDA DEPURACION");
     console.log("Cliente ID antes de forkJoin:", this.objAccesoVehicular.cliente?.idCliente);
     console.log("Parqueo ID antes de forkJoin:", this.objAccesoVehicular.parqueos?.idParqueos);
+    console.log("Ubicacion ID antes de forkJoin:", this.objAccesoVehicular.parqueos?.ubicacion);
+    console.log("Tipo de vehiculo ID antes de forkJoin:", this.objAccesoVehicular.parqueos?.tipoVehiculo);
+
 
     if (requests.length > 0) {
       forkJoin(requests).subscribe(
@@ -343,9 +364,6 @@ export class AgregarIngresoComponent implements OnInit {
                 this.objAccesoVehicular.parqueos.idParqueos = resultados[1];
                 console.log("ID Parqueo asignado:", resultados[1]);
               }
-
-            
-
 
           // Registrar el acceso vehicular con los IDs asignados
           console.log("OBJETO PARA REGISTRO DESPUÉS DE forkJoin:", this.objAccesoVehicular);
@@ -412,7 +430,6 @@ export class AgregarIngresoComponent implements OnInit {
     }
   }
 
-
 // Método para formatear la fecha en "yyyy-MM-dd hh:mm:ss"
 private formatDate(date: Date): string {
   const year = date.getFullYear();
@@ -463,47 +480,119 @@ buscarUsuarioPorDni(){
     console.log(">>> Filtrar [fin]");
   }
 
-    buscarClientePorDni() {
-      // Verificamos el valor de `varDni` antes de hacer la petición
-      console.log('DNI buscado:', this.varDni);
 
-      this.usuarioService.buscarClientePorDni(this.varDni).subscribe(
-        (response) => {
-          this.dataSource = response;
-          console.log('Respuesta del servicio:', this.dataSource);
+  mostrarFormularioRegistro() {
+    this.formRegistraUsuario.patchValue({
+      nombres: '',
+      apellidos: '',
+      telefono: ''
+    });
+  
+    this.formRegistraUsuario.get('nombres')?.enable();
+    this.formRegistraUsuario.get('apellidos')?.enable();
+    this.formRegistraUsuario.get('telefono')?.enable();
+  
+    // Habilitamos el botón de "Registrar"
+    this.registrarButtonDisabled = false;
+  }
+  
+  buscarClientePorDni() {
+    console.log('DNI buscado:', this.varDni);
 
-          if (this.dataSource && this.dataSource.length > 0) {
-            const usuario = this.dataSource[0];
-            console.log('Usuario encontrado:', usuario);
+    this.usuarioService.buscarClientePorDni(this.varDni).subscribe(
+      (response) => {
+        this.dataSource = response;
+        console.log('Respuesta del servicio:', this.dataSource);
 
-            // Actualizamos los valores del formulario y de las variables
-            this.formRegistraUsuario.patchValue({
-              nombres: usuario.nombres,
-              apellidos: usuario.apellidos,
-            });
-            this.formRegistraUsuario.get('nombres')?.disable();
-            this.formRegistraUsuario.get('apellidos')?.disable();
+        if (this.dataSource && this.dataSource.length > 0) {
+          const usuario = this.dataSource[0];
+          console.log('Usuario encontrado:', usuario);
 
-            this.varNombres = usuario.nombres;
-            this.varApellidos = usuario.apellidos;
-          } else {
-            Swal.fire('Por favor registrar los nuevos datos del propietario.');
+          // Actualizamos los valores del formulario y de las variables
+          this.formRegistraUsuario.patchValue({
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+          });
+          this.formRegistraUsuario.get('nombres')?.disable();
+          this.formRegistraUsuario.get('apellidos')?.disable();
 
-            // Habilitamos y limpiamos los campos del formulario
-            this.formRegistraUsuario.get('nombres')?.enable();
-            this.formRegistraUsuario.get('apellidos')?.enable();
-            this.formRegistraUsuario.patchValue({ nombres: '', apellidos: '' });
+          this.varNombres = usuario.nombres;
+          this.varApellidos = usuario.apellidos;
 
-            this.varNombres = '';
-            this.varApellidos = '';
-          }
-        },
-        (error) => {
-          console.error('Error al buscar por DNI:', error);
-          this.limpiarFormulario();
+          // Cliente ya existe, es un cliente conocido, no es nuevo
+          this.esClienteNuevo = 0;
+
+          // Habilitamos el botón Siguiente
+          this.siguienteButtonDisabled = false;
+        } else {
+          // Cliente no encontrado, es un cliente nuevo
+          this.esClienteNuevo = 1;
+          console.log('Cliente no encontrado, es nuevo.');
+
+          // Mostramos la alerta
+          Swal.fire({
+            title: 'Cliente no encontrado',
+            text: 'Por favor completar los campos de registros correspondientes',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Registrar Cliente"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Si el usuario acepta, mostramos el formulario para registrar al cliente
+              this.mostrarFormularioRegistro();
+            } else {
+              // Si cancela, limpiamos el formulario
+              this.formRegistraUsuario.reset();
+              this.siguienteButtonDisabled = true;
+            }
+          });
         }
-      );
+      },
+      (error) => {
+        console.error('Error al buscar por DNI:', error);
+        this.limpiarFormulario();
+      }
+    );
+  }
+
+  // Función que maneja el botón "Next"
+  onNextButtonClick() {
+    if (this.esClienteNuevo === 1) {
+      // Si es un cliente nuevo, registramos
+      this.registrarCliente();
+    } else {
+      // Si no es nuevo, no hacemos nada (o tal vez redirigimos a otro paso)
+      console.log('El cliente ya existe. No se realiza el registro.');
     }
+  }
+
+
+    
+  registrarCliente() {
+    const nuevoCliente: Cliente = {
+      identificador: this.formRegistraUsuario.get('dni')?.value ?? '',
+      nombres: this.formRegistraUsuario.get('nombres')?.value ?? '',
+      apellidos: this.formRegistraUsuario.get('apellidos')?.value ?? '',
+      telefono: this.formRegistraUsuario.get('telefono')?.value ?? ''
+    };
+
+      this.ingresoVehicularService.registrarCliente(nuevoCliente).subscribe({
+      next: (response) => {
+        console.log("Nuevo cliente creado:", response);
+        this.formRegistraUsuario.patchValue({ idCliente: response.idCliente });
+      },
+      error: (error) => {
+        console.error("Error al crear cliente:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error en el registro',
+          text: 'No se pudo registrar el cliente.',
+        });
+      }
+    });
+  }
 
 
   limpiarFormulario() {
@@ -511,16 +600,29 @@ buscarUsuarioPorDni(){
     this.varNombres = '';
     this.varApellidos = '';
   }
+  seleccionarEspacioN(espacio: number | undefined): void {
 
 
-  seleccionarEspacioN(espacio: number | undefined) {
     if (espacio !== undefined) {
-      this.espacioSeleccionado = espacio;
+      this.espacioSeleccionado = espacio; 
+      this.formRegistraUsuario.patchValue({ espacio });
+  
+      // Buscar la ubicación asociada al espacio seleccionado
+      for (let ubicacion of this.lstUbicaciones) {
+        if (ubicacion.idUbicacion !== undefined) { // Asegurarse de que idUbicacion no sea undefined
+          const parqueos = this.parqueosPorUbicacion[ubicacion.idUbicacion];
+          if (parqueos?.some(parqueo => parqueo.idParqueos === espacio)) {
+            this.ubicacionSeleccionada = ubicacion.nombreUbicacion;
+            break;
+          }
+        }
+      }
       console.log('Espacio seleccionado:', espacio);
     } else {
       console.warn('El espacio seleccionado es undefined');
     }
   }
+  
   
   
   // Manejo de tipo de vehículo
@@ -549,12 +651,12 @@ buscarUsuarioPorDni(){
   guardarNombresApe() {
     const nombresBuscado = this.formRegistraUsuario.get('nombres')?.value ?? '';
     const apellidosBuscado = this.formRegistraUsuario.get('apellidos')?.value ?? '';
-    const tipoVehiculo = this.formRegistraVehiculo.get('tipoVehiculo')?.value ?? '';
+    const tipoVehiculo = this.formRegistraUsuario.get('tipoVehiculo')?.value ?? '';
 
     this.tipoVehiculo.nombreTipoVehiculo = tipoVehiculo;
     this.varNombres= nombresBuscado;
     this.varApellidos = apellidosBuscado;
- 
+
     console.log('Tipo de Vehiculo guardado:', this.tipoVehiculo);
     console.log('Nombres guardados:', this.varNombres);
     console.log('Apellidos guardados:', this.varApellidos);  
@@ -562,8 +664,9 @@ buscarUsuarioPorDni(){
 
 
   habilitarBtnSiguienteRegistroUsuario() {
-    if (this.formRegistraUsuario.controls.nombres.value?.trim() === "" || this.formRegistraUsuario.controls.apellidos.value?.trim() === "" || this.formRegistraUsuario.invalid === true) {
-      //console.log("hay campos vacíos en cliente");
+    if (this.formRegistraUsuario.controls.nombres.value?.trim() === "" 
+    || this.formRegistraUsuario.controls.apellidos.value?.trim() === "" 
+    || this.formRegistraUsuario.invalid === true) {
       return true;
     } else {
       return false;
@@ -571,7 +674,7 @@ buscarUsuarioPorDni(){
   }
 
   habilitarBtnSiguienteRegistroVehiculo(){
-    if (this.formRegistraVehiculo.invalid === true || this.espacioSeleccionado === 0) {
+    if (this.formRegistraUsuario.invalid === true || this.espacioSeleccionado === 0) {
       //console.log("hay campos vacíos en vehículo");
       return true;
     } else {
@@ -579,29 +682,6 @@ buscarUsuarioPorDni(){
     }
   }
 
-crearCliente() {
-  const nuevoCliente: Cliente = {
-    identificador: this.formRegistraUsuario.get('dni')?.value ?? '',
-    nombres: this.formRegistraUsuario.get('nombres')?.value ?? '',
-    apellidos: this.formRegistraUsuario.get('apellidos')?.value ?? '',
-    telefono: this.formRegistraUsuario.get('telefono')?.value ?? ''
-  };
-
-    this.ingresoVehicularService.registrarCliente(nuevoCliente).subscribe({
-    next: (response) => {
-      console.log("Nuevo cliente creado:", response);
-      this.formRegistraUsuario.patchValue({ idCliente: response.idCliente });
-    },
-    error: (error) => {
-      console.error("Error al crear cliente:", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error en el registro',
-        text: 'No se pudo registrar el cliente.',
-      });
-    }
-  });
-}
 
 agruparPorUbicacion() {
   this.parqueosPorUbicacion = {}; // Limpiamos el objeto antes de agrupar
