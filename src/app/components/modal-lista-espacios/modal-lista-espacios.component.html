@@ -61,8 +61,8 @@
         
       </div>
 
-      <!-- Cliente -->
-      <div class="row">
+      <div class="row" *ngIf="!isEstadoDisponible">
+        <!-- Cliente -->
         <mat-form-field class="col-md-4">
           <mat-label>Cliente</mat-label>
           <mat-select [(ngModel)]="objAcceso.cliente!.idCliente" formControlName="validaNombres" [disabled]="true">
@@ -71,19 +71,20 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        
+      
         <!-- Placa del Vehículo -->
         <mat-form-field class="col-md-4">
           <mat-label>Placa del Vehículo</mat-label>
           <input matInput [(ngModel)]="objAcceso.placaVehiculo" formControlName="validaPlacaVehiculo" placeholder="Ej: MN-890" [disabled]="true">
         </mat-form-field>
-
+      
         <!-- Fecha de Registro -->
         <mat-form-field class="col-md-4">
           <mat-label>Fecha de Registro</mat-label>
           <input matInput [(ngModel)]="objAcceso.fechaRegistro" formControlName="validaFechaRegistro" type="datetime-local" [disabled]="true">
         </mat-form-field>
       </div>
+      
 
       <!-- Botones -->
       <div mat-dialog-actions>

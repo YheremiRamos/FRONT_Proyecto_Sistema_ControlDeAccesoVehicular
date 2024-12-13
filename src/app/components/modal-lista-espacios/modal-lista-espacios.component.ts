@@ -33,6 +33,8 @@ export class ModalListaEspaciosComponent implements OnInit {
   lstEstadoEspacios: EstadoEspacios[] = [];
   lstAcceso: AccesoVehicular[] = [];
   parqueos: Parqueos[] = [];
+   // Otras propiedades
+   isEstadoDisponible: boolean = false;  // Para controlar si el estado es "Disponible"
   //listado
 
   parqueosPorUbicacion: { [key: number]: Parqueos[] } = {};
@@ -85,7 +87,7 @@ export class ModalListaEspaciosComponent implements OnInit {
         this.objAcceso = this.lstAcceso[0];  // Asignar el primer acceso al objeto
       }
     });
-
+    this.isEstadoDisponible = this.objParqueo.estadoEspacios?.nombreEstadoEspacios === 'Disponible';
       // Deshabilitar los controles cuando se inicia el componente
   this.formsActualiza.get('validaUbicacion')?.disable();
   this.formsActualiza.get('validaTipo')?.disable();
