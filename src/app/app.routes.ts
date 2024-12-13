@@ -21,6 +21,7 @@ export const routes: Routes = [
     {path:"verReportes", component:ListaEspaciosComponent},  
 
     {path:"verCrudUbicacion", component:CrudUbicacionesComponent },
+    {path:"verEspacioParqueo", component:AgregarParqueosComponent },
     {path:"verListaEspacios", component:ListaEspaciosComponent},
     {path:"verInfoProblemasIngreso", component:InfoProblemasIngresoComponent},
   

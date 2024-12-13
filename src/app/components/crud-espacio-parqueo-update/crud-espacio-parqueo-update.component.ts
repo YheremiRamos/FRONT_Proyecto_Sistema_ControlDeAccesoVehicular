@@ -11,6 +11,7 @@ import { Parqueos } from '../../models/parqueos.model';
 import { Usuario } from '../../models/usuario.model';
 import { ParqueosService } from '../../services/parqueos.service';
 import { UtilService } from '../../services/util.service';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Para notificaciones
 import { TokenService } from '../../security/token.service';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
@@ -49,6 +50,7 @@ export class CrudEspacioParqueoUpdateComponent implements OnInit {
   });
 
   constructor(
+    private snackBar: MatSnackBar, // Opcional, para notificaciones
     private UtilService: UtilService,
     private parqueosService: ParqueosService,
     private utilService: UtilService,
@@ -118,7 +120,19 @@ export class CrudEspacioParqueoUpdateComponent implements OnInit {
   }
 
   elimina(obj: Parqueos) {
-    
+    const confirmacion = confirm(`¿Estás seguro de que deseas eliminar el parqueo con ID ${obj.idParqueos}?`);
+    if (confirmacion) {
+      this.parqueosService.eliminarParqueo(this.objParqueo.idParqueos!).subscribe({
+        next: () => {
+          this.snackBar.open('Parqueo eliminado correctamente', 'Cerrar', { duration: 3000 });
+          // Aquí puedes actualizar la lista si es necesario
+        },
+        error: (err) => {
+          console.error('Error eliminando el parqueo:', err);
+          this.snackBar.open('Hubo un error al eliminar el parqueo', 'Cerrar', { duration: 3000 });
+        }
+      });
+    }
   }
   
 
