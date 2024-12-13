@@ -1,6 +1,7 @@
 <body>
         <div class="sidebar">
             <div class="sidebar-header">
+                <!--Logo de capa de cibertec actualizado-->
                 <img class="imagen_menu_inicio_sesion" src="assets/login_img/Cibertec_logo_menu.png" alt="">
                 <br>
             </div>
@@ -8,7 +9,7 @@
                 <li *ngIf="!isLogged">
                     <a class="nav-link"  routerLink="/login"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
                 </li>
-                <li *ngIf="isLogged" (click)="onLogOut()">
+                <li *ngIf="isLogged" (click)="onLogOut()">ng serve 
                     <a class="nav-link" style="cursor: pointer;"><i class="fas fa-door-open" ></i> Cerrar Sesión</a>
                 </li>
             </ul>
