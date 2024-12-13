@@ -122,6 +122,12 @@ body {
   height: auto;
 }
 
+.imagen_menu_inicio_sesion {
+  width: 70%;
+  max-width: 300px;
+  height: auto;
+}
+
 .cerrar_sesion {
   background-color: #FFFFFF;
   width: 80%;
