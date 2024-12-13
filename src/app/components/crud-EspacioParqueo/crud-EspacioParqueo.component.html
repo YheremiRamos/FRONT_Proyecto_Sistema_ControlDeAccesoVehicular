@@ -16,7 +16,7 @@
     <app-menu></app-menu>
 
     <!-- Área de contenido -->
-    <div class="content">
+    <div class="container">
       <!-- Enlace de navegación para regresar -->
       <a (click)="redirigirAListaEspacios()" class="volver-link">> VOLVER</a>
 
@@ -155,28 +155,29 @@
 
             <div class="bloques_cont" *ngIf="ubicacion.idUbicacion !== undefined">
               <div *ngFor="let parqueo of parqueosPorUbicacion[ubicacion.idUbicacion]" class="parqueo-card">
-                <button mat-raised-button [ngStyle]="{
-                          'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
-                          'color': 'white',
-                          'opacity': getEstadoOpacity(parqueo.estadoEspacios?.nombreEstadoEspacios ?? 'Disponible')
-                        }" (click)="openUpdateDialog(parqueo)"
+                <button 
+                  mat-raised-button 
+                  [ngStyle]="{
+                    'background-color': getColor(parqueo.tipoParqueo?.nombreTipoParqueo ?? 'defaultColor'),
+                    'color': 'white',
+                    'opacity': getEstadoOpacity(parqueo.estadoEspacios?.nombreEstadoEspacios ?? 'Disponible')
+                  }" 
+                  (click)="openUpdateDialog(parqueo)" 
                   style="display: flex; flex-direction: column; align-items: center; padding: 10px;">
-
+            
                   <!-- Ícono de tipo de vehículo -->
-                  <i class="fas fa-car fa-xs"
+                  <i 
+                    class="fas fa-car fa-xs" 
                     [ngClass]="getVehiculoIcon(parqueo.tipoVehiculo?.nombreTipoVehiculo ?? '')"
-                    style="font-size: 14px; margin :3px;"></i>
-
+                    style="font-size: 14px; margin: 3px;">
+                  </i>
+            
                   <!-- Número de parqueo -->
                   <span>{{ parqueo.idParqueos }}</span>
-                          'color': 'white'
-
-                        "
-                        (click)="openUpdateDialog(parqueo)">
-                  {{ parqueo.idParqueos }}
                 </button>
               </div>
             </div>
+            
           </div>
 
         </div>

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Parqueos } from '../models/parqueos.model';
-
+import { AppSettings } from '../app.settings';
+const baseUrlIngresoVehicular = AppSettings.API_ENDPOINT + '/accesoVehicular';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,6 +11,9 @@ export class ParqueosService {
   private parqueosSubject = new BehaviorSubject<Parqueos[]>([]);
   parqueos$ = this.parqueosSubject.asObservable();
   private baseUrl = 'http://localhost:8090/url/parqueos';
+
+  
+  
 
   constructor(private http: HttpClient) { }
 
@@ -72,7 +76,11 @@ consultaParqueosPorParametros(
 
   return this.http.get<any>(`${this.baseUrl}/consultaParqueosPorParametros`, { params });
 }
-
+//NUEVO
+// Filtrar accesos vehiculares por ID de parqueo
+filtrarAccesosPorParqueo(idParqueos: number): Observable<any> {
+  return this.http.get<any>(`${baseUrlIngresoVehicular}/filtrarPorParqueo/${idParqueos}`);
+}
 
 
 
