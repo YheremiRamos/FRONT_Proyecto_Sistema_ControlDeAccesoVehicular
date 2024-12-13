@@ -12,6 +12,7 @@ export class AccesoVehicular {
     cliente?: Cliente;
     usuario?: Usuario;
     parqueos?: Parqueos;
+    ubicacion?: Ubicacion;
 
     placaVehiculo?: string;
     estado?: string;
