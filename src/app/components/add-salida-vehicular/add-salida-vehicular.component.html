@@ -1,80 +1,106 @@
-<div class="main-container">
-    <app-menu></app-menu>
-    <div class="content">
-        <div class="container form-container" >
-            <h1>Listado de salidas Vehiculares</h1>
-    
+<head>
+    <!-- Enlaces para cargar fuentes desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./add-salida-vehicular.component.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100..700&display=swap">
+
+</head>
+
+<body>
+
+
+    <div class="main-container">
+        <app-menu></app-menu>
+
+        <div class="contenido_gen">
+            <mat-toolbar>
+                <span class="josefin-sans-title">SALIDAS VEHICULARES</span>
+
+            </mat-toolbar>
             <!-- Tabla de Accesos Vehiculares -->
-            <mat-table [dataSource]="dataSource" matSort>
-    
-            <!-- Columna ID de Acceso Vehicular -->
-            <ng-container matColumnDef="idAccesoVehicular">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> ID Acceso </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.idAccesoVehicular }}</mat-cell>
-            </ng-container>
-    
-            <!-- Columna Nombre Completo -->
-            <ng-container matColumnDef="nombreCompleto">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Nombre Completo </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.nombreCompleto }}</mat-cell>
-            </ng-container>
-    
-            <!-- Columna Tipo de Vehículo Permitido -->
-            <ng-container matColumnDef="tipoVehiculoPermitido">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Vehículo </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.tipoVehiculoPermitido }}</mat-cell>
-            </ng-container>
-    
-            <!-- Columna Placa del Vehículo -->
-            <ng-container matColumnDef="placaVehiculo">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Placa </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.placaVehiculo }}</mat-cell>
-            </ng-container>
-    
-            <!-- Columna Fecha de Registro -->
-            <ng-container matColumnDef="fechaRegistro">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Registro </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">
-                    {{ acceso.fechaRegistro | date: 'yyyy/MM/dd HH:mm' }}
-                </mat-cell>
-            </ng-container>
+            <mat-table class="tabla" [dataSource]="dataSource" matSort>
 
-        <ng-container matColumnDef="fechaActualizacion">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Actualización </mat-header-cell>
-            <mat-cell *matCellDef="let acceso">
-                <ng-container *ngIf="acceso.fechaActualizacion; else registrarSalidaBtn">
-                    {{ acceso.fechaActualizacion | date: 'yyyy/MM/dd HH:mm' }}
+                <!-- Columna ID de Acceso Vehicular -->
+                <ng-container matColumnDef="idAccesoVehicular">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">{{ acceso.idAccesoVehicular }}</mat-cell>
                 </ng-container>
-                <ng-template #registrarSalidaBtn>
-                    <button mat-raised-button color="primary" (click)="registrarSalida(acceso.idAccesoVehicular)">
-                        Registrar Salida
-                    </button>
-                </ng-template>
-            </mat-cell>
-        </ng-container>
-            
-    
-            <!-- Columna Número de Incidencias -->
-            <ng-container matColumnDef="numIncidencias">
-                <mat-header-cell *matHeaderCellDef mat-sort-header> Incidencias </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">{{ acceso.numIncidencias }}</mat-cell>
 
+                <!-- Columna Nombre Completo -->
+                <ng-container matColumnDef="nombreCompleto">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> Nombre Completo </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">{{ acceso.nombreCompleto }}</mat-cell>
+                </ng-container>
+
+                <!-- Columna Tipo de Vehículo Permitido -->
+                <ng-container matColumnDef="tipoVehiculoPermitido">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> Tipo Vehículo </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">{{ acceso.tipoVehiculoPermitido }}</mat-cell>
+                </ng-container>
+
+                <!-- Columna Placa del Vehículo -->
+                <ng-container matColumnDef="placaVehiculo">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> Placa </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">{{ acceso.placaVehiculo }}</mat-cell>
+                </ng-container>
+
+                <!-- Columna Fecha de Registro -->
+                <ng-container matColumnDef="fechaRegistro">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> Entrada </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">
+                        {{ acceso.fechaRegistro | date: 'yyyy/MM/dd HH:mm' }}
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="fechaActualizacion">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="josefin-sans-cabecera"> Salida </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">
+                        <ng-container *ngIf="acceso.fechaActualizacion; else registrarSalidaBtn">
+                            {{ acceso.fechaActualizacion | date: 'yyyy/MM/dd HH:mm' }}
+                        </ng-container>
+                        <ng-template #registrarSalidaBtn>
+                            <button class="josefin-sans-cabecera" (click)="registrarSalida(acceso.idAccesoVehicular)"
+                                class="boton-registrar-salida">
+                                <mat-icon style="margin: 0;">flash_on</mat-icon>
+                                Marcar Salida
+                               
+                            </button>
+
+
+                        </ng-template>
+                    </mat-cell>
+                </ng-container>
+
+
+                <!-- Columna Número de Incidencias -->
+                <ng-container matColumnDef="numIncidencias">
+                    <mat-header-cell class="josefin-sans-cabecera" *matHeaderCellDef mat-sort-header> N° </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">{{ acceso.numIncidencias }}</mat-cell>
+
+
+                </ng-container>
+
+                <!-- Columna Acción de Registrar Salida -->
+                <ng-container matColumnDef="accionIncidencia">
+                    <mat-header-cell  *matHeaderCellDef class="josefin-sans-cabecera"> Incidencias </mat-header-cell>
+                    <mat-cell *matCellDef="let acceso">
+                        <button class="josefin-sans-cabecera" class="boton-registrar-incidencia"
+                            (click)="registrarIncidencia(acceso.idAccesoVehicular)">
+                            <mat-icon style="margin: 0;">flash_on</mat-icon>
+                            Reportar
+                        </button>
+                    </mat-cell>
+                </ng-container>
                 
-            </ng-container>
 
-            <!-- Columna Acción de Registrar Salida -->
-            <ng-container matColumnDef="accionIncidencia">
-                <mat-header-cell *matHeaderCellDef> Acción </mat-header-cell>
-                <mat-cell *matCellDef="let acceso">
-                <button mat-raised-button color="primary" (click)="registrarIncidencia(acceso.idAccesoVehicular)" >Registrar Incidencia</button>
-                </mat-cell>
-            </ng-container>
-    
-            <!-- Filas de la tabla -->
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <!-- Filas de la tabla -->
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
         </div>
-        </div>
+
     </div>
-    
+</body>
